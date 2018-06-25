@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm") version "1.2.50"
 }
 
-group = "it.lamba"
+group = "it.unito"
 version = "1.0-SNAPSHOT"
 
 repositories {

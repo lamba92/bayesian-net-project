@@ -1,4 +1,4 @@
-package it.lamba.bayesian.net
+package it.unito.bayesian.net
 
 fun main(args: Array<String>){
 
