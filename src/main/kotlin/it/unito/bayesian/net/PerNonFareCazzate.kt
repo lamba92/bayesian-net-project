@@ -28,7 +28,7 @@ fun cazzate() {
         /* variabile aleatoria di prova per vedere che funziona la sostituzione */
         val tempRandVar = RandVar("Rain_t_$count", BooleanDomain())
 
-        if (count % 2 != 0) { // se devo sostituire t-1 val names = dbn.x_0.stream().map<String?> { x -> x.name }.collect(Collectors.toList()) //ipoteticamente posso avere più di una variabile aleatoria per nodo, farò un inserimento per ogni nome
+        if (count % 2 != 0) { // se devo sostituire t-1 //ipoteticamente posso avere più di una variabile aleatoria per nodo, farò un inserimento per ogni nome
             val names = dbn.x_0.stream().map<String?> { x -> x.name }.collect(Collectors.toList()) //ipoteticamente posso avere più di una variabile aleatoria per nodo, farò un inserimento per ogni nome
             dbn.x_0.clear()
             dbn.x_0.add(tempRandVar) //qui dovrei fare un inserimento per ogni nome in names
