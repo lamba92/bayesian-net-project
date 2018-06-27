@@ -2,7 +2,6 @@ package it.unito.bayesian.net
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
-import aima.core.probability.bayes.exact.EliminationAsk
 import java.util.Comparator
 
 object InferenceUsing {

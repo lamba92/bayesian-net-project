@@ -10,6 +10,8 @@ import aima.core.probability.proposition.AssignmentProposition
 import aima.core.probability.util.ProbabilityTable
 import aima.core.probability.util.RandVar
 import it.unito.bayesian.net.InferenceUsing
+import it.unito.bayesian.net.MainClass
+import org.encog.ml.bayesian.bif.BIFUtil
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -20,6 +22,9 @@ fun main(args: Array<String>){
     var initialDBN = getUmbrellaWorldNetwork()
 
     for(e in evidences){
+
+        val net = BIFUtil.readBIF(MainClass::class.java.getResource("win95pts.bif").path)
+
         val newNodesMap = HashMap<RandomVariable, Node>()
         val RVtoCPT = HashMap<RandomVariable, CategoricalDistribution>()
         val x_0_to_X_1 = initialDBN.x_0_to_X_1
