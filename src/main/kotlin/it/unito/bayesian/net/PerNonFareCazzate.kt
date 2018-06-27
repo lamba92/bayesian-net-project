@@ -9,11 +9,11 @@ import java.util.stream.Collectors
 
 
 fun main(args: Array<String>) {
-    cazzate()
+    test()
 }
 
 
-fun cazzate() {
+fun test() {
 
     val rainEvidences = arrayOf(false, true, true, false, false, true)
     val dbn = DynamicBayesNetExampleFactory.getUmbrellaWorldNetwork()

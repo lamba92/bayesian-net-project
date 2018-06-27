@@ -37,5 +37,4 @@ fun main(args: Array<String>){
                 HashSet<RandomVariable>().apply {add(ExampleRV.UMBREALLA_t_RV) },
                 newRoot))
     }
-    println("")
 }
