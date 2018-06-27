@@ -1,41 +1,53 @@
+import aima.core.probability.CategoricalDistribution
 import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.ConditionalProbabilityDistribution
 import aima.core.probability.bayes.Node
-import aima.core.probability.bayes.impl.BayesNet
-import aima.core.probability.bayes.impl.DynamicBayesNet
+import aima.core.probability.bayes.impl.*
+import aima.core.probability.domain.BooleanDomain
 import aima.core.probability.example.DynamicBayesNetExampleFactory.getUmbrellaWorldNetwork
 import aima.core.probability.example.ExampleRV
+import aima.core.probability.proposition.AssignmentProposition
+import aima.core.probability.util.ProbabilityTable
+import aima.core.probability.util.RandVar
+import it.unito.bayesian.net.InferenceUsing
+import java.util.*
+import kotlin.collections.HashMap
 
 fun main(args: Array<String>){
-//    val bn = constructBurglaryAlarmNetwork()
-//    getUmbrellaWorldNetwork().x_0_to_X_1.forEach { k, v ->
-//        println(k.toString())
-//        println(v.toString())
-//    }
-//    val d1 = InferenceUsing.eliminationAsk.withMinWeightHeuristic.ask(
-//            arrayOf<RandomVariable>(ExampleRV.BURGLARY_RV),
-//            arrayOf(AssignmentProposition(ExampleRV.MARY_CALLS_RV, true)), bn)
-//    println(d1.toString())
-    val dbn = getUmbrellaWorldNetwork() as DynamicBayesNet
 
-    val rollup = ArrayList<DynamicBayesNet>().apply {
-        add(getUmbrellaWorldNetwork() as DynamicBayesNet)
-    }
+    val evidences = arrayOf(true, false, true, false)
 
-    ArrayList<Boolean>().apply {
-        for(i in 2 until 10 step 1){
-            add(i%2 != 0)
-        }
-    }.forEach {
-        val currentDBN = rollup[rollup.size - 1]
-        lateinit var newRoot: Node
-        currentDBN.x_0.forEach {
-            if(currentDBN.getNode(it).parents?.isEmpty() == true) newRoot = currentDBN.getNode(it)
-        }
-        rollup.add(DynamicBayesNet(
-                currentDBN.priorNetwork,
-                currentDBN.x_0_to_X_1,
-                HashSet<RandomVariable>().apply {add(ExampleRV.UMBREALLA_t_RV) },
-                newRoot))
+    var initialDBN = getUmbrellaWorldNetwork()
+
+    for(e in evidences){
+        val newNodesMap = HashMap<RandomVariable, Node>()
+        val RVtoCPT = HashMap<RandomVariable, CategoricalDistribution>()
+        val x_0_to_X_1 = initialDBN.x_0_to_X_1
+        val allNewRV = initialDBN.x_1_VariablesInTopologicalOrder
+        var count =0
+        //for (rv in allNewRV){
+            val cpt = initialDBN.getNode(rv).cpd
+            val t = InferenceUsing.eliminationAsk.withMinWeightHeuristic.eliminationAsk(
+                    arrayOf(rv),
+                    emptyArray(),
+                    initialDBN
+            )
+
+            val newName = rv.name.substring(0, rv.name.length-1)+count
+            val newRandVar = RandVar(newName, rv.domain)
+            val newNode = FullCPTNode(newRandVar, t.values)
+            initialDBN.x_0_to_X_1[rv] = newRandVar
+            println("yolo")
+//            println("cpt.toString() = $cpt")
+//            println("cpt.values = ${Arrays.toString(cpt.values)}")
+//            RVtoCPT[rv] = cpt
+//            val test = initialDBN.getNode(rv).parents.toTypedArray()
+//            newNodesMap[rv] = FullCPTNode(rv, cpt.values, *emptyArray())
+//            val newDBN = DynamicBayesNet(initialDBN.priorNetwork, )
+//            println("olè")
+        //}
+        val newBDN = DynamicBayesNet(initialDBN.priorNetwork, x_0_to_X_1, newNode, )
     }
-    println("")
 }
+
+
