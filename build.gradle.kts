@@ -28,6 +28,7 @@ version = "0.1"
 apply {
     plugin("kotlin")
     plugin("org.jetbrains.dokka")
+    plugin("maven")
 }
 
 repositories {
