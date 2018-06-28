@@ -7,4 +7,6 @@
 out/
 gen/
 build/
+bayesian-net-project.iml
 
+.gradle/
