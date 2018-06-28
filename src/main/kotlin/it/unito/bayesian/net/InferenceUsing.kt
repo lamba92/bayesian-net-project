@@ -6,14 +6,14 @@ import java.util.Comparator
 
 object Inferences {
 
-    val eliminationAskWithMinWeightHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+    val eliminationAskWithMaxCardinalityHeuristic  = object : aima.core.probability.bayes.exact.EliminationAsk() {
         override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
                 = super.order(bn, ArrayList(vars).apply {
-            sortWith(Comparator.comparingInt { -it.domain.size() })
+            // TODO
         })
     }
 
-    val eliminationAskWithMinNeighbourHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+    val eliminationAskWithMinNeighboursHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
         override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
                 = super.order(bn, ArrayList(vars).apply {
             sortWith(Comparator.comparingInt {
@@ -21,4 +21,27 @@ object Inferences {
             })
         })
     }
+
+    val eliminationAskWithMinWeightHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+        override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
+                = super.order(bn, ArrayList(vars).apply {
+            sortWith(Comparator.comparingInt { -it.domain.size() })
+        })
+
+    }
+
+    val eliminationAskWithMinFillHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+        override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
+                = super.order(bn, ArrayList(vars).apply {
+            // TODO
+        })
+    }
+
+    val eliminationAskWithWeigthedMinFillHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+        override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
+                = super.order(bn, ArrayList(vars).apply {
+            // TODO
+        })
+    }
+
 }
