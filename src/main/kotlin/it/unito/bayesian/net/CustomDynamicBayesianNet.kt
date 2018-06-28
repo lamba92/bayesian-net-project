@@ -3,6 +3,7 @@
 package it.unito.bayesian.net
 
 import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.DynamicBayesianNetwork
 import aima.core.probability.bayes.Node
@@ -10,10 +11,12 @@ import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.bayes.impl.DynamicBayesNet
 import aima.core.probability.bayes.impl.FullCPTNode
 import aima.core.probability.proposition.AssignmentProposition
+import it.unito.bayesian.net.utils.WrongDistributionException
 import it.unito.bayesian.net.utils.generateVectorFromCPT
 import java.util.*
 import it.unito.bayesian.net.utils.getNext
 import it.unito.bayesian.net.utils.log
+import kotlin.collections.ArrayList
 
 /**
  * Representation of a Dynamic Bayesian network unrolling using
@@ -22,29 +25,49 @@ import it.unito.bayesian.net.utils.log
 class CustomDynamicBayesianNet: DynamicBayesianNetwork {
 
     /**
+     * The [BayesInference] technique to be used to propagate in time.
+     */
+    var inference: BayesInference
+    private var currentSlice: DynamicBayesianNetwork
+
+    /**
      * Constructor for a newly generated network.
      * @param priorNetwork The original beliefs eventually used to start from beginning.
      * @param X_0_to_X_1 A [Map] between [RandomVariable]s connecting the beliefs to the status variables.
      * @param E_1 A [Set] of [RandomVariable]s contained inside their nodes.
      * @param rootNodes The root [Node]s to be used to initialize the network.
+     * @param inference The [BayesInference] technique to be used to propagate in time.
      *
      */
     constructor(priorNetwork: BayesianNetwork,
                 X_0_to_X_1: Map<RandomVariable, RandomVariable>,
                 E_1: Set<RandomVariable>,
-                vararg rootNodes: Node){
+                rootNodes: Array<Node>,
+                inference: BayesInference) {
+        checkNodes(rootNodes)
         currentSlice = DynamicBayesNet(priorNetwork, X_0_to_X_1, E_1, *rootNodes)
+        this.inference = inference
     }
 
     /**
      * Constructor for a newly generated network.
      * @param net The [DynamicBayesianNetwork] which will be evolved over time.
+     * @param inference The [BayesInference] technique to be used to propagate in time.
      */
-    constructor(net: DynamicBayesianNetwork){
+    constructor(net: DynamicBayesianNetwork, inference: BayesInference){
+        checkNodes(ArrayList<Node>().apply {
+            for(rv in net.x_0) add(net.getNode(rv))
+        }.toTypedArray())
         currentSlice = net
+        this.inference = inference
     }
 
-    private var currentSlice: DynamicBayesianNetwork
+    private fun checkNodes(nodes: Array<Node>){
+        for(node in nodes){
+            if(node !is FullCPTNode) throw WrongDistributionException("Node $node is not a CPT node. Only FullCPTNodes are supported.")
+            else if (node.children.isNotEmpty()) checkNodes(node.children.toTypedArray())
+        }
+    }
 
 
     /**
@@ -63,7 +86,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
         // through transition model and an ask on the evidences
         if(verbose) log("\nGenerating new beliefs nodes...")
         currentSlice.x_0_to_X_1.forEach { x0, x1 ->
-            val newCPT = Inferences.eliminationAskWithMinWeightHeuristic.ask(
+            val newCPT = inference.ask(
                     arrayOf(x1), propositions, currentSlice
             )
             val node = FullCPTNode(x1, newCPT.values)
