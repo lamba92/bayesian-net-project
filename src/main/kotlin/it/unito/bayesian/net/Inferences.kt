@@ -37,7 +37,7 @@ object Inferences {
         })
     }
 
-    val eliminationAskWithWeigthedMinFillHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
+    val eliminationAskWithWeightedMinFillHeuristic = object : aima.core.probability.bayes.exact.EliminationAsk() {
         override fun order(bn: BayesianNetwork?, vars: Collection<RandomVariable>)
                 = super.order(bn, ArrayList(vars).apply {
             // TODO
