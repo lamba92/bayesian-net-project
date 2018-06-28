@@ -33,18 +33,17 @@ object BayesNetsFactory{
                     0.7, 0.3,
                     0.8, 0.2
             ), r_0_node, s_0_node)
-        val s_1_node = FullCPTNode(s_1,
-                doubleArrayOf(
-                        0.23, 0.77,
-                        0.4, 0.6,
-                        0.57, 0.43,
-                        0.29, 0.71
+        val s_1_node = FullCPTNode(s_1, doubleArrayOf(
+                    0.23, 0.77,
+                    0.4, 0.6,
+                    0.57, 0.43,
+                    0.29, 0.71
                 ), r_0_node, s_0_node)
         val e_1_node = FullCPTNode(e_1, doubleArrayOf(
-                0.93, 0.07,
-                0.49, 0.51,
-                0.87, 0.13,
-                0.01, 0.99
+                    0.93, 0.07,
+                    0.49, 0.51,
+                    0.87, 0.13,
+                    0.01, 0.99
         ), r_1_node, s_1_node)
 
         val rvMap = HashMap<RandomVariable, RandomVariable>().apply {

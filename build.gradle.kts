@@ -14,7 +14,6 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
-    compile("org.encog", "encog-core", "3.3.0")
     compile("com.googlecode.aima-java", "aima-core", "3.0.0")
     testCompile("junit", "junit", "4.12")
 }
