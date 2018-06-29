@@ -1,11 +1,14 @@
 package it.unito.bayesian.net.utils
 
-import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.impl.CPT
+import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.Node
 import aima.core.probability.util.RandVar
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
     val N = cpt.parents.size
@@ -73,9 +76,31 @@ fun RandomVariable.getNext(): RandVar{
         val current = (m.group(m.groupCount()-1).toInt() + 1).toString()
         RandVar(name.replace(Regex("([0-9]+$)"), current), domain)
     } else RandVar(name + "_1", domain)
-
 }
 
 fun log(str: String){
     println(str)
 }
+
+fun <T: Any> combineParents(parents: Collection<T>): HashMap<RandomVariable, RandomVariable> {
+    val i = ArrayList<RandomVariable>()
+    for(p in parents){
+        when (p::class) {
+            Node::class -> { i.add((p as Node).randomVariable ) }
+            MoralGraph.MoralNode::class -> { i.add((p as MoralGraph.MoralNode).rv)}
+            else -> throw Exception("Wrong class")
+        }
+    }
+
+    val map = HashMap<RandomVariable, RandomVariable>()
+    for (parent1 in i){
+        for (parent2 in i){
+            if(parent1 != parent2) {
+                map[parent1] = parent2
+                map[parent2] = parent1
+            }
+        }
+    }
+    return map
+}
+
