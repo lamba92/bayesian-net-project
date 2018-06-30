@@ -2,43 +2,59 @@ package it.unito.bayesian.net.utils
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
+import org.graphstream.graph.Node
+import org.graphstream.graph.implementations.*
 import java.util.*
-import kotlin.collections.ArrayList
 
-class MoralGraph(net: BayesianNetwork, vars: Collection<RandomVariable>, private val hMetric: (List<MoralNode>) -> Int) {
+class MoralGraph(
+        net: BayesianNetwork,
+        val vars: Collection<RandomVariable>,
+        private val hMetric: (MoralNode, MoralGraph) -> Int
+    ): SingleGraph("MG", true, false) {
 
-    private val nodesMap: HashMap<RandomVariable, MoralNode>
-    private val heuristicQueue = PriorityQueue<MoralNode>(compareBy<MoralNode>{it.calculateHeuristic(hMetric)})
+    private val heuristicQueue
+            = PriorityQueue<MoralGraph.MoralNode>(
+                compareBy<MoralGraph.MoralNode>{
+                    it.calculateHeuristic(hMetric)
+                })
 
     init{
-        val nodes = HashMap<RandomVariable, MoralNode>()
         for(rv in vars){
-            nodes[rv] = MoralNode(rv)
+            addNode<MoralNode>(rv.name).randomVariable = rv
         }
-        for(rv in net.variablesInTopologicalOrder){
+        for(rv in vars){
+            for(p in net.getNode(rv).parents){
+                if(getNode(rv).hasNotEdgeBetween(getNode(p.randomVariable)))
+                    addEdge<AbstractEdge>("${rv.name}--${p.randomVariable.name}", getNode(rv), getNode(p.randomVariable), false)
+            }
             combineParents(net.getNode(rv).parents).forEach { p1, p2 ->
-                nodes[p1]!!.neighbours.add(nodes[p2]!!)
+                if(getNode(p1).hasNotEdgeBetween(getNode(p2)))
+                    addEdge<AbstractEdge>("${p1.name}--${p2.name}", getNode(p1), getNode(p2), false)
             }
         }
-        nodesMap = nodes
         updateHeuristics()
     }
 
+    private fun updateHeuristics() {
+        for(n in getNodeSet<MoralNode>()) heuristicQueue.add(n)
+    }
+
+    fun getNode(rv: RandomVariable) = getNode<MoralNode>(rv.name)
+
     fun getRandomVariables(): ArrayList<RandomVariable> {
         val toReturn = ArrayList<RandomVariable>()
+        display()
         while(heuristicQueue.isNotEmpty()){
+            Thread.sleep(5000)
             val head = heuristicQueue.poll()
-            toReturn.add(head.rv)
-            combineParents(head.neighbours).forEach { t, u ->
-                val node1 = nodesMap[t]!!
-                val node2 = nodesMap[u]!!
-                if(!node1.neighbours.contains(node2)
-                        && !node2.neighbours.contains(node1)){
-                    node1.neighbours.add(node2)
-                    node2.neighbours.add(node1)
-                }
+            val iterator = head.getNeighborNodeIterator<MoralNode>()
+            toReturn.add(head.randomVariable!!)
+            combineParents(iterator).forEach { t, u ->
+                if(getNode(t).hasNotEdgeBetween(getNode(u)))
+                    addEdge<AbstractEdge>("${t.name}--${u.name}", getNode(t), getNode(u), false)
             }
-            for(n in head.neighbours){
+            removeNode<MoralNode>(head)
+            for(n in iterator){
                 heuristicQueue.remove(n)
                 heuristicQueue.add(n)
             }
@@ -46,19 +62,28 @@ class MoralGraph(net: BayesianNetwork, vars: Collection<RandomVariable>, private
         return toReturn
     }
 
-    private fun updateHeuristics(){
-        heuristicQueue.clear()
-        for(node in nodesMap.values) heuristicQueue.add(node)
+    override fun <T : Node?> addNode_(sourceId: String?, timeId: Long, nodeId: String): T {
+        var node: AbstractNode? = getNode(nodeId)
+        if (node != null) {
+            return node as T
+        }
+        node = MoralNode(this, nodeId)
+        addNodeCallback(node)
+        // If the event comes from the graph itself, create timeId
+        //listeners.sendNodeAdded(sourceId, if(timeId == -1L) newEvent() else timeId, nodeId)
+        return node as T
     }
 
-
-    class MoralNode(val rv: RandomVariable){
-        val neighbours = ArrayList<MoralNode>()
+    class MoralNode(graph: AbstractGraph, name: String): SingleNode(graph, name){
         private var heuristic: Int? = null
+        var randomVariable: RandomVariable? = null
 
-        fun calculateHeuristic(hMetric: (List<MoralNode>) -> Int): Int {
-            heuristic = hMetric(neighbours)
+        fun calculateHeuristic(hMetric: (MoralNode, MoralGraph) -> Int): Int {
+            heuristic = hMetric(this, graph as MoralGraph)
             return heuristic!!
         }
+
+        fun hasNotEdgeBetween(node: MoralNode) = !hasEdgeBetween(node)
+        fun hasEdgeBetween(node: MoralNode) = hasEdgeBetween(node.randomVariable!!.name)
     }
 }

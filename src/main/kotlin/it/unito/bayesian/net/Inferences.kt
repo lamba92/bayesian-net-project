@@ -3,11 +3,11 @@ package it.unito.bayesian.net
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import it.unito.bayesian.net.utils.MoralGraph
-import java.util.*
+import org.graphstream.graph.implementations.AbstractEdge
 
 object Inferences {
 
-    fun getCustomEliminationAsk(hMetrics: (List<MoralGraph.MoralNode>) -> Int)
+    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
         = object : aima.core.probability.bayes.exact.EliminationAsk() {
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>): MutableList<RandomVariable> {
             return getOrderingFunction(bn, vars, hMetrics)
@@ -16,20 +16,23 @@ object Inferences {
 
     fun getOrderingFunction(
             bn: BayesianNetwork, vars: Collection<RandomVariable>,
-            hMetrics: (List<MoralGraph.MoralNode>) -> Int)
+            hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
             = MoralGraph(bn, vars, hMetrics).getRandomVariables()
 
 
-    fun minWeightHeuristicFunction(): (List<MoralGraph.MoralNode>) -> Int {
-        return {
-            var t = 1
-            for(n in it) t *= n.rv.domain.size()
-            t
+    fun minWeightHeuristicFunction(): (MoralGraph.MoralNode, MoralGraph) -> Int {
+        return {node, graph ->
+            var i = 1
+            for(n in node.getNeighborNodeIterator<MoralGraph.MoralNode>())
+                i *= n.randomVariable!!.domain.size()
+            i
         }
     }
 
-    fun minNeighboursHeuristicFunction(): (List<MoralGraph.MoralNode>) -> Int {
-        return { it.size }
+    fun minNeighboursHeuristicFunction(): (MoralGraph.MoralNode, MoralGraph) -> Int {
+        return { node, graph ->
+            node.getEdgeSet<AbstractEdge>().size
+        }
     }
 
 }

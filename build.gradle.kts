@@ -33,11 +33,14 @@ apply {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
     compile("com.googlecode.aima-java", "aima-core", "3.0.0")
+    compile("org.graphstream", "gs-core", "1.1.1")
+    testCompile("org.graphstream", "gs-core", "1.1.1")
     testCompile("com.googlecode.aima-java", "aima-core", "3.0.0")
     testCompile("junit", "junit", "4.12")
 }

@@ -5,7 +5,6 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.Node
 import aima.core.probability.util.RandVar
 import java.util.*
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -82,12 +81,19 @@ fun log(str: String){
     println(str)
 }
 
-fun <T: Any> combineParents(parents: Collection<T>): HashMap<RandomVariable, RandomVariable> {
+fun combineParents(parents: Iterator<MoralGraph.MoralNode>): HashMap<RandomVariable, RandomVariable> {
+    return combineParents(ArrayList<MoralGraph.MoralNode>().apply {
+        for(p in parents) add(p)
+    })
+}
+
+
+fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVariable> {
     val i = ArrayList<RandomVariable>()
-    for(p in parents){
-        when (p::class.java) {
-            Node::class.java -> { i.add((p as Node).randomVariable ) }
-            MoralGraph.MoralNode::class.java -> { i.add((p as MoralGraph.MoralNode).rv)}
+    for(o in parents){
+        when (o) {
+            is Node -> i.add(o.randomVariable)
+            is MoralGraph.MoralNode -> i.add(o.randomVariable!!)
             else -> throw Exception("Wrong class")
         }
     }
