@@ -10,7 +10,7 @@ object Inferences {
     fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
         = object : aima.core.probability.bayes.exact.EliminationAsk() {
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>): MutableList<RandomVariable> {
-            return getOrderingFunction(bn, vars, hMetrics)
+            return getOrderingFunction(bn, vars, hMetrics).reversed().toMutableList()
         }
     }
 
