@@ -38,34 +38,34 @@ fun printWekaBayesNet(wekaBayesNet: EditableBayesNet) {
 }
 
 
-fun buildAimaBayesNet(wekaBayesNet: EditableBayesNet) {
-    lateinit var nodeName: String
+fun buildAimaBayesNet(wekaBayesNet: EditableBayesNet): BayesNet {
     val nodes = HashMap<String, Node>()
 
     for (i in 0 until wekaBayesNet.nrOfNodes) {
-        creation(wekaBayesNet, i, nodes)
+        if (wekaBayesNet.getChildren(i).size == 0) {
+            val nodeName = wekaBayesNet.getNodeName(i)
+            val distribution = flatten2dArray(wekaBayesNet.getDistribution(nodeName))!!
+            val v = creation(wekaBayesNet, i, nodes, nodeName, distribution)
+        }
     }
-
-    var aimaBayesNet = BayesNet(*nodes.values.toTypedArray())
+    return BayesNet(*nodes.values.toTypedArray())
 }
 
 
-fun creation(wekaBayesNet: EditableBayesNet, i: Int, nodes: HashMap<String, Node>) {
-    val nodeName = wekaBayesNet.getNodeName(i)
-    val distribution = flatten2dArray(wekaBayesNet.getDistribution(nodeName))!!
+fun creation(wekaBayesNet: EditableBayesNet, i: Int, nodes: HashMap<String, Node>, nodeName: String, distribution: DoubleArray): Node? {
     val rv = RandVar(nodeName, BooleanDomain())
 
-    val parentsCardinality = wekaBayesNet.getParentCardinality(i) - 1
+    val parentsCardinality = wekaBayesNet.getParentCardinality(i)
     if (parentsCardinality != 0) {
-        nodes[nodeName] = bottomUpCreation(wekaBayesNet, nodeName, nodes)
+        nodes[nodeName] = bottomUpCreation(wekaBayesNet, nodeName, nodes, distribution)
     } else {
         nodes[nodeName] = FullCPTNode(rv, distribution)
     }
 
+    return nodes[nodeName]
 }
 
-fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: HashMap<String, Node>): FullCPTNode {
-    val distribution = flatten2dArray(wekaBayesNet.getDistribution(nodeName))!!
+fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: HashMap<String, Node>, distribution: DoubleArray): FullCPTNode {
     val rv = RandVar(nodeName, BooleanDomain())
     val i = wekaBayesNet.getNode(nodeName)
 
@@ -75,10 +75,13 @@ fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: Ha
 
     val parentsNodes = ArrayList<Node>()
     parentsNames.forEach {
-        if (nodes[it] != null) {
+        if (nodes.containsKey(it)) {
             parentsNodes.add(nodes[it]!!)
         } else {
-            parentsNodes.add(bottomUpCreation(wekaBayesNet, it, nodes))
+            val parentIndex = wekaBayesNet.getNode(it)
+            val parentDistribution = flatten2dArray(wekaBayesNet.getDistribution(it))!!
+            val node = creation(wekaBayesNet, parentIndex, nodes, it, parentDistribution)
+            parentsNodes.add(node!!)
         }
     }
     return FullCPTNode(rv, distribution, *parentsNodes.toTypedArray())
