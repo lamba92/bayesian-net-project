@@ -6,6 +6,13 @@ import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.*
 import java.util.*
 
+/**
+ * Representation of a Moral Graph used to calculate heuristics
+ * for Variable Elimination algorithm.
+ * @param net
+ * @param vars
+ * @param hMetric
+ */
 class MoralGraph(
         net: BayesianNetwork,
         val vars: Collection<RandomVariable>,
@@ -35,6 +42,9 @@ class MoralGraph(
         updateHeuristics()
     }
 
+    /**
+     *
+     */
     private fun updateHeuristics() {
         for(n in getNodeSet<MoralNode>()) heuristicQueue.add(n)
     }
@@ -74,16 +84,30 @@ class MoralGraph(
         return node as T
     }
 
+    /**
+     * Representation of a Moral Node used to represent a [MoralGraph].
+     * @param graph
+     * @param name
+     */
     class MoralNode(graph: AbstractGraph, name: String): SingleNode(graph, name){
         private var heuristic: Int? = null
         var randomVariable: RandomVariable? = null
 
+        /**
+         *
+         */
         fun calculateHeuristic(hMetric: (MoralNode, MoralGraph) -> Int): Int {
             heuristic = hMetric(this, graph as MoralGraph)
             return heuristic!!
         }
 
+        /**
+         *
+         */
         fun hasNotEdgeBetween(node: MoralNode) = !hasEdgeBetween(node)
+        /**
+         *
+         */
         fun hasEdgeBetween(node: MoralNode) = hasEdgeBetween(node.randomVariable!!.name)
     }
 }

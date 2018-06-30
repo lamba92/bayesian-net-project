@@ -9,7 +9,10 @@ import weka.classifiers.bayes.net.BIFReader
 import weka.classifiers.bayes.net.EditableBayesNet
 import java.util.*
 
-
+/**
+ * Used for parsing a BIFXML file to build a [BayesNet].
+ * @return A [BayesNet]
+ */
 fun parseBifXML(): BayesNet {
 
     val bifReader = BIFReader()
@@ -22,6 +25,10 @@ fun parseBifXML(): BayesNet {
 
 }
 
+/**
+ * Print the [EditableBayesNet] to operate with.
+ * @param wekaBayesNet The [EditableBayesNet]
+ */
 fun printWekaBayesNet(wekaBayesNet: EditableBayesNet) {
 
     for (i in 0 until wekaBayesNet.nrOfNodes) {
@@ -30,14 +37,18 @@ fun printWekaBayesNet(wekaBayesNet: EditableBayesNet) {
 
         println("\nVariabile:\n ~ $nodeName")
         if (parentsCardinality != 0) {
-            println("Genitori: ")
+            println("Parent nodes: ")
             wekaBayesNet.getParentSet(i).parents.forEach { if (it != 0) println(" - ${wekaBayesNet.getNodeName(it)}") }
         }
         wekaBayesNet.getDistribution(nodeName).forEach { println("   ${Arrays.toString(it)}") }
     }
 }
 
-
+/**
+ * Allow to create a [BayesNet] from an [EditableBayesNet]
+ * @param wekaBayesNet The [EditableBayesNet]
+ * @return A [BayesNet]
+ */
 fun buildAimaBayesNet(wekaBayesNet: EditableBayesNet): BayesNet {
     val nodes = HashMap<String, Node>()
 
@@ -51,7 +62,15 @@ fun buildAimaBayesNet(wekaBayesNet: EditableBayesNet): BayesNet {
     return BayesNet(*nodes.values.toTypedArray())
 }
 
-
+/**
+ * Allow to create ???
+ * @param wekaBayesNet The [EditableBayesNet]
+ * @param i
+ * @param nodes
+ * @param nodeName
+ * @param distribution
+ * @return [Node]
+ */
 fun creation(wekaBayesNet: EditableBayesNet, i: Int, nodes: HashMap<String, Node>, nodeName: String, distribution: DoubleArray): Node? {
     val rv = RandVar(nodeName, BooleanDomain())
 
@@ -61,10 +80,17 @@ fun creation(wekaBayesNet: EditableBayesNet, i: Int, nodes: HashMap<String, Node
     } else {
         nodes[nodeName] = FullCPTNode(rv, distribution)
     }
-
     return nodes[nodeName]
 }
 
+/**
+ * ???
+ * @param wekaBayesNet
+ * @param nodeName
+ * @param nodes
+ * @param distribution
+ * @return [FullCPTNode]
+ */
 fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: HashMap<String, Node>, distribution: DoubleArray): FullCPTNode {
     val rv = RandVar(nodeName, BooleanDomain())
     val i = wekaBayesNet.getNode(nodeName)
@@ -87,7 +113,11 @@ fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: Ha
     return FullCPTNode(rv, distribution, *parentsNodes.toTypedArray())
 }
 
-
+/**
+ * ???
+ * @param toBeFlattened
+ * @return [DoubleArray]
+ */
 fun flatten2dArray(toBeFlattened: Array<DoubleArray>): DoubleArray? {
     return Arrays.stream(toBeFlattened)
             .flatMapToDouble(Arrays::stream).toArray()

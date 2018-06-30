@@ -37,7 +37,6 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
      * @param E_1 A [Set] of [RandomVariable]s contained inside their nodes.
      * @param rootNodes The root [Node]s to be used to initialize the network.
      * @param inference The [BayesInference] technique to be used to propagate in time.
-     *
      */
     constructor(priorNetwork: BayesianNetwork,
                 X_0_to_X_1: Map<RandomVariable, RandomVariable>,

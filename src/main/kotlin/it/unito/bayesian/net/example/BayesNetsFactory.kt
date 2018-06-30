@@ -7,6 +7,9 @@ import aima.core.probability.bayes.impl.FullCPTNode
 import aima.core.probability.domain.BooleanDomain
 import aima.core.probability.util.RandVar
 
+/**
+ * Example of [DynamicBayesNet]
+ */
 @Suppress("LocalVariableName")
 object BayesNetsFactory{
 
