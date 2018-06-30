@@ -85,9 +85,9 @@ fun log(str: String){
 fun <T: Any> combineParents(parents: Collection<T>): HashMap<RandomVariable, RandomVariable> {
     val i = ArrayList<RandomVariable>()
     for(p in parents){
-        when (p::class) {
-            Node::class -> { i.add((p as Node).randomVariable ) }
-            MoralGraph.MoralNode::class -> { i.add((p as MoralGraph.MoralNode).rv)}
+        when (p::class.java) {
+            Node::class.java -> { i.add((p as Node).randomVariable ) }
+            MoralGraph.MoralNode::class.java -> { i.add((p as MoralGraph.MoralNode).rv)}
             else -> throw Exception("Wrong class")
         }
     }

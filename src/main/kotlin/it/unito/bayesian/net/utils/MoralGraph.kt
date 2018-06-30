@@ -5,14 +5,14 @@ import aima.core.probability.bayes.BayesianNetwork
 import java.util.*
 import kotlin.collections.ArrayList
 
-class MoralGraph(net: BayesianNetwork, private val hMetric: (List<MoralNode>) -> Int) {
+class MoralGraph(net: BayesianNetwork, vars: Collection<RandomVariable>, private val hMetric: (List<MoralNode>) -> Int) {
 
     private val nodesMap: HashMap<RandomVariable, MoralNode>
     private val heuristicQueue = PriorityQueue<MoralNode>(compareBy<MoralNode>{it.calculateHeuristic(hMetric)})
 
     init{
         val nodes = HashMap<RandomVariable, MoralNode>()
-        for(rv in net.variablesInTopologicalOrder){
+        for(rv in vars){
             nodes[rv] = MoralNode(rv)
         }
         for(rv in net.variablesInTopologicalOrder){
