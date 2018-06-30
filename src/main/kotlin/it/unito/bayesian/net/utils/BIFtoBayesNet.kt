@@ -10,7 +10,7 @@ import weka.classifiers.bayes.net.EditableBayesNet
 import java.util.*
 
 
-fun parseBifXML() {
+fun parseBifXML(): BayesNet {
 
     val bifReader = BIFReader()
     val path = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\dog.bif"
@@ -18,7 +18,7 @@ fun parseBifXML() {
 
     val wekaBayesNet = EditableBayesNet(network)
     //printWekaBayesNet(wekaBayesNet)
-    buildAimaBayesNet(wekaBayesNet)
+    return buildAimaBayesNet(wekaBayesNet)
 
 }
 
