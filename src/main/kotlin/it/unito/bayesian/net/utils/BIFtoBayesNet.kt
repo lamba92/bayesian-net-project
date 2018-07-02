@@ -14,7 +14,7 @@ import java.util.*
  * Used for parsing a BIFXML file to build a [BayesNet].
  * @return A [BayesNet]
  */
-fun parseBifXML(path: String): BayesNet {
+fun parseBooleanBayesInterchangeFormat(path: String): BayesNet {
 
     val bifReader = BIFReader()
     val network = bifReader.processFile(path)
