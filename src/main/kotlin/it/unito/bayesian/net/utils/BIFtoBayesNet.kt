@@ -1,5 +1,6 @@
 package it.unito.bayesian.net.utils
 
+import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.Node
 import aima.core.probability.bayes.impl.BayesNet
 import aima.core.probability.bayes.impl.FullCPTNode
@@ -13,20 +14,18 @@ import java.util.*
  * Used for parsing a BIFXML file to build a [BayesNet].
  * @return A [BayesNet]
  */
-fun parseBifXML(): BayesNet {
+fun parseBifXML(path: String): BayesNet {
 
     val bifReader = BIFReader()
-    val path = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\dog.bif"
     val network = bifReader.processFile(path)
-
     val wekaBayesNet = EditableBayesNet(network)
-    //printWekaBayesNet(wekaBayesNet)
+
     return buildAimaBayesNet(wekaBayesNet)
 
 }
 
 /**
- * Print the [EditableBayesNet] to operate with.
+ * Print an [EditableBayesNet].
  * @param wekaBayesNet The [EditableBayesNet]
  */
 fun printWekaBayesNet(wekaBayesNet: EditableBayesNet) {
@@ -45,57 +44,53 @@ fun printWekaBayesNet(wekaBayesNet: EditableBayesNet) {
 }
 
 /**
- * Allow to create a [BayesNet] from an [EditableBayesNet]
- * @param wekaBayesNet The [EditableBayesNet]
- * @return A [BayesNet]
+ * Convert an [EditableBayesNet] into a [BayesNet]
+ * @param wekaBayesNet The [EditableBayesNet] to convert into a [BayesNet]
+ * @return The [BayesNet] copy of the input [EditableBayesNet]
  */
 fun buildAimaBayesNet(wekaBayesNet: EditableBayesNet): BayesNet {
     val nodes = HashMap<String, Node>()
 
     for (i in 0 until wekaBayesNet.nrOfNodes) {
         if (wekaBayesNet.getChildren(i).size == 0) {
-            val nodeName = wekaBayesNet.getNodeName(i)
-            val distribution = flatten2dArray(wekaBayesNet.getDistribution(nodeName))!!
-            val v = creation(wekaBayesNet, i, nodes, nodeName, distribution)
+            val rv = RandVar(wekaBayesNet.getNodeName(i), BooleanDomain())
+            val distribution = flatten2dArray(wekaBayesNet.getDistribution(rv.name))!!
+            creation(wekaBayesNet, rv, distribution, nodes)
         }
     }
     return BayesNet(*nodes.values.toTypedArray())
 }
 
 /**
- * Allow to create ???
- * @param wekaBayesNet The [EditableBayesNet]
- * @param i
- * @param nodes
- * @param nodeName
- * @param distribution
- * @return [Node]
+ * Create a [FullCPTNode] copy and all of his [FullCPTNode] ancestors copies of an [EditableBayesNet] Node,
+ * starting from theirs [RandomVariable]s and [distribution]s and saving them into [nodes]
+ * @param wekaBayesNet [EditableBayesNet] to be copied
+ * @param rv [RandomVariable] of the [FullCPTNode] to be copied
+ * @param distribution Distribution of the [FullCPTNode] to be copied
+ * @param nodes [HashMap] which contains all the already created [FullCPTNode]s
+ * @return [FullCPTNode] already linked to his ancestors
  */
-fun creation(wekaBayesNet: EditableBayesNet, i: Int, nodes: HashMap<String, Node>, nodeName: String, distribution: DoubleArray): Node? {
-    val rv = RandVar(nodeName, BooleanDomain())
+private fun creation(wekaBayesNet: EditableBayesNet, rv: RandomVariable, distribution: DoubleArray, nodes: HashMap<String, Node>): Node? {
 
-    val parentsCardinality = wekaBayesNet.getParentCardinality(i)
+    val parentsCardinality = wekaBayesNet.getParentCardinality(wekaBayesNet.getNode(rv.name))
     if (parentsCardinality != 0) {
-        nodes[nodeName] = bottomUpCreation(wekaBayesNet, nodeName, nodes, distribution)
+        nodes[rv.name] = bottomUpCreation(wekaBayesNet, rv, distribution, nodes)
     } else {
-        nodes[nodeName] = FullCPTNode(rv, distribution)
+        nodes[rv.name] = FullCPTNode(rv, distribution)
     }
-    return nodes[nodeName]
+    return nodes[rv.name]
 }
 
 /**
- * ???
- * @param wekaBayesNet
- * @param nodeName
- * @param nodes
- * @param distribution
- * @return [FullCPTNode]
+ * Helper of the [creation] method, which creates the ancestors before the actual [FullCPTNode]
+ * @param wekaBayesNet [EditableBayesNet] to be copied
+ * @param rv [RandomVariable] of the [FullCPTNode] to be copied
+ * @param distribution Distribution of the [FullCPTNode] to be copied
+ * @param nodes [HashMap] which contains all the already created [FullCPTNode]s
+ * @return [FullCPTNode] already linked to his ancestors
  */
-fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: HashMap<String, Node>, distribution: DoubleArray): FullCPTNode {
-    val rv = RandVar(nodeName, BooleanDomain())
-    val i = wekaBayesNet.getNode(nodeName)
-
-    val parentsNames = wekaBayesNet.getParentSet(i).parents.toList()
+private fun bottomUpCreation(wekaBayesNet: EditableBayesNet, rv: RandomVariable, distribution: DoubleArray, nodes: HashMap<String, Node>): FullCPTNode {
+    val parentsNames = wekaBayesNet.getParentSet(wekaBayesNet.getNode(rv.name)).parents.toList()
             .filter { parent -> parent != 0 }
             .map(wekaBayesNet::getNodeName)
 
@@ -104,9 +99,9 @@ fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: Ha
         if (nodes.containsKey(it)) {
             parentsNodes.add(nodes[it]!!)
         } else {
-            val parentIndex = wekaBayesNet.getNode(it)
             val parentDistribution = flatten2dArray(wekaBayesNet.getDistribution(it))!!
-            val node = creation(wekaBayesNet, parentIndex, nodes, it, parentDistribution)
+            val parentRv = RandVar(it, BooleanDomain())
+            val node = creation(wekaBayesNet, parentRv, parentDistribution, nodes)
             parentsNodes.add(node!!)
         }
     }
@@ -114,11 +109,11 @@ fun bottomUpCreation(wekaBayesNet: EditableBayesNet, nodeName: String, nodes: Ha
 }
 
 /**
- * ???
- * @param toBeFlattened
- * @return [DoubleArray]
+ * Convert an Array<DoubleArray> into a DoubleArray flattening it in a single row
+ * @param toBeFlattened table of double values
+ * @return [DoubleArray] transposition of the input table in a single row
  */
-fun flatten2dArray(toBeFlattened: Array<DoubleArray>): DoubleArray? {
+private fun flatten2dArray(toBeFlattened: Array<DoubleArray>): DoubleArray? {
     return Arrays.stream(toBeFlattened)
             .flatMapToDouble(Arrays::stream).toArray()
 }
