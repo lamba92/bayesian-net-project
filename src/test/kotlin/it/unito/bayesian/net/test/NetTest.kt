@@ -4,8 +4,8 @@ import it.unito.bayesian.net.CustomDynamicBayesianNet
 import it.unito.bayesian.net.utils.parseBifXML
 
 fun main(args: Array<String>){
-    val path = CustomDynamicBayesianNet::class.java.classLoader.getResource("bifXML/dog.bif").path //non funge
-    val path2 = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\dog.bif"
+    val path = CustomDynamicBayesianNet::class.java.classLoader.getResource("bifXML/dog-problem.xml").path //non funge
+    val path2 = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\aima-alarm.xml"
     val net = parseBifXML(path2)
 
     /*val ask = Inferences.getCustomEliminationAsk(Inferences.minWeightHeuristicFunction())

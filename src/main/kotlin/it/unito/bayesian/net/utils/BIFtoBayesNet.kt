@@ -90,9 +90,11 @@ private fun creation(wekaBayesNet: EditableBayesNet, rv: RandomVariable, distrib
  * @return [FullCPTNode] already linked to his ancestors
  */
 private fun bottomUpCreation(wekaBayesNet: EditableBayesNet, rv: RandomVariable, distribution: DoubleArray, nodes: HashMap<String, Node>): FullCPTNode {
-    val parentsNames = wekaBayesNet.getParentSet(wekaBayesNet.getNode(rv.name)).parents.toList()
-            .filter { parent -> parent != 0 }
+    var parentsNames = wekaBayesNet.parentSets[wekaBayesNet.getNode(rv.name)].parents.toList()
+            //.filter { lambda } //al posto della sublist successiva si può scrivere una funzione qui
             .map(wekaBayesNet::getNodeName)
+
+    parentsNames = parentsNames.subList(0, wekaBayesNet.getNrOfParents(wekaBayesNet.getNode(rv.name)))
 
     val parentsNodes = ArrayList<Node>()
     parentsNames.forEach {
