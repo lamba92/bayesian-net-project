@@ -1,10 +1,13 @@
 package it.unito.bayesian.net.test
 
+import it.unito.bayesian.net.CustomDynamicBayesianNet
 import it.unito.bayesian.net.utils.parseBifXML
 
 fun main(args: Array<String>){
-    val path = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\dog.bif"
-    val net = parseBifXML(path)
+    val path = CustomDynamicBayesianNet::class.java.classLoader.getResource("bifXML/dog.bif").path //non funge
+    val path2 = "C:\\Users\\Cesare Iurlaro\\IdeaProjects\\bayesian-net-project\\src\\main\\resources\\bifXML\\dog.bif"
+    val net = parseBifXML(path2)
+
     /*val ask = Inferences.getCustomEliminationAsk(Inferences.minWeightHeuristicFunction())
     val o = net.variablesInTopologicalOrder[0]
     val x = net.variablesInTopologicalOrder[net.variablesInTopologicalOrder.size - 1]
