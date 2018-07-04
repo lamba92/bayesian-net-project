@@ -2,6 +2,7 @@ package it.unito.bayesian.net.utils
 
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
 import aima.core.probability.util.RandVar
 import java.util.*
@@ -108,5 +109,28 @@ fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVari
         }
     }
     return map
+}
+
+/**
+ * Checks if [rv] is parent of one of the [nextRvs] in a given [net].
+ */
+fun isParentOf(rv: RandomVariable, nextRvs: List<RandomVariable>, net: BayesianNetwork): Boolean {
+    for(nextRv in nextRvs){
+        for(parentNode in net.getNode(nextRv).parents){
+            val parentRv = parentNode.randomVariable
+            if(rv == parentRv) return true
+        }
+    }
+    return false
+}
+
+fun isNotParentOf(rv: RandomVariable, nextRvs: List<RandomVariable>, net: BayesianNetwork) = !isParentOf(rv, nextRvs, net)
+
+fun generateRvsToBeSummedOut(rvs: Collection<RandomVariable>, nextRvs: List<RandomVariable>, net: BayesianNetwork): List<RandomVariable> {
+    val toReturn = ArrayList<RandomVariable>()
+    for(rv in rvs)
+        if(isNotParentOf(rv, nextRvs, net))
+            toReturn.add(rv)
+    return toReturn
 }
 

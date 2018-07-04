@@ -41,9 +41,6 @@ dependencies {
     compile("com.googlecode.aima-java", "aima-core", "3.0.0")
     compile("org.graphstream", "gs-core", "1.1.1")
     compile("nz.ac.waikato.cms.weka", "weka-dev", "3.9.2")
-    testCompile("org.graphstream", "gs-core", "1.1.1")
-    testCompile("com.googlecode.aima-java", "aima-core", "3.0.0")
-    testCompile("junit", "junit", "4.12")
 }
 
 val dokka by tasks.getting(DokkaTask::class) {

@@ -1,10 +1,16 @@
 package it.unito.bayesian.net
 
+import aima.core.probability.CategoricalDistribution
+import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
+import aima.core.probability.proposition.AssignmentProposition
+import aima.core.probability.util.ProbabilityTable
 import it.unito.bayesian.net.utils.MoralGraph
 import it.unito.bayesian.net.utils.MoralGraph.MoralNode
 import org.graphstream.graph.implementations.AbstractEdge
+import java.util.ArrayList
+import java.util.HashSet
 
 /**
  * Exact inference algorithm (Variable Elimination) for static [BayesianNetwork]s.
@@ -17,7 +23,7 @@ object Inferences {
      * @return
      */
     fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
-        = object : aima.core.probability.bayes.exact.EliminationAsk() {
+        = object : CustomEliminationAsk() {
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>): MutableList<RandomVariable> {
             return getOrderingFunction(bn, vars, hMetrics).reversed().toMutableList()
         }
@@ -39,7 +45,7 @@ object Inferences {
      * @return [MoralNode]'s weight (domain cardinality)
      */
     fun minWeightHeuristicFunction(): (MoralGraph.MoralNode, MoralGraph) -> Int {
-        return {node, graph ->
+        return {node, _ ->
             var i = 1
             for(n in node.getNeighborNodeIterator<MoralGraph.MoralNode>())
                 i *= n.randomVariable!!.domain.size()
@@ -52,7 +58,7 @@ object Inferences {
      * @return [MoralNode]'s size edge set
      */
     fun minNeighboursHeuristicFunction(): (MoralGraph.MoralNode, MoralGraph) -> Int {
-        return { node, graph ->
+        return { node, _ ->
             node.getEdgeSet<AbstractEdge>().size
         }
     }

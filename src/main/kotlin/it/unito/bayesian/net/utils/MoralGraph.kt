@@ -53,9 +53,9 @@ class MoralGraph(
 
     fun getRandomVariables(): ArrayList<RandomVariable> {
         val toReturn = ArrayList<RandomVariable>()
-        display()
+//        display()
         while(heuristicQueue.isNotEmpty()){
-            Thread.sleep(1000)
+//            Thread.sleep(10000)
             val head = heuristicQueue.poll()
             val iterator = head.getNeighborNodeIterator<MoralNode>()
             toReturn.add(head.randomVariable!!)
