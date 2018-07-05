@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     var kotlinVersion: String by extra
     var dokkaVersion: String by extra
-    kotlinVersion = "1.2.50"
+    kotlinVersion = "1.2.51"
     dokkaVersion = "0.9.17"
 
     repositories {
@@ -19,7 +19,7 @@ buildscript {
 
 plugins {
     java
-    kotlin("jvm") version "1.2.50"
+    kotlin("jvm") version "1.2.51"
 }
 
 group = "com.github.lamba92"

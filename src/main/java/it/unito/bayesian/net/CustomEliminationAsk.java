@@ -72,26 +72,24 @@ public class CustomEliminationAsk implements BayesInference {
 
         // factors <- []
         List<Factor> factors = new ArrayList<>();
-        List<RandomVariable> rvsHavingWaitingFactors = new ArrayList<>();
-        List<RandomVariable> rvsEliminated = new ArrayList<>();
+        List<RandomVariable> hiddenRvsHavingWaitingFactors = new ArrayList<>();
+        List<RandomVariable> orderedRvs = order(bn, VARS);
         // for each var in ORDER(bn.VARS) do
-        for (RandomVariable var : order(bn, VARS)) {
+        for (int i=0; i < orderedRvs.size(); i++) {
+            RandomVariable var = orderedRvs.get(i);
             // factors <- [MAKE-FACTOR(var, e) | factors]
-            Factor f = makeFactor(var, e, bn);
-            factors.add(0, f);
-            rvsHavingWaitingFactors.add(var);
+            factors.add(0, makeFactor(var, e, bn));
+            if(hidden.contains(var))
+                hiddenRvsHavingWaitingFactors.add(var);
             // if var is hidden variable then factors <- SUM-OUT(var, factors)
-            List<RandomVariable> nextRvs = new ArrayList<>(VARS);
-            nextRvs.removeAll(rvsHavingWaitingFactors);
-            nextRvs.removeAll(rvsEliminated);
-            List<RandomVariable> toBeCompacted = generateRvsToBeSummedOut(rvsHavingWaitingFactors, nextRvs, bn);
-//            Collections.reverse(toBeCompacted);
+            List<RandomVariable> nextRvs = orderedRvs.subList(i, orderedRvs.size()-1);
+            List<RandomVariable> toBeCompacted = generateRvsToBeSummedOut(hiddenRvsHavingWaitingFactors, nextRvs, bn);
+
             if (!toBeCompacted.isEmpty()) {
                 for(RandomVariable rv : toBeCompacted){
                     factors = sumOut(rv, factors, bn);
                 }
-                rvsHavingWaitingFactors.removeAll(toBeCompacted);
-                rvsEliminated.addAll(toBeCompacted);
+                hiddenRvsHavingWaitingFactors.removeAll(toBeCompacted);
             }
         }
         // return NORMALIZE(POINTWISE-PRODUCT(factors))
