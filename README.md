@@ -57,7 +57,7 @@ Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project
 
 For a usage example have a look [at some tests here](https://github.com/lamba92/bayesian-net-project/blob/master/src/test/kotlin/it/unito/bayesian/net/test/Test.kt).
 
-## Author
+## Authors
 
 * **Cesare Iurlaro** - [CesareIurlaro](https://github.com/CesareIurlaro)
 * **Giuseppe Gabbia**  - [beppe95](https://github.com/beppe95)
