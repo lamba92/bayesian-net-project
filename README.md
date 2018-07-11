@@ -27,7 +27,6 @@ If using Gradle Kotlin DSL:
 ```
 repositories {
     maven(url = "https://jitpack.io")
-    maven(url = "http://jade.tilab.com/maven/")
 }
 ...
 dependencies {

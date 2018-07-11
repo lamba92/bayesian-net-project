@@ -90,7 +90,7 @@ class MoralGraph(
      * @param name
      */
     class MoralNode(graph: AbstractGraph, name: String): SingleNode(graph, name){
-        private var heuristic: Int? = null
+        var heuristic: Int? = null
         var randomVariable: RandomVariable? = null
 
         /**

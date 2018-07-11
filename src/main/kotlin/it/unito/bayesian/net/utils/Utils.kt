@@ -108,6 +108,9 @@ fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVari
             }
         }
     }
+    map.forEach { k, v ->
+        map.remove(v, k)
+    }
     return map
 }
 
