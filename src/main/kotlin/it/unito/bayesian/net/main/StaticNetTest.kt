@@ -1,17 +1,10 @@
 package it.unito.bayesian.net.main
 
-import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.example.BayesNetExampleFactory.*
-import aima.core.probability.example.ExampleRV
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.CustomDynamicBayesianNet
-import it.unito.bayesian.net.Inferences
 import it.unito.bayesian.net.Inferences.getCustomEliminationAsk
 import it.unito.bayesian.net.Inferences.minWeightHeuristicFunction
-import it.unito.bayesian.net.example.BayesNetsFactory
-import it.unito.bayesian.net.example.BayesNetsFactory.getDecentDynamicNetworkExample
-import it.unito.bayesian.net.utils.parseBooleanBayesInterchangeFormat
 
 fun main(args: Array<String>){
     val nets = ArrayList<BayesianNetwork>().apply {

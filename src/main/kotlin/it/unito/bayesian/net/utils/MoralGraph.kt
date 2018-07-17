@@ -9,9 +9,9 @@ import java.util.*
 /**
  * Representation of a Moral Graph used to calculate heuristics
  * for Variable Elimination algorithm.
- * @param net
- * @param vars
- * @param hMetric
+ * @param net The [BayesianNetwork] from wch generate the [MoralGraph].
+ * @param vars The [Collection] of [RandomVariable]s contained inside [net].
+ * @param hMetric The lambda function used to evaluate the heuristic of a [MoralNode].
  */
 class MoralGraph(
         net: BayesianNetwork,
@@ -42,15 +42,16 @@ class MoralGraph(
         updateHeuristics()
     }
 
-    /**
-     *
-     */
     private fun updateHeuristics() {
         for(n in getNodeSet<MoralNode>()) heuristicQueue.add(n)
     }
 
     fun getNode(rv: RandomVariable) = getNode<MoralNode>(rv.name)
 
+    /**
+     * Return an [ArrayList]<[RandomVariable]> in which they are ordered by the Variable Elimination algorithm.
+     * @return The [RandomVariable]s ordered.
+     */
     fun getRandomVariables(): ArrayList<RandomVariable> {
         val toReturn = ArrayList<RandomVariable>()
 //        display()
@@ -85,16 +86,17 @@ class MoralGraph(
     }
 
     /**
-     * Representation of a Moral Node used to represent a [MoralGraph].
-     * @param graph
-     * @param name
+     * Representation of a node inside the [MoralGraph].
+     * @param graph The [MoralGraph] in which this node wil be contained.
+     * @param name The unique name of this node.
      */
     class MoralNode(graph: AbstractGraph, name: String): SingleNode(graph, name){
         var heuristic: Int? = null
         var randomVariable: RandomVariable? = null
 
         /**
-         *
+         * Calculate the heuristic value of this node and stores it inside [heuristic].
+         * @return The [heuristic] value.
          */
         fun calculateHeuristic(hMetric: (MoralNode, MoralGraph) -> Int): Int {
             heuristic = hMetric(this, graph as MoralGraph)
@@ -102,13 +104,11 @@ class MoralGraph(
         }
 
         /**
-         *
+         *  Negation of the function [hasEdgeBetween].
+         *  @return Negation of the function [hasEdgeBetween].
          */
         fun hasNotEdgeBetween(node: MoralNode) = !hasEdgeBetween(node)
 
-        /**
-         *
-         */
         fun hasEdgeBetween(node: MoralNode) = hasEdgeBetween(node.randomVariable!!.name)
     }
 }

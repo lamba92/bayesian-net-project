@@ -21,7 +21,7 @@ object BayesNetsFactory{
 
     val e_1 = RandVar("E_1",BooleanDomain())
 
-    fun getDecentDynamicNetworkExample(): DynamicBayesNet {
+    fun getComplexDynamicNetworkExample(): DynamicBayesNet {
         val priorNetwork = BayesNet(
                 FullCPTNode(r_0, doubleArrayOf(0.5, 0.5)),
                 FullCPTNode(s_0, doubleArrayOf(0.5, 0.5))
