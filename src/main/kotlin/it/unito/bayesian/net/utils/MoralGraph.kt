@@ -105,6 +105,7 @@ class MoralGraph(
          *
          */
         fun hasNotEdgeBetween(node: MoralNode) = !hasEdgeBetween(node)
+
         /**
          *
          */
