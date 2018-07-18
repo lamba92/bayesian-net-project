@@ -41,11 +41,13 @@ If you are using Maven, switch to Gradle, it's 2018.
 Create a `CustomDynamicBayesianNet` using a newly generated dynamic network or use an example from the factories of this library and aima's:
 ```
 import it.unito.bayesian.net.CustomDynamicBayesianNet
-import it.unito.bayesian.net.Inferences.eliminationAskWithMinWeightHeuristic
+import it.unito.bayesian.net.Inferences.*
 
 ...
 
-val customNet = CustomDynamicBayesianNet(getUmbrellaWorldNetwork(), eliminationAskWithMinWeightHeuristic)
+val inference = //EliminationAsk()
+        getCustomEliminationAsk(minWeightHeuristicFunction())
+val customNet = getComplexDynamicNetworkExample()
 
 customNet.forward() // Moves the network one step forward
 ```
