@@ -137,3 +137,25 @@ fun generateRvsToBeSummedOut(rvs: Collection<RandomVariable>, nextRvs: List<Rand
     return toReturn
 }
 
+fun Node.isAncestorOf(node: Node): Boolean {
+    return if(node.parents.contains(this)) true
+    else {
+        var k = false
+        for (parent in node.parents){
+            k = parent.isAncestorOf(this)
+            if(k) break
+        }
+        return k
+    }
+}
+
+fun RandomVariable.isAncestorOf(rv: RandomVariable, bn: BayesianNetwork) =
+        bn.getNode(this).isAncestorOf(bn.getNode(rv))
+
+fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork): Boolean {
+    var k = false
+    rvs.forEach { k = this.isAncestorOf(it, bn) }
+    return k
+}
+
+fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) = !this.isAncestorOf(rvs, bn)

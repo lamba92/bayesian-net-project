@@ -9,7 +9,7 @@ import java.util.*
 /**
  * Representation of a Moral Graph used to calculate heuristics
  * for Variable Elimination algorithm.
- * @param net The [BayesianNetwork] from wch generate the [MoralGraph].
+ * @param net The [BayesianNetwork] from which generate the [MoralGraph].
  * @param vars The [Collection] of [RandomVariable]s contained inside [net].
  * @param hMetric The lambda function used to evaluate the heuristic of a [MoralNode].
  */

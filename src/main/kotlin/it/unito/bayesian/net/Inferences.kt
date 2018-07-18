@@ -9,6 +9,8 @@ import aima.core.probability.util.ProbabilityTable
 import it.unito.bayesian.net.utils.MoralGraph
 import it.unito.bayesian.net.utils.MoralGraph.MoralNode
 import it.unito.bayesian.net.utils.combineParents
+import it.unito.bayesian.net.utils.isAncestorOf
+import it.unito.bayesian.net.utils.isNotAncestorOf
 import org.graphstream.graph.implementations.AbstractEdge
 import java.util.ArrayList
 import java.util.HashSet
@@ -25,8 +27,25 @@ object Inferences {
      */
     fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
         = object : CustomEliminationAsk() {
-        override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>): MutableList<RandomVariable> {
-            return MoralGraph(bn, vars, hMetrics).getRandomVariables()
+
+        override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
+                MoralGraph(bn, vars, hMetrics).getRandomVariables()
+
+        override fun calculateVariables(
+                X: Array<out RandomVariable>,
+                e: Array<out AssignmentProposition>,
+                bn: BayesianNetwork,
+                hidden: MutableSet<RandomVariable>,
+                bnVARS: MutableCollection<RandomVariable>) {
+            hidden.addAll(bn.variablesInTopologicalOrder)
+            bnVARS.addAll(bn.variablesInTopologicalOrder)
+            val mainRvs = ArrayList<RandomVariable>().apply {
+                addAll(X)
+                e.forEach { addAll(it.scope) }
+            }
+            hidden.removeAll(mainRvs)
+            hidden.removeIf { it.isNotAncestorOf(mainRvs, bn) }
+            bnVARS.removeIf { it.isNotAncestorOf(mainRvs, bn) }
         }
     }
 
