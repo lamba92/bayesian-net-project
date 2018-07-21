@@ -19,17 +19,13 @@ buildscript {
 
 plugins {
     java
+    id("maven-publish")
     kotlin("jvm") version "1.2.51"
+    id("org.jetbrains.dokka") version "0.9.17"
 }
 
 group = "com.github.lamba92"
 version = "0.1"
-
-apply {
-    plugin("kotlin")
-    plugin("org.jetbrains.dokka")
-    plugin("maven")
-}
 
 repositories {
     mavenCentral()

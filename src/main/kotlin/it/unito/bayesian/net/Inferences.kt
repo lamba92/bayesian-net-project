@@ -45,7 +45,10 @@ object Inferences {
             }
             hidden.removeAll(mainRvs)
             hidden.removeIf { it.isNotAncestorOf(mainRvs, bn) }
-            bnVARS.removeIf { it.isNotAncestorOf(mainRvs, bn) }
+            bnVARS.removeIf {
+                if(mainRvs.contains(it)) false
+                else it.isNotAncestorOf(mainRvs, bn)
+            }
         }
     }
 
