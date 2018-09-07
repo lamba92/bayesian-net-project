@@ -1,7 +1,6 @@
 package it.unito.bayesian.net
 
-import aima.core.probability.CategoricalDistribution
-import aima.core.probability.Factor
+import aima.core.probability.bayes.exact.EliminationAsk
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.proposition.AssignmentProposition
@@ -23,13 +22,13 @@ object Inferences {
     /**
      * Used to get a Variable Elimination algorithm with a custom ordering using an heuristic based on a [MoralGraph].
      * @param hMetrics The lambda used to assign an heuristic to a node of the [MoralGraph].
-     * @return
+     * @return A custom [EliminationAsk] object.
      */
-    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int)
+    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int, showMoralGraph: Boolean = false, delay: Long = 3000)
         = object : CustomEliminationAsk() {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
-                MoralGraph(bn, vars, hMetrics).getRandomVariables()
+                MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
 
         override fun calculateVariables(
                 X: Array<out RandomVariable>,

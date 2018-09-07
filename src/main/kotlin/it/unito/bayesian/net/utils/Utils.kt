@@ -88,7 +88,6 @@ fun combineParents(parents: Iterator<MoralGraph.MoralNode>): HashMap<RandomVaria
     })
 }
 
-
 fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVariable> {
     val i = ArrayList<RandomVariable>()
     for(o in parents){
@@ -108,9 +107,15 @@ fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVari
             }
         }
     }
-    map.forEach { k, v ->
-        map.remove(v, k)
+
+//    map.entries.removeIf { map[it.value]==it.key }
+
+    val iter = map.iterator()
+    while (iter.hasNext()){
+        val j = iter.next()
+        if(map.containsKey(j.value) && map[j.value] == j.key) iter.remove()
     }
+
     return map
 }
 
@@ -139,23 +144,22 @@ fun generateRvsToBeSummedOut(rvs: Collection<RandomVariable>, nextRvs: List<Rand
 
 fun Node.isAncestorOf(node: Node): Boolean {
     return if(node.parents.contains(this)) true
-    else {
-        var k = false
-        for (parent in node.parents){
-            k = parent.isAncestorOf(this)
-            if(k) break
+        else {
+            node.parents.forEach { if(it.isAncestorOf(this)) return true }
+            false
         }
-        return k
-    }
 }
 
 fun RandomVariable.isAncestorOf(rv: RandomVariable, bn: BayesianNetwork) =
         bn.getNode(this).isAncestorOf(bn.getNode(rv))
 
 fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork): Boolean {
-    var k = false
-    rvs.forEach { k = this.isAncestorOf(it, bn) }
-    return k
+    rvs.forEach {
+        if(this.isAncestorOf(it, bn))
+            return true
+    }
+    return false
 }
 
-fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) = !this.isAncestorOf(rvs, bn)
+fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) =
+        !this.isAncestorOf(rvs, bn)

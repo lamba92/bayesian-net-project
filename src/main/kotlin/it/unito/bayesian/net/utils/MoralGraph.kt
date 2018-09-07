@@ -4,6 +4,7 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import org.graphstream.graph.Node
 import org.graphstream.graph.implementations.*
+import org.graphstream.ui.swingViewer.Viewer
 import java.util.*
 
 /**
@@ -26,12 +27,16 @@ class MoralGraph(
                 })
 
     init{
+        addAttribute("ui.stylesheet", "node { size: 10px, 15px; shape: box; fill-color: green; stroke-mode: plain; stroke-color: yellow; text-alignment: above; text-size: 25px;}")
         for(rv in vars){
-            addNode<MoralNode>(rv.name).randomVariable = rv
+            addNode<MoralNode>(rv.name).apply {
+                randomVariable = rv
+                addAttribute("ui.label", id)
+            }
         }
         for(rv in vars){
             for(p in net.getNode(rv).parents){
-                if(getNode(rv).hasNotEdgeBetween(getNode(p.randomVariable)))
+                if(vars.contains(p.randomVariable) && getNode(rv).hasNotEdgeBetween(getNode(p.randomVariable)))
                     addEdge<AbstractEdge>("${rv.name}--${p.randomVariable.name}", getNode(rv), getNode(p.randomVariable), false)
             }
             combineParents(net.getNode(rv).parents).forEach { p1, p2 ->
@@ -52,11 +57,12 @@ class MoralGraph(
      * Return an [ArrayList]<[RandomVariable]> in which they are ordered by the Variable Elimination algorithm.
      * @return The [RandomVariable]s ordered.
      */
-    fun getRandomVariables(): ArrayList<RandomVariable> {
+    fun getRandomVariables(showGraph: Boolean = false, delay: Long = 3000): ArrayList<RandomVariable> {
+        lateinit var d: Viewer
         val toReturn = ArrayList<RandomVariable>()
-//        display()
+        if(showGraph) d = display()
         while(heuristicQueue.isNotEmpty()){
-//            Thread.sleep(10000)
+            if(showGraph) Thread.sleep(delay)
             val head = heuristicQueue.poll()
             val iterator = head.getNeighborNodeIterator<MoralNode>()
             toReturn.add(head.randomVariable!!)
@@ -70,6 +76,7 @@ class MoralGraph(
                 heuristicQueue.add(n)
             }
         }
+        if(showGraph) d.close()
         return toReturn
     }
 

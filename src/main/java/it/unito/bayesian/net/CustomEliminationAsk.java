@@ -71,25 +71,17 @@ public class CustomEliminationAsk implements BayesInference {
         calculateVariables(X, e, bn, hidden, VARS);
 
         // factors <- []
-        List<Factor> factors = new ArrayList<>();
-        List<RandomVariable> hiddenRvsHavingWaitingFactors = new ArrayList<>();
-        List<RandomVariable> orderedRvs = order(bn, VARS);
-        // for each var in ORDER(bn.VARS) do
-        for (int i=0; i < orderedRvs.size(); i++) {
-            RandomVariable var = orderedRvs.get(i);
+        List<Factor> factors = new ArrayList<Factor>();
+        for (RandomVariable var : VARS) {
             // factors <- [MAKE-FACTOR(var, e) | factors]
             factors.add(0, makeFactor(var, e, bn));
-            if(hidden.contains(var))
-                hiddenRvsHavingWaitingFactors.add(var);
-            // if var is hidden variable then factors <- SUM-OUT(var, factors)
-            List<RandomVariable> nextRvs = orderedRvs.subList(i, orderedRvs.size()-1);
-            List<RandomVariable> toBeCompacted = generateRvsToBeSummedOut(hiddenRvsHavingWaitingFactors, nextRvs, bn);
+        }
 
-            if (!toBeCompacted.isEmpty()) {
-                for(RandomVariable rv : toBeCompacted){
-                    factors = sumOut(rv, factors, bn);
-                }
-                hiddenRvsHavingWaitingFactors.removeAll(toBeCompacted);
+        // for each var in ORDER(bn.VARS) do
+        for (RandomVariable var : order(bn, VARS)) {
+            // if var is hidden variable then factors <- SUM-OUT(var, factors)
+            if (hidden.contains(var)) {
+                factors = sumOut(var, factors, bn);
             }
         }
         // return NORMALIZE(POINTWISE-PRODUCT(factors))
