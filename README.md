@@ -16,6 +16,26 @@ A Bayesian network is a directed acyclic graph(DAG) that is an efficient and com
 These nodes represent the random variables and the edges represent the direct influence of one variable of one another.
 In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
 
+A common task in a Bayesian Network is to compute the probability of a random variable A given the joint probability distribution of A with other variables.
+
+the marginalization of any variable. You can compute it with the formula:
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
+</p>
+
+You can compute the full joint distribution of a Bayesian network with the following formula:
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?P%28V%29%20%3D%20%5Cprod_%7Bi%3D1%7D%5En%20P%28V_i%20%7C%20Parents%28V_i%29%29"/>
+</p>
+
+The following image represent a Bayesian network:
+
+<p align="center">
+</p>
+
+
 
 ### Variable Elimination algorithm
 
