@@ -12,9 +12,11 @@ The project consists in two exercises:
 
 ## Bayesian Networks
 
-A Bayesian network is a directed acyclic graph(DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
+A Bayesian network is a Directed Acyclic Graph (DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
 These nodes represent the random variables and the edges represent the direct influence of one variable of one another.
-In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
+
+In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.
+The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
 
 A common task in a Bayesian Network is to "summing out" the probability of a random variable A given the joint probability distribution of A with other variables, this task is called marginalization of the variable A. You can compute it with the formula:
 
@@ -71,7 +73,7 @@ In a Dynamic Bayesian Network, each time slice is conditionally dependent on the
 
 Per costruire una DBN occorre:
 
-**1.** <img align="center" src="http://latex.codecogs.com/gif.latex?P(X_0)&space;\rightarrow&space;Distribuzione&space;\&space;a&space;\&space;priori&space;\&space;sulle&space;\&space;variabili&space;\&space;di&space;\&space;stato" title="P(X_0) \rightarrow Distribuzione \ a \ priori \ sulle \ variabili \ di \ stato" />
+**1.** <img align="center" src="http://latex.codecogs.com/gif.latex?P(X_0)&space;\rightarrow&space;Prior&space;\&space;distribution&space;\&space;on&space;\&space;state&space;\&space;variables" title="P(X_0) \rightarrow Prior \ distribution \ on \ state \ variables" />
 
 **2.** <img align="center" src="http://latex.codecogs.com/gif.latex?P%28X_%7Bt&plus;1%7D%20%7C%20X_t%29%20%5C%3A%5C%3A%20%5Crightarrow%20%5C%3A%20Transition%20%5C%3A%20Model%20%5C%5C%5C%5C"/>
 
