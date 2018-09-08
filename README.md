@@ -15,7 +15,7 @@ The project consists in two exercises:
 A Bayesian network is a Directed Acyclic Graph (DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
 These nodes represent the random variables and the edges represent the direct influence of one variable of one another.
 
-In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.
+In general each random variable is associated with a Conditional Probability Distribution, also called as a CPD, that specifies the distribution over the values of the random variable associated with its parents.
 The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
 
 A common task in a Bayesian Network is to "summing out" the probability of a random variable A given the joint probability distribution of A with other variables, this task is called marginalization of the variable A. You can compute it with the formula:
@@ -33,28 +33,28 @@ You can compute the full joint distribution of a Bayesian network with the follo
 The following image represent a Bayesian network:
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png" size="50%"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png"  width="50%" height="50%"/>
 </p>
-
-
 
 ### Variable Elimination algorithm
 
-`Variable elimination (VE)` is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian networks and Markov random fields. It can be used for inference of `Maximum A Posteriori (MAP)` state or estimation of conditional or marginal distributions over a subset of variables. The algorithm has exponential time complexity, but could be efficient in practice for the low-treewidth graphs, if the proper elimination order is used (which is a NP-hard problem).  
+`Variable elimination (VE)` is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian networks and Markov random fields. It can be used for inference of `Maximum A Posteriori (MAP)` state or estimation of conditional or marginal distributions over a subset of variables. 
+
+The algorithm has exponential time complexity, but could be efficient in practice for the low-treewidth graphs, if the proper elimination order is used (which is a NP-hard problem).  
 To find a variable's proper elimination order we'll use some heuristics.
 
 ### Heuristics
 
-La struttura dati utilizza per trovare un ordine di eliminazione prende il nome di Moral Graph.
+The data structure used to find a variable's proper elimination order is called Moral Graph.
 In graph theory, a moral graph is used to find the equivalent undirected form of a directed acyclic graph. The moralized counterpart of a directed acyclic graph is formed by adding edges between all pairs of nodes that have a common child, and then making all edges in the graph undirected.
 
-Definiamo una funzione di valutazione la quale utilizza una delle seguenti euristiche:
+We define an evaluation function which uses one of the following heuristics (evaluation metrics):
 
  - **Min-neighbors**: The cost of a vertex is the number of neighbors it has in the current graph.
  
  - **Min-weight**: The cost of a vertex is the product of weights — domain cardinality — of its neighbors.
  
- - **Min-ﬁll**: The cost of a vertex is the number of edges that need to be added to the graph due to its elimination.
+ - **Min-fill**: The cost of a vertex is the number of edges that need to be added to the graph due to its elimination.
  
  - **Weighted-min-ﬁll**: The cost of a vertex is the sum of weights of the edges that need to be added to the graph due to its elimination, where a weight of an edge is the product of weights of its constituent vertices.
  
