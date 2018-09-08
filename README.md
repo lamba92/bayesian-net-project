@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/lamba92/bayesian-net-project.svg?branch=master)](https://travis-ci.org/lamba92/bayesian-net-project) [![](https://jitpack.io/v/Lamba92/bayesian-net-project.svg)](https://jitpack.io/#Lamba92/bayesian-net-project)
 
-# Bayesian Networks Project Description
+# Bayesian Networks Project
 The project consists in two exercises:
 
    **1.** **VE (Variable Elimination)** algorithm extension and its implementation on `Static Bayesian Networks`,
@@ -66,6 +66,36 @@ Per costruire una DBN occorre:
 Tuttavia, noi ci siamo concentrati sulla tecnica del Rollup Filtering. Con questa tecnica è possibile concentrarsi solamente su due intervalli alla volta della DBN; l'intervallo successivo verrà creato utilizzando l'algortimo di VE sull'ultimo intervallo disponibile.
 
 Per effettuare l'inferenza occorre possedere una sequenza di osservazioni.
+
+# Project management
+The project has been divided into three main parts:
+- `utils` folder, which contains:
+
+  - `MoralGraph.kt`, which implements a Moral Graph and all the necessary methods needed,
+
+  - `BIFToBayesNet.kt`, which implements a BIF file parser used to instatiate a BayesNet object from a BIF file (Boolean Domain only),
+  
+  - `Utils.kt` and `WrongDistributionException` files.
+  
+- `CustomDynamicaBayesNet.kt` , which implents l'algoritmo di Rollup Filtering con due slice alla volta. Per far avanzare la rete allo stato temporale successivo t+1, dove t è stato temporale attuale, occorre eseguire il metodo `forward`
+
+- `Inferences.kt` che istanzia un oggetto il quale contiene l'estensione dell'algoritmo di VE richiesta dal progetto e che espone i metodi
+
+  - `order`, che a partire da una `BayesianNetwork` restituisce un ordine appropriato con cui applicare l'algortimo di VE,
+  
+  - `calculateVariables` che, date le variabili di query, le evidenze e la Rete Bayesiana, rimuove da quest'ultima le **variabili irrilevanti**, ossia every variable that is not an ancestor of a query variable or evidence variable.
+
+There is also a `resource` folder, which contains all the BIF format hard-coded nets.
+
+
+# VE extension implementation
+
+## Utilities
+They are contained within the utils folder. They are:
+
+
+
+
 
 ## Authors
 
