@@ -6,7 +6,7 @@ The project consists in two exercises:
 
    **1.** **VE (Variable Elimination)** algorithm extension and its implementation on `Bayesian Networks`,
  
-   **2.** **Rollup Filtering inference** algorithm and its implementation on `Dynamic Bayesian Networks (DBN)`.
+   **2.** **Rollup Filtering inference** algorithm and its implementation on `Dynamic Bayesian Networks` (DBNs).
       
 # Preliminaries
 
@@ -38,7 +38,7 @@ The following image represent a Bayesian Network:
 
 ### Variable Elimination algorithm
 
-`Variable Elimination (VE)` is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian Networks. It can be used for estimation of conditional or marginal distributions over a subset of variables and for the inference of the `Maximum A Posteriori (MAP)` state. 
+`Variable Elimination` (VE) is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian Networks. It can be used for estimation of conditional or marginal distributions over a subset of variables and for the inference of the `Maximum A posteriori Probability` (MAP) state. 
 
 The algorithm has an exponential time complexity, but could be efficient in practice for the low-width tree graphs, if the proper elimination order is used (which is a NP-hard problem).  
 To find a variable elimination order we use heuristics.
@@ -81,13 +81,20 @@ Per costruire una DBN occorre:
 
 **3.** <img align="center" src="http://latex.codecogs.com/gif.latex?P%28E_t%20%7C%20X_t%29%20%5C%3A%5C%3A%20%5Crightarrow%20%5C%3A%20Sensor%20%5C%3A%20Model"/>
 
+The following image represents a Dynamic Bayesian Network:
+
+<p align="center">
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/rain.PNG"/>
+</p>
+
+
 ### Rollup Filtering algorithm
 
 It is possible to construct a Dynamic Network with an unlimited number of intervals starting from the previously specified parameters, by copying the first interval; this operation is called **Unrolling**.
 
 However it suffers from an **excessive memory occupation**, since all time slices (which tend to infinity) are kept in memory.
 
-We use the Rollup Filtering technique to solve this problem, which makes possible to focus on two slices at a time; the following interval will be created using the VE algorithm on the last product interval.
+We use the **Rollup Filtering** technique to solve this problem, which makes possible to focus on two slices at a time; the following interval will be created using the VE algorithm on the last product interval.
 
 To carry out the inference you can also provide a sequence of observations.
 
@@ -99,7 +106,7 @@ To carry out the inference you can also provide a sequence of observations.
 The exercise is divided into four steps:
 - Remove the irrelevant variables,
 - Implement variable order heuristics,
-- Allow inferences `MPE (Most Probable Explanation)` and `MAP (Maximum a Posteriori Probability)`
+- Allow inferences `MPE` (Most Probable Explanation) and `MAP` (Maximum a Posteriori Probability)
 - Analysis of empirical results.
 
 ## 2. Rollup Filtering algorithm implementation
