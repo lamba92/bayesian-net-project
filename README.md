@@ -12,12 +12,10 @@ The project consists in two exercises:
 
 ## Static Bayesian Networks
 
-A static Bayesian or probabilistic network *B* is a graphical structure that models a set of stochastic variables, 
-the conditional independencies among these variables, and a joint probability distribution over these variables.
-*B* includes a DAG (Directed Acyclic Graph) *GB* = (V,A), modeling the variables and conditional independencies in the network, 
-and a set of parameter probabilities in the form of Conditional Probability Tables (CPTs), capturing the strengths of the
-relationships between the variables. The network models a joint probability distribution Pr(V) =n i=1 Pr(Vi | π(Vi)) over
-its variables, where π(Vi)denotes the parents of Vi in GB.
+Bayesian network is a directed acyclic graph(DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
+These nodes represent the random variables and the edges represent the direct influence of one variable of one another.
+In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
+
 
 ### Variable Elimination algorithm
 
@@ -58,11 +56,12 @@ Per costruire una DBN occorre:
 
 ### Rollup Filtering algorithm
 
-É possibile costruire una rete dinamica completa con un numero non limitato di intervalli a partire da questa specifica, copiando il primo intervallo. 
+É possibile costruire una rete dinamica completa con un numero non limitato di intervalli, a partire dai parametri specificati precedentemente, copiando il primo intervallo.
+La tecnica che ci consente di effettuare quest'operazione prende il nome di Unrolling.
 
-É possibile utilizzare molteplici tecniche per effettuare l'inferenza esatta su una DBN. Esse sono l'Unrolling, il Filtering e lo Smoothing. 
+Tuttavia, quest'ultima soffre di un'occupazione eccessiva di memoria poiché tutti gli slice temporali (anche possibilmente infiniti), prodotti sino al tempo *t*, vengono mantenuti in memoria.
 
-Tuttavia, noi ci siamo concentrati sulla tecnica del Rollup Filtering. Con questa tecnica è possibile concentrarsi solamente su due intervalli alla volta della DBN; l'intervallo successivo verrà creato utilizzando l'algortimo di VE sull'ultimo intervallo disponibile.
+Per risolvere questo problema viene utilizzata la tecnica del Rollup Filtering. Con essa è possibile concentrarsi solamente su due slice alla volta; l'intervallo successivo verrà creato utilizzando l'algortimo di VE sull'ultimo intervallo prodotto.
 
 Per effettuare l'inferenza occorre anche possedere una sequenza di osservazioni.
 
@@ -79,7 +78,7 @@ L'esercizio si suddivide in quattro steps:
 ## 2. Rollup Filtering algorithm implementation
 
 L'esercizio si suddivide in tre steps:
- - Adattare l'algortimo VE per BN statiche e modificarlo in modo che effettui Rollup Filtering su una DBN considerando due slice alla volta,
+ - Adattare l'algoritmo `Variable Elimination` per BN statiche e modificarlo in modo che effettui `Rollup Filtering` su una `Dynamic Bayes Net` considerando due slice alla volta,
  - Fornire all'algortimo una sequenza di osservazioni, eventualmente più di una per ogni istante di tempo,
  - Analisi risultati empirici.
 
@@ -95,7 +94,7 @@ The project has been divided into three main parts:
   
   - `Utils.kt` and `WrongDistributionException` files.
   
-- `CustomDynamicaBayesNet.kt` , which implents l'algoritmo di Rollup Filtering con due slice alla volta. Per far avanzare la rete allo stato temporale successivo t+1, dove t è stato temporale attuale, occorre eseguire il metodo `forward`
+- `CustomDynamicaBayesNet.kt` , which implents l'algoritmo di Rollup Filtering con due slice alla volta. Per far avanzare la rete allo stato successivo t+1, dove t è lo stato temporale attuale, occorre eseguire il metodo `forward`
 
 - `Inferences.kt` che istanzia un oggetto il quale contiene l'estensione dell'algoritmo di VE richiesta dal progetto e che espone i metodi
 
