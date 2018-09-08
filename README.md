@@ -33,7 +33,7 @@ You can compute the full joint distribution of a Bayesian network with the follo
 The following image represent a Bayesian network:
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png" size="50%"/>
 </p>
 
 
