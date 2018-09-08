@@ -33,6 +33,7 @@ You can compute the full joint distribution of a Bayesian network with the follo
 The following image represent a Bayesian network:
 
 <p align="center">
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png"/>
 </p>
 
 
@@ -62,6 +63,12 @@ Tuttavia è dimostrato che nessuna di queste funzioni sia migliore di un'altra i
 Moral graph e funzione di valutazione vengono utilizzati da un algoritmo greedy l'ordinamento appropriato con cui effettuare l'algortimo VE.
 
 L'algoritmo greedy viene riportato nella seguente immagine:
+
+<p align="center">
+  <img src=""/>
+</p>
+
+
 
 
  
