@@ -41,7 +41,9 @@ Tuttavia è dimostrato che nessuna di queste funzioni sia migliore di un'altra i
 
 Moral graph e funzione di valutazione vengono utilizzati da un algoritmo greedy l'ordinamento appropriato con cui effettuare l'algortimo VE.
 
-L'algoritmo greedy viene riportato nella seguente immagine: IMG.
+L'algoritmo greedy viene riportato nella seguente immagine:
+
+
  
 
 ## Dynamic Bayesian Networks
@@ -50,8 +52,11 @@ L'algoritmo greedy viene riportato nella seguente immagine: IMG.
 In a Dynamic Bayesian Network, each time slice is conditionally dependent on the previous one. The probabilities among the original distribution determine the probabilities in the successive time series.
 
 Per costruire una DBN occorre:
+
 **1.** Distribuzione a priori sulle variabili di stato P(Xo)
+
 **2.** il modello di transizione P(Xt+1 | Xt)
+
 **3.** il modello sensore P(Et | Xt)
 
 ### Rollup Filtering algorithm
