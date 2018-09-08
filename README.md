@@ -4,15 +4,15 @@
 
 The project consists in two exercises:
 
-   **1.** **VE (Variable Elimination)** algorithm extension and its implementation on `Static Bayesian Networks`,
+   **1.** **VE (Variable Elimination)** algorithm extension and its implementation on `Bayesian Networks`,
  
    **2.** **Rollup Filtering inference** algorithm and its implementation on `Dynamic Bayesian Networks (DBN)`.
       
 # Preliminaries
 
-## Static Bayesian Networks
+## Bayesian Networks
 
-Bayesian network is a directed acyclic graph(DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
+A Bayesian network is a directed acyclic graph(DAG) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the random variables as nodes in a graph.
 These nodes represent the random variables and the edges represent the direct influence of one variable of one another.
 In general each random variable is associated with a Conditional Probability Distribution also called as a CPD that specifies the distribution over the values of the random variable associated with its parents.The CPD encodes the distribution of the variables and help in precisely determining the output of the variable.
 
@@ -85,6 +85,8 @@ L'esercizio si suddivide in tre steps:
 
 # Project management
 
+## Development
+
 The project has been divided into three main parts:
 - `utils` folder, which contains:
 
@@ -102,14 +104,13 @@ The project has been divided into three main parts:
   
   - `calculateVariables` che, date le variabili di query, le evidenze e la Rete Bayesiana, rimuove da quest'ultima le **variabili irrilevanti**, ossia every variable that is not an ancestor of a query variable or evidence variable.
 
+## Resources
+
 There is also a `resource` folder, which contains all the BIF format hard-coded nets.
 
+## Graph Representation
 
-# VE extension implementation
-
-## Utilities
-
-They are contained within the utils folder. They are:
+We also use [GraphStream](https://github.com/graphstream/gs-core) to visualize and debug the Variable Elimination algorithm.
 
 
 
