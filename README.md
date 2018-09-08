@@ -65,13 +65,8 @@ Moral graph e funzione di valutazione vengono utilizzati da un algoritmo greedy 
 L'algoritmo greedy viene riportato nella seguente immagine:
 
 <p align="center">
-  <img src=""/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/greedy.PNG"/>
 </p>
-
-
-
-
- 
 
 ## Dynamic Bayesian Networks
 
