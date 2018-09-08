@@ -84,7 +84,7 @@ Per costruire una DBN occorre:
 The following image represents a Dynamic Bayesian Network:
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/rain.PNG"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/rain.PNG"  width="50%" height="50%"/>
 </p>
 
 
@@ -148,8 +148,8 @@ We also used [GraphStream](https://github.com/graphstream/gs-core) to visualize 
 Here is an example of a graph before and after undergoing the pruning of a node.
 
 <p align="center"> 
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine1.png" width="40%" height="40%"/>
-  <img align="right" src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine2.png" width="40%" height="40%" />
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine2.png" width="40%" height="40%"/>
+  <img align="right" src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine1.png" width="40%" height="40%" />
 </p>
 
 
