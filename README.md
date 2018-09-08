@@ -105,10 +105,9 @@ The exercise is divided into four steps:
 ## 2. Rollup Filtering algorithm implementation
 
 The exercise is divided into three steps:
-  - Arrange the `Variable Elimination` algorithm for Bayesian Networks and modify it so it can be performed after the execution of a `Rollup Filtering`, with the focus on two slices at a time,
-  - Provide a sequence of evidences, which can be more than one for each time slice,
- - Analysis of empirical results.
-
+- Arrange the `Variable Elimination` algorithm for Bayesian Networks and modify it so it can be performed after the execution of a `Rollup Filtering`, with the focus on two slices at a time,
+- Provide a sequence of evidences, which can be more than one for each time slice,
+- Analysis of empirical results.
 
 # Project management
 
@@ -123,7 +122,7 @@ The project has been divided into three main parts:
   
   - `Utils.kt` and `WrongDistributionException` files.
   
-- `CustomDynamicaBayesNet.kt`, which implents the `Rollup Filtering` algorithm imposing two slices at a time. To advance the network to the following state *t+1*, where *t* is the current time state, the `forward` method must be executed.
+- `CustomDynamicaBayesNet.kt`, which implements the `Rollup Filtering` algorithm focus on two slices at a time. To advance the network to the following state *t+1*, where *t* is the current time state, the `forward` method must be executed.
 
 - `Inferences.kt`, which instantiates an object which contains the extension of the `Variable Elimination` algorithm required by the project and which exposes the methods
 
