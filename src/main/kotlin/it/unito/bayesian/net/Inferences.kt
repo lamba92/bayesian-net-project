@@ -24,7 +24,7 @@ object Inferences {
      * @param hMetrics The lambda used to assign an heuristic to a node of the [MoralGraph].
      * @return A custom [EliminationAsk] object.
      */
-    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int, showMoralGraph: Boolean = false, delay: Long = 3000)
+    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int, showMoralGraph: Boolean = true, delay: Long = 3000)
         = object : CustomEliminationAsk() {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =

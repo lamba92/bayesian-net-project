@@ -12,9 +12,6 @@ import aima.core.probability.bayes.Node;
 import aima.core.probability.proposition.AssignmentProposition;
 import aima.core.probability.util.ProbabilityTable;
 
-import static it.unito.bayesian.net.utils.UtilsKt.generateRvsToBeSummedOut;
-import static it.unito.bayesian.net.utils.UtilsKt.isParentOf;
-
 /**
  * Artificial Intelligence A Modern Approach (3rd Edition): Figure 14.11, page
  * 528.<br>
@@ -72,25 +69,38 @@ public class CustomEliminationAsk implements BayesInference {
 
         // factors <- []
         List<Factor> factors = new ArrayList<Factor>();
-        for (RandomVariable var : VARS) {
-            // factors <- [MAKE-FACTOR(var, e) | factors]
-            factors.add(0, makeFactor(var, e, bn));
+        for (RandomVariable rv : VARS) {
+            // factors <- [MAKE-FACTOR(rv, e) | factors]
+            factors.add(0, makeFactor(rv, e, bn));
         }
 
         // for each var in ORDER(bn.VARS) do
-        for (RandomVariable var : order(bn, VARS)) {
+        /*for (RandomVariable var : order(bn, VARS)) {
             // if var is hidden variable then factors <- SUM-OUT(var, factors)
             if (hidden.contains(var)) {
                 factors = sumOut(var, factors, bn);
             }
+        }*/
+
+        for (RandomVariable rv : order(bn, VARS)) {
+                System.out.println(factors);
+                factors = maxOut(rv, factors, bn, e);
         }
-        // return NORMALIZE(POINTWISE-PRODUCT(factors))
-        Factor product = pointwiseProduct(factors);
-        // Note: Want to ensure the order of the product matches the
-        // query variables
-        return ((ProbabilityTable) product.pointwiseProductPOS(_identity, X))
-                .normalize();
-    }
+
+        /*if (1 == maxedOut.getValues().length) {
+            maxedOut.getValues()[0] = ;
+        } else {
+            // Otherwise need to iterate through this distribution
+            // to calculate the maxed out distribution.
+        */
+
+
+            // return NORMALIZE(POINTWISE-PRODUCT(factors))
+            Factor product = pointwiseProduct(factors);
+            // Note: Want to ensure the order of the product matches the
+            // query variables
+            return ((ProbabilityTable) product.pointwiseProductPOS(_identity, X)).normalize();
+        }
 
     //
     // START-BayesInference
@@ -195,7 +205,7 @@ public class CustomEliminationAsk implements BayesInference {
                     "Elimination-Ask only works with finite Nodes.");
         }
         FiniteNode fn = (FiniteNode) n;
-        List<AssignmentProposition> evidence = new ArrayList<AssignmentProposition>();
+        List<AssignmentProposition> evidence = new ArrayList<>();
         for (AssignmentProposition ap : e) {
             if (fn.getCPT().contains(ap.getTermVariable())) {
                 evidence.add(ap);
@@ -206,10 +216,9 @@ public class CustomEliminationAsk implements BayesInference {
                 evidence.toArray(new AssignmentProposition[evidence.size()]));
     }
 
-    private List<Factor> sumOut(RandomVariable var, List<Factor> factors,
-                                BayesianNetwork bn) {
-        List<Factor> summedOutFactors = new ArrayList<Factor>();
-        List<Factor> toMultiply = new ArrayList<Factor>();
+    private List<Factor> sumOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn) {
+        List<Factor> summedOutFactors = new ArrayList<>();
+        List<Factor> toMultiply = new ArrayList<>();
         for (Factor f : factors) {
             if (f.contains(var)) {
                 toMultiply.add(f);
@@ -222,6 +231,29 @@ public class CustomEliminationAsk implements BayesInference {
 
         summedOutFactors.add(pointwiseProduct(toMultiply).sumOut(var));
         return summedOutFactors;
+    }
+
+    private List<Factor> maxOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
+        List<Factor> maxedOutFactors = new ArrayList<>();
+        ProbabilityTable maxedOut = new ProbabilityTable(var);
+
+        //final Object[] termValues = new Object[maxedOut.getFor().size()];
+        final ArrayList<Object> termValues = new ArrayList<>(maxedOut.getFor().size());
+        ProbabilityTable.Iterator iterator =
+                (possibleAssignment, probability) -> {
+                        System.out.println(possibleAssignment);
+                        for (Factor f : factors) {
+                            System.out.println(f);
+                        }
+                        System.out.println();
+                        maxedOut.getFor().stream().map
+                            (randomVariable -> termValues.add(possibleAssignment.get(randomVariable)));
+        };
+
+        maxedOut.iterateOverTable(iterator);
+        maxedOutFactors.add(maxedOut);
+
+        return maxedOutFactors;
     }
 
     private Factor pointwiseProduct(List<Factor> factors) {

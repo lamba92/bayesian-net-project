@@ -18,8 +18,8 @@ fun main(args: Array<String>){
 //        add(constructToothacheCavityCatchWeatherNetwork())
 //        add(constructMeningitisStiffNeckNetwork())
 //        add(constructBurglaryAlarmNetwork())
-//        add(constructCloudySprinklerRainWetGrassNetwork())
-        add(getComplexDynamicNetworkExample())
+        add(constructCloudySprinklerRainWetGrassNetwork())
+//        add(getComplexDynamicNetworkExample())
     }
     val inference = CustomEliminationAsk()
     for(net in nets){
