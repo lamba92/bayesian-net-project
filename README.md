@@ -187,7 +187,6 @@ dependencies {
     implementation("com.googlecode.aima-java", "aima-core", "3.0.0")
 }
 ```
-If you are using Maven, switch to Gradle, it's 2018.
 
 ## Usage
 
