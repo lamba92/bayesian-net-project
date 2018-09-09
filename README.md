@@ -12,11 +12,10 @@ The project consists in two implementations:
 
 ## Bayesian Networks
 
-A Bayesian Network is a **Directed Acyclic Graph** (**DAG**) that is an efficient and compact representation for a set of conditional independence assumptions about distributions. The directed graph tries to represent the Random Variables as nodes in a graph.
-These **nodes** represent the Random Variables and the **edges** represent the direct influence of one variable of one another.
+A Bayesian Network is a **Directed Acyclic Graph** (**DAG**), an efficient and compact representation for a set of conditional independence assumptions about distributions. Its **nodes** represent the Random Variables and the **edges** represent the direct dependence of one variable from one or more anothers.
 
-In general each Random Variable is associated with a **Conditional Probability Table**, also called as a **CPT**, that specifies the distribution over the values of the random variable associated with its parents.
-The CPT encodes the distribution of the variables and help in precisely determining the output of the variable.
+Each Random Variable is associated with a **Conditional Probability Table**, also called **CPT**.
+The CPT encodes the *distribution* of the Random Variables and helps in precisely determining the output of the Variable.
 
 A common task in a Bayesian Network is to **"summing out" the probability of a random variable** A given the joint probability distribution of A with other variables, this task is called **marginalization** of the variable A. It is possible to compute it with the formula:
 
@@ -30,7 +29,7 @@ You can compute the full joint distribution of a Bayesian Network with the follo
   <img src="http://latex.codecogs.com/gif.latex?P%28V%29%20%3D%20%5Cprod_%7Bi%3D1%7D%5En%20P%28V_i%20%7C%20Parents%28V_i%29%29"/>
 </p>
 
-The following image represent a Bayesian Network:
+The following image represents a Bayesian Network:
 
 <p align="center">
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png"  width="50%" height="50%"/>
@@ -40,13 +39,14 @@ The following image represent a Bayesian Network:
 
 `Variable Elimination` (VE) is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian Networks. It can be used for estimation of conditional or marginal distributions over a subset of variables and for the inference of the `Maximum A posteriori Probability` (MAP) state. 
 
-The algorithm has an exponential time complexity, but could be efficient in practice for the low-width tree graphs, if the proper elimination order is used (which is a NP-hard problem).  
-To find a variable elimination order we use heuristics.
+The algorithm has an exponential time complexity, but can be efficient in practice for low tree-width graphs, if the proper elimination order is found (which is a NP-hard problem).  
+
+Heuristics may be used to find a Variable Elimination order.
 
 ### Heuristics
 
 The data structure used to find a variable elimination order is called **Moral Graph**.
-In graph theory, a Moral Graph is used to find the equivalent undirected form of a directed acyclic graph. 
+In graph theory, a Moral Graph is used to find the equivalent undirected form of a Directed Acyclic Graph. 
 
 The moralized counterpart of a Directed Acyclic Graph is formed by adding edges between all pairs of nodes that have a common child, and then making all edges in the graph undirected.
 
@@ -62,7 +62,7 @@ We define an elimination order through the evaluation function, which uses one o
  
 It is shown that *none of these heuristics is better than another* because their goodness is strictly dependent on the topology of the network on which the algorithm itself is applied.
 
-The one in the following image is the search greedy algorithm for the heuristic sorting of the variables to be eliminated:
+The one in the following image is the search greedy algorithm for the heuristic sorting of the Variables to be eliminated:
 
 <p align="center">
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/greedy.PNG"/>
@@ -73,7 +73,7 @@ The one in the following image is the search greedy algorithm for the heuristic 
 `Dynamic Bayesian Networks` (**DBN**'s) are static Bayesian networks that are modeled over an arrangement of **time series** or sequences. 
 In a Dynamic Bayesian Network, each **time slice** is conditionally dependent on the previous one. The probabilities among the original distribution determine the probabilities in the successives.
 
-Per costruire una DBN occorre:
+To build a DBN it is necessary:
 
 **1.** <img align="center" src="http://latex.codecogs.com/gif.latex?P(X_0)&space;\rightarrow&space;Prior&space;\&space;distribution&space;\&space;on&space;\&space;state&space;\&space;variables" title="P(X_0) \rightarrow Prior \ distribution \ on \ state \ variables" />
 
@@ -90,13 +90,14 @@ The following image represents a Dynamic Bayesian Network:
 
 ### Rollup Filtering algorithm
 
-It is possible to construct a Dynamic Network with an unlimited number of intervals starting from the previously specified parameters, by copying the first interval; this operation is called **Unrolling**.
+Starting from the previously specified parameters it is possible to construct an unlimited number of intervals of the Dynamic Network, by copying the first interval; this operation is called **Unrolling**.
 
 However it suffers from an **excessive memory occupation**, since all time slices (which tend to infinity) are kept in memory.
 
-We use the **Rollup Filtering** technique to solve this problem, which makes possible to focus on two slices at a time; the following interval will be created using the VE algorithm on the last product interval.
+We use the **Rollup Filtering** technique to solve this problem; it makes possible to focus on two slices at a time. 
+The following interval is created using the Variables Elimination algorithm on the last product interval.
 
-To carry out the inference you can also provide a sequence of observations.
+To carry out the inference it can also be possible to provide a sequence of observations.
 
 
 # Project Description
