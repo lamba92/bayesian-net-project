@@ -2,11 +2,11 @@
 
 # Bayesian Networks Project
 
-The project consists in two exercises:
+The project consists in two implementations:
 
-   **1.** **VE (Variable Elimination)** algorithm extension and its implementation on `Bayesian Networks`,
+   **1.** **Extended Variable Elimination** inference algorithm on `Bayesian Networks`,
  
-   **2.** **Rollup Filtering inference** algorithm and its implementation on `Dynamic Bayesian Networks` (DBNs).
+   **2.** **Rollup Filtering**  inference algorithm on `Dynamic Bayesian Networks` (DBNs).
       
 # Preliminaries
 
