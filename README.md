@@ -148,7 +148,7 @@ We also used [GraphStream](https://github.com/graphstream/gs-core) to visualize 
 Here is an example of a graph before and after undergoing the pruning of a node.
 
 <p align="center"> 
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine2a.png" width="40%" height="40%"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine2a.png" width="20%" height="20%"/>
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine1.png" width="40%" height="40%" />
 </p>
 
