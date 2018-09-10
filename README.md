@@ -12,38 +12,57 @@ The project consists in two implementations:
 
 ## Bayesian Networks
 
-A Bayesian Network is a **Directed Acyclic Graph** (**DAG**), an efficient and compact representation for a set of conditional independence assumptions about distributions. Its **nodes** represent the Random Variables and the **edges** represent the direct dependence of one variable from one or more anothers.
+### Introduction
 
-Each Random Variable is associated with a **Conditional Probability Table**, also called **CPT**.
-The CPT encodes the *distribution* of the Random Variables and helps in precisely determining the output of the Variable.
+A Bayesian Network - short **BN** - is a **Directed Acyclic Graph** (**DAG**), an efficient and compact representation for a set of conditional dependencies assumptions about distributions. Its **nodes** represent the Random Variables, while **edges** represent dependencies between RVs.
 
-A common task in a Bayesian Network is to **"summing out" the probability of a random variable** A given the joint probability distribution of A with other variables, this task is called **marginalization** of the variable A. It is possible to compute it with the formula:
+A BN allows to **inference** the distribution of a given RV after observing another RV of the network. More specifically, assigning a value to a specified RV we can deduce how the rest of the network changes.
 
-<p align="center">
-  <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
-</p>
-
-You can compute the full joint distribution of a Bayesian Network with the following formula:
-
-<p align="center">
-  <img src="http://latex.codecogs.com/gif.latex?P%28V%29%20%3D%20%5Cprod_%7Bi%3D1%7D%5En%20P%28V_i%20%7C%20Parents%28V_i%29%29"/>
-</p>
-
-The following image represents a Bayesian Network:
+This is a **BN** example:
 
 <p align="center">
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/net.png"  width="50%" height="50%"/>
 </p>
 
-### Variable Elimination algorithm
+For the sake of brevity, this project is able to manipulate only Bernoulli distributions but all the concepts can be extended to other distributions, discrete or not.
 
-`Variable Elimination` (VE) is a simple and general exact inference algorithm in probabilistic graphical models, such as Bayesian Networks. It can be used for estimation of conditional or marginal distributions over a subset of variables and for the inference of the `Maximum A posteriori Probability` (MAP) state. 
+### Inference on a Bayesian Network
 
-The algorithm has an exponential time complexity, but can be efficient in practice for low tree-width graphs, if the proper elimination order is found (which is a NP-hard problem).  
+Let's say we need to compute how the distribution of **A** changes as we observe that **E** has been set to "**e**". With the conditional probability formulae we can compute:
 
-Heuristics may be used to find a Variable Elimination order.
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
+</p>
 
-### Heuristics
+If we have a more complex connection between **A** and **E**, we can iterate over all the variables in between:
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
+</p>
+
+The key point of this process is to be able to calculate distributions of RVs representing phenomenons whose are not observable directly while their possible consequences are. This is possible thanks to the Bayes Formulae which states how parent RVs changes fixing the value of his dependent variables:
+
+<p align="center">
+  <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/e7073f53d5a809262243e612be97d172108b4cd4"/>
+</p>
+
+This process is called **inference** and allows to ask the distribution of an unobservable RVs given one or more observations.
+
+## Inference techniques
+
+Making inferences on a BN using brutal recurring Bayesian Formulae can be a challenging task even for advanced server clusters. Being efficient while inferencing is consequently a key point. Furthermore, inferences can exact or approximated. Approximations allow to greatly reduce the computational power needed at the cost of precision.
+
+### Variable Elimination
+
+`Variable Elimination` (VE) is a simple and general exact inference algorithm. It consists on identifying groups of repeated calculations, which are called **factors**, store them and then use the stored value instead of computing them again. 
+
+Those factors cam be compacted using point-wise multiplication following a custom order; this very order allows to increase the efficiency of the algorithm.
+
+**VE** has an exponential time complexity, but can be efficient in practice for low tree-width graphs, if the proper elimination order is found (which is a NP-hard problem).  
+
+Heuristics may be used to find a **Variable Elimination** order:
+
+#### Heuristics
 
 The data structure used to find a variable elimination order is called **Moral Graph**.
 In graph theory, a Moral Graph is used to find the equivalent undirected form of a Directed Acyclic Graph. 
@@ -52,13 +71,13 @@ The moralized counterpart of a Directed Acyclic Graph is formed by adding edges 
 
 We define an elimination order through the evaluation function, which uses one of the following heuristics as evaluation metrics:
 
- - **Min-neighbors**: The cost of a vertex is the number of neighbors it has in the current graph.
+ - **minimum neighbors**: The cost of a vertex is the number of neighbors it has in the current graph.
  
- - **Min-weight**: The cost of a vertex is the product of weights — domain cardinality — of its neighbors.
+ - **minimum weight**: The cost of a vertex is the product of weights — domain cardinality — of its neighbors.
  
- - **Min-fill**: The cost of a vertex is the number of edges that need to be added to the graph due to its elimination.
+ - **minimum fill**: The cost of a vertex is the number of edges that need to be added to the graph due to its elimination.
  
- - **Weighted-min-ﬁll**: The cost of a vertex is the sum of weights of the edges that need to be added to the graph due to its elimination, where a weight of an edge is the product of weights of its constituent vertices.
+ - **weighted minimum fill**: The cost of a vertex is the sum of weights of the edges that need to be added to the graph due to its elimination, where a weight of an edge is the product of weights of its constituent vertices.
  
 It is shown that *none of these heuristics is better than another* because their goodness is strictly dependent on the topology of the network on which the algorithm itself is applied.
 
@@ -70,8 +89,8 @@ The one in the following image is the search greedy algorithm for the heuristic 
 
 ## Dynamic Bayesian Networks
 
-`Dynamic Bayesian Networks` (**DBN**'s) are static Bayesian networks that are modeled over an arrangement of **time series** or sequences. 
-In a Dynamic Bayesian Network, each **time slice** is conditionally dependent on the previous one. The probabilities among the original distribution determine the probabilities in the successives.
+`Dynamic Bayesian Networks` (**DBN**s) are static Bayesian Networks that are modeled over an arrangement of **time series** or sequences. 
+In a Dynamic Bayesian Network, each **time slice** is conditionally dependent on the previous one. The probabilities among the original distribution determine the probabilities in the successive.
 
 To build a DBN it is necessary:
 
@@ -90,7 +109,7 @@ The following image represents a Dynamic Bayesian Network:
 
 ### Rollup Filtering algorithm
 
-Starting from the previously specified parameters it is possible to construct an unlimited number of intervals of the Dynamic Network, by copying the first interval; this operation is called **Unrolling**.
+Starting from the previously specified parameters it is possible to construct an unlimited number of intervals of the Dynamic Network, by copying the first interval; this operation is called **unrolling**.
 
 However it suffers from an **excessive memory occupation**, since all time slices (which tend to infinity) are kept in memory.
 
@@ -122,29 +141,19 @@ The exercise is divided into three steps:
 ## Development
 
 The project has been divided into three main parts:
-- `utils` folder, which contains:
+- `utils` package, which contains:
 
-  - `MoralGraph.kt`, which implements a Moral Graph and all the necessary methods needed,
+  - `MoralGraph.kt`, which implements a Moral Graph and all the necessary methods needed.
 
-  - `BIFToBayesNet.kt`, which implements a BIF file parser that instatiate a BayesNet object from a BIF file (Boolean Domain only),
+  - `BIFToBayesNet.kt`, which implements a BIF file parser that instantiate a BayesNet object from a BIF file (Boolean Domain only).
   
-  - `Utils.kt` and `WrongDistributionException` files.
+  - `Utils.kt`, which contains many utility methods. 
   
-- `CustomDynamicaBayesNet.kt`, which implements the `Rollup Filtering` algorithm focus on two slices at a time. To advance the network to the following state *t+1*, where *t* is the current time state, the `forward` method must be executed.
+- `CustomDynamicaBayesNet` class, which implements the **Rollup Filtering** algorithm.
 
-- `Inferences.kt`, which instantiates an object which contains the extension of the `Variable Elimination` algorithm required by the project and which exposes the methods
+- `Inferences` object, which instantiates an object which contains the extension of the `Variable Elimination` algorithm required by the project and which exposes the methods.
 
-  - `order`, which starting from a `BayesianNetwork` returns an appropriate order with which to apply the `Variable Elimination` algorithm,
-  
-  - `calculateVariables` that given the query variables, the evidences and the Bayesian Network, removes from the latter the **irrelevant variables**: every variable that is not an ancestor of a query variable or evidence variable.
-
-## Resources
-
-There is also a `resource` folder, which contains all the BIF format hard-coded nets.
-
-## Graph Representation
-
-We also used [GraphStream](https://github.com/graphstream/gs-core) to visualize and debug the Variable Elimination algorithm.
+We also used [GraphStream](https://github.com/graphstream/gs-core) to visualize and debug the ordering algorithms.
 
 Here is an example of a graph before and after undergoing the pruning of a node.
 
@@ -155,8 +164,6 @@ Here is an example of a graph before and after undergoing the pruning of a node.
 
 
 # Getting Started
-
-An easy to use library that allows to build and evolve a Dynamic Bayesian Network which random variables have a boolean domain. It has been built using the library [aima-java](https://github.com/aimacode/aima-java). 
 
 ## Installing
 
@@ -192,7 +199,7 @@ dependencies {
 
 ### Static Bayes Network
 
-Create a `???` using a newly generated dynamic network or use an example from the factories of this library and aima's:
+Use `Inferences.getCustomEliminationAsk()` to get an `CustomEliminationAsk()` object and then `ask()` using it.
 
 ### Dynamic Bayes Network
 

@@ -5,6 +5,7 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.proposition.AssignmentProposition
 import aima.core.probability.util.ProbabilityTable
+import it.unito.bayesian.net.CustomEliminationAsk.STANDARD
 import it.unito.bayesian.net.utils.MoralGraph
 import it.unito.bayesian.net.utils.MoralGraph.MoralNode
 import it.unito.bayesian.net.utils.combineParents
@@ -24,8 +25,12 @@ object Inferences {
      * @param hMetrics The lambda used to assign an heuristic to a node of the [MoralGraph].
      * @return A custom [EliminationAsk] object.
      */
-    fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int, showMoralGraph: Boolean = false, delay: Long = 3000)
-        = object : CustomEliminationAsk(CustomEliminationAsk.STANDARD) {
+    fun getCustomEliminationAsk(
+            hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int = minWeightHeuristicFunction(),
+            inferenceMethod: Int = STANDARD,
+            showMoralGraph: Boolean = false,
+            delay: Long = 3000)
+        = object : CustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
                 MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
