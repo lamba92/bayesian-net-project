@@ -74,8 +74,8 @@ public class CustomEliminationAsk implements BayesInference {
      *            variables //
      * @return a distribution over the query variables.
      */
-    private CategoricalDistribution MpeEliminationAsk(final RandomVariable[] X,
-                                                     final AssignmentProposition[] e, final BayesianNetwork bn) {
+    private CategoricalDistribution mpeEliminationAsk(final RandomVariable[] X,
+                                                      final AssignmentProposition[] e, final BayesianNetwork bn) {
 
         Set<RandomVariable> hidden = new HashSet<>();
         List<RandomVariable> VARS = new ArrayList<>();
@@ -165,9 +165,9 @@ public class CustomEliminationAsk implements BayesInference {
                                        final BayesianNetwork bn) {
         switch (inferenceMethod){
             case STANDARD:
-                return MpeEliminationAsk(X, observedEvidence, bn);
-            case MPE:
                 return standardEliminationAsk(X, observedEvidence, bn);
+            case MPE:
+                return mpeEliminationAsk(X, observedEvidence, bn);
             default:
                 return standardEliminationAsk(X, observedEvidence, bn);
         }
