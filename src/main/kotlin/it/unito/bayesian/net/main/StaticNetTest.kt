@@ -17,14 +17,14 @@ fun main(args: Array<String>){
 //        add(constructToothacheCavityCatchNetwork())
 //        add(constructToothacheCavityCatchWeatherNetwork())
 //        add(constructMeningitisStiffNeckNetwork())
-//        add(constructBurglaryAlarmNetwork())
-        add(constructCloudySprinklerRainWetGrassNetwork())
+//        add(constructBurglaryAlarmNetwork()) //
+          add(constructCloudySprinklerRainWetGrassNetwork())
 //        add(getComplexDynamicNetworkExample())
     }
     val inference = CustomEliminationAsk()
     for(net in nets){
-        val queryVar = net.variablesInTopologicalOrder.first()
-        val evidenceVar = net.variablesInTopologicalOrder.last()
+        val queryVar = net.variablesInTopologicalOrder.last()
+        val evidenceVar = net.variablesInTopologicalOrder.first()
         val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net)
         println(
                 "Query variable is: $queryVar | Evidence variable is: $evidenceVar.\n" +

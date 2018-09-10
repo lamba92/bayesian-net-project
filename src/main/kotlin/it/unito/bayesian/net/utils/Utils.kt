@@ -10,6 +10,8 @@ import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+fun CPT.generateVector(verbose: Boolean = false) = generateVectorFromCPT(this, verbose)
+
 fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
     val N = cpt.parents.size
 

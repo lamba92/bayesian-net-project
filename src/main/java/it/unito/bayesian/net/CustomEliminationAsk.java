@@ -1,16 +1,22 @@
 package it.unito.bayesian.net;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import aima.core.probability.CategoricalDistribution;
 import aima.core.probability.Factor;
 import aima.core.probability.RandomVariable;
-import aima.core.probability.bayes.BayesInference;
-import aima.core.probability.bayes.BayesianNetwork;
-import aima.core.probability.bayes.FiniteNode;
-import aima.core.probability.bayes.Node;
+import aima.core.probability.bayes.*;
+import aima.core.probability.bayes.impl.CPT;
 import aima.core.probability.proposition.AssignmentProposition;
 import aima.core.probability.util.ProbabilityTable;
+import aima.core.probability.util.RandVar;
+import com.sun.deploy.util.ArrayUtil;
+import it.unito.bayesian.net.utils.UtilsKt.*;
+
+import static it.unito.bayesian.net.utils.UtilsKt.generateVectorFromCPT;
 
 /**
  * Artificial Intelligence A Modern Approach (3rd Edition): Figure 14.11, page
@@ -63,44 +69,57 @@ public class CustomEliminationAsk implements BayesInference {
     public CategoricalDistribution eliminationAsk(final RandomVariable[] X,
                                                   final AssignmentProposition[] e, final BayesianNetwork bn) {
 
-        Set<RandomVariable> hidden = new HashSet<RandomVariable>();
-        List<RandomVariable> VARS = new ArrayList<RandomVariable>();
+        Set<RandomVariable> hidden = new HashSet<>();
+        List<RandomVariable> VARS = new ArrayList<>();
         calculateVariables(X, e, bn, hidden, VARS);
 
         // factors <- []
-        List<Factor> factors = new ArrayList<Factor>();
+        List<Factor> factors = new ArrayList<>();
         for (RandomVariable rv : VARS) {
             // factors <- [MAKE-FACTOR(rv, e) | factors]
             factors.add(0, makeFactor(rv, e, bn));
         }
 
+        //System.out.println(executeSumOut(X, hidden, VARS, factors, bn, e));
+
+        executeMaxOut(factors, bn, e, VARS);
+
+        return null;
+        // return ((ProbabilityTable) .... ).normalize();
+    }
+
+    private CategoricalDistribution executeMaxOut(List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] e, List<RandomVariable> VARS) {
+        System.out.println("I fattori del grafo sono: " + factors);
+        ArrayList<RandomVariable> assignments = new ArrayList<>();
+        Arrays.stream(e).forEach(assignmentProposition -> assignments.add(assignmentProposition.getTermVariable()));
+
+        List<RandomVariable> ordered = order(bn, VARS);
+        ordered.removeAll(assignments);
+
+        for (RandomVariable rv : ordered) {
+            System.out.println("\nNode " + rv.getName() + ":");
+            if (!assignments.contains(rv)) {
+                ArrayList<Map> maps = maxOut(rv, factors, bn, e);
+            }
+        }
+
+        return null;
+    }
+
+    private CategoricalDistribution executeSumOut(final RandomVariable[] X, Set<RandomVariable> hidden,  List<RandomVariable> VARS, List<Factor> factors, final BayesianNetwork bn, AssignmentProposition[] e) {
+        System.out.println("I fattori del grafo sono: " + factors);
         // for each var in ORDER(bn.VARS) do
-        /*for (RandomVariable var : order(bn, VARS)) {
+        for (RandomVariable var : order(bn, VARS)) {
             // if var is hidden variable then factors <- SUM-OUT(var, factors)
             if (hidden.contains(var)) {
                 factors = sumOut(var, factors, bn);
             }
-        }*/
-
-        for (RandomVariable rv : order(bn, VARS)) {
-                System.out.println(factors);
-                factors = maxOut(rv, factors, bn, e);
         }
+        // return NORMALIZE(POINTWISE-PRODUCT(factors))
+        Factor product = pointwiseProduct(factors);
+        return ((ProbabilityTable) product.pointwiseProductPOS(_identity, X)).normalize();
 
-        /*if (1 == maxedOut.getValues().length) {
-            maxedOut.getValues()[0] = ;
-        } else {
-            // Otherwise need to iterate through this distribution
-            // to calculate the maxed out distribution.
-        */
-
-
-            // return NORMALIZE(POINTWISE-PRODUCT(factors))
-            Factor product = pointwiseProduct(factors);
-            // Note: Want to ensure the order of the product matches the
-            // query variables
-            return ((ProbabilityTable) product.pointwiseProductPOS(_identity, X)).normalize();
-        }
+    }
 
     //
     // START-BayesInference
@@ -178,7 +197,7 @@ public class CustomEliminationAsk implements BayesInference {
      *         ordering is a greedy one: eliminate whichever variable minimizes
      *         the size of the next factor to be constructed.
      */
-    protected List<RandomVariable> order(BayesianNetwork bn,
+        protected List<RandomVariable> order(BayesianNetwork bn,
                                          Collection<RandomVariable> vars) {
         // Note: Trivial Approach:
         // For simplicity just return in the reverse order received,
@@ -213,7 +232,7 @@ public class CustomEliminationAsk implements BayesInference {
         }
 
         return fn.getCPT().getFactorFor(
-                evidence.toArray(new AssignmentProposition[evidence.size()]));
+                evidence.toArray(new AssignmentProposition[0]));
     }
 
     private List<Factor> sumOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn) {
@@ -233,27 +252,43 @@ public class CustomEliminationAsk implements BayesInference {
         return summedOutFactors;
     }
 
-    private List<Factor> maxOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
-        List<Factor> maxedOutFactors = new ArrayList<>();
-        ProbabilityTable maxedOut = new ProbabilityTable(var);
+    private ArrayList<Map> maxOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
+        Double[] arr = generateVectorFromCPT((CPT)bn.getNode(var).getCPD(),false);
+        double[] unboxed = Stream.of(arr).mapToDouble(Double::doubleValue).toArray();
+        Set<Node> parents = bn.getNode(var).getParents();
+        ArrayList<Map> termValues = new ArrayList<>();
 
-        //final Object[] termValues = new Object[maxedOut.getFor().size()];
-        final ArrayList<Object> termValues = new ArrayList<>(maxedOut.getFor().size());
-        ProbabilityTable.Iterator iterator =
-                (possibleAssignment, probability) -> {
-                        System.out.println(possibleAssignment);
-                        for (Factor f : factors) {
-                            System.out.println(f);
-                        }
-                        System.out.println();
-                        maxedOut.getFor().stream().map
-                            (randomVariable -> termValues.add(possibleAssignment.get(randomVariable)));
-        };
+        List<RandomVariable> list = new ArrayList<>();
+        list.add(var);
+        parents.forEach(p -> list.add(p.getRandomVariable()));
 
-        maxedOut.iterateOverTable(iterator);
-        maxedOutFactors.add(maxedOut);
+        if(!list.isEmpty()) {
+            RandomVariable[] rv_parents = list.toArray(new RandomVariable[0]);
+            ProbabilityTable maxedOut = new ProbabilityTable(unboxed, rv_parents);
+            Set<AssignmentProposition> parentsPropositions = new HashSet<>();
 
-        return maxedOutFactors;
+            ProbabilityTable.Iterator iterator = (possibleAssignment, probability) -> {
+                for (AssignmentProposition ass: assignmentPropositions) {
+                    maxedOut.getFor()
+                            .forEach(randomVariable -> termValues.add(possibleAssignment));
+
+                    if (!bn.getNode(var).getParents().equals(possibleAssignment.get(var))) {
+                        parentsPropositions.add(ass);
+                    }
+
+                    if (possibleAssignment.containsKey(ass.getTermVariable())) {
+                        //fare un controllo per rimuovere quella corretta in base al valore di possibleAssignment
+                        possibleAssignment.remove(ass.getTermVariable());
+                    }
+
+                    System.out.println(possibleAssignment + ", P(" + probability + ") ");
+                }
+
+            };
+            AssignmentProposition[] propositionsArray = parentsPropositions.toArray(new AssignmentProposition[0]);
+            maxedOut.iterateOverTable(iterator, propositionsArray);
+        }
+        return termValues;
     }
 
     private Factor pointwiseProduct(List<Factor> factors) {
