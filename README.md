@@ -199,7 +199,17 @@ dependencies {
 
 ### Static Bayes Network
 
-Use `Inferences.getCustomEliminationAsk()` to get an `CustomEliminationAsk()` object and then `ask()` using it.
+Use `Inferences.getCustomEliminationAsk()` to get an `CustomEliminationAsk()` object and then `ask()` using it:
+```
+val net = constructCloudySprinklerRainWetGrassNetwork()
+val inference = getCustomEliminationAsk()
+val queryVar = net.variablesInTopologicalOrder.last()
+val evidenceVar = net.variablesInTopologicalOrder.first()
+val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net)
+
+```
+
+`res` will be the result distribution computed keeping in consideration an `AssignementProposition`.
 
 ### Dynamic Bayes Network
 
@@ -210,8 +220,8 @@ import it.unito.bayesian.net.Inferences.*
 
 ...
 
-val inference = getCustomEliminationAsk(minWeightHeuristicFunction())
-val customNet = getComplexDynamicNetworkExample()
+val inference = getCustomEliminationAsk()
+val dynNet = CustomDynamicBayesianNet(getComplexDynamicNetworkExample(), inference)
 
 customNet.forward() // Moves the network one step forward
 ```
