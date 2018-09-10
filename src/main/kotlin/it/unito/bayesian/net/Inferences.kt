@@ -111,5 +111,4 @@ object Inferences {
             t
         }
     }
-
 }
