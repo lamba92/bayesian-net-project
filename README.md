@@ -178,8 +178,10 @@ Then import the latest version in the `build.gradle` of the modules you need:
 
 ```
 dependencies {
-    implementation 'com.github.Lamba92:bayesian-net-project:{latest_version}'
-    implementation 'com.googlecode.aima-java:aima-core:3.0.0'
+    compile 'com.github.Lamba92:bayesian-net-project:{latest_version}'
+    compile 'com.googlecode.aima-java:aima-core:3.0.0'
+    compile 'org.graphstream:gs-core:1.1.1'
+    compile 'nz.ac.waikato.cms.weka:weka-dev:3.9.2'
 }
 ```
 
@@ -190,8 +192,10 @@ repositories {
 }
 ...
 dependencies {
-    implementation("com.github.Lamba92", "bayesian-net-project", "{latest_version}")
-    implementation("com.googlecode.aima-java", "aima-core", "3.0.0")
+    compile("com.github.Lamba92", "bayesian-net-project", "{latest_version}")
+    compile("com.googlecode.aima-java", "aima-core", "3.0.0")
+    compile("org.graphstream", "gs-core", "1.1.1")
+    compile("nz.ac.waikato.cms.weka", "weka-dev", "3.9.2")
 }
 ```
 
