@@ -19,7 +19,7 @@ buildscript {
 
 plugins {
     java
-    id("maven-publish")
+    id("maven")
     kotlin("jvm") version "1.2.61"
     id("org.jetbrains.dokka") version "0.9.17"
 }
