@@ -1,8 +1,6 @@
 package it.unito.bayesian.net;
 
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import aima.core.probability.CategoricalDistribution;
@@ -12,9 +10,6 @@ import aima.core.probability.bayes.*;
 import aima.core.probability.bayes.impl.CPT;
 import aima.core.probability.proposition.AssignmentProposition;
 import aima.core.probability.util.ProbabilityTable;
-import aima.core.probability.util.RandVar;
-import com.sun.deploy.util.ArrayUtil;
-import it.unito.bayesian.net.utils.UtilsKt.*;
 
 import static it.unito.bayesian.net.utils.UtilsKt.generateVectorFromCPT;
 
@@ -49,8 +44,21 @@ public class CustomEliminationAsk implements BayesInference {
     private static final ProbabilityTable _identity = new ProbabilityTable(
             new double[] { 1.0 });
 
-    public CustomEliminationAsk() {
+    public static final int MPE = 1;
+    public static final int STANDARD = 0;
 
+    private int inferenceMethod;
+
+    public CustomEliminationAsk(int inferenceMethod) {
+        if(inferenceMethod != MPE && inferenceMethod != STANDARD){
+            this.inferenceMethod = STANDARD;
+        } else {
+            this.inferenceMethod = inferenceMethod;
+        }
+    }
+
+    public CustomEliminationAsk(){
+        this.inferenceMethod = STANDARD;
     }
 
     // function ELIMINATION-ASK(X, e, bn) returns a distribution over X
@@ -66,8 +74,8 @@ public class CustomEliminationAsk implements BayesInference {
      *            variables //
      * @return a distribution over the query variables.
      */
-    public CategoricalDistribution eliminationAsk(final RandomVariable[] X,
-                                                  final AssignmentProposition[] e, final BayesianNetwork bn) {
+    private CategoricalDistribution MpeEliminationAsk(final RandomVariable[] X,
+                                                     final AssignmentProposition[] e, final BayesianNetwork bn) {
 
         Set<RandomVariable> hidden = new HashSet<>();
         List<RandomVariable> VARS = new ArrayList<>();
@@ -86,6 +94,35 @@ public class CustomEliminationAsk implements BayesInference {
 
         return null;
         // return ((ProbabilityTable) .... ).normalize();
+    }
+
+    private CategoricalDistribution standardEliminationAsk(final RandomVariable[] X,
+                                                  final AssignmentProposition[] e, final BayesianNetwork bn) {
+
+        Set<RandomVariable> hidden = new HashSet<RandomVariable>();
+        List<RandomVariable> VARS = new ArrayList<RandomVariable>();
+        calculateVariables(X, e, bn, hidden, VARS);
+
+        // factors <- []
+        List<Factor> factors = new ArrayList<Factor>();
+        for (RandomVariable var : VARS) {
+            // factors <- [MAKE-FACTOR(var, e) | factors]
+            factors.add(0, makeFactor(var, e, bn));
+        }
+
+        // for each var in ORDER(bn.VARS) do
+        for (RandomVariable var : order(bn, VARS)) {
+            // if var is hidden variable then factors <- SUM-OUT(var, factors)
+            if (hidden.contains(var)) {
+                factors = sumOut(var, factors, bn);
+            }
+        }
+        // return NORMALIZE(POINTWISE-PRODUCT(factors))
+        Factor product = pointwiseProduct(factors);
+        // Note: Want to ensure the order of the product matches the
+        // query variables
+        return ((ProbabilityTable) product.pointwiseProductPOS(_identity, X))
+                .normalize();
     }
 
     private CategoricalDistribution executeMaxOut(List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] e, List<RandomVariable> VARS) {
@@ -126,7 +163,14 @@ public class CustomEliminationAsk implements BayesInference {
     public CategoricalDistribution ask(final RandomVariable[] X,
                                        final AssignmentProposition[] observedEvidence,
                                        final BayesianNetwork bn) {
-        return this.eliminationAsk(X, observedEvidence, bn);
+        switch (inferenceMethod){
+            case STANDARD:
+                return MpeEliminationAsk(X, observedEvidence, bn);
+            case MPE:
+                return standardEliminationAsk(X, observedEvidence, bn);
+            default:
+                return standardEliminationAsk(X, observedEvidence, bn);
+        }
     }
 
     // END-BayesInference

@@ -25,7 +25,7 @@ object Inferences {
      * @return A custom [EliminationAsk] object.
      */
     fun getCustomEliminationAsk(hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int, showMoralGraph: Boolean = true, delay: Long = 3000)
-        = object : CustomEliminationAsk() {
+        = object : CustomEliminationAsk(CustomEliminationAsk.STANDARD) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
                 MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)

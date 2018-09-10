@@ -5,6 +5,7 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
 import aima.core.probability.util.RandVar
+import weka.core.pmml.jaxbbindings.False
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
@@ -14,7 +15,6 @@ fun CPT.generateVector(verbose: Boolean = false) = generateVectorFromCPT(this, v
 
 fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
     val N = cpt.parents.size
-
     // number of combinations
     // using bitshift to power 2
     val NN = 1 shl N
@@ -90,7 +90,7 @@ fun combineParents(parents: Iterator<MoralGraph.MoralNode>): HashMap<RandomVaria
     })
 }
 
-fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVariable> {
+fun combineParents(parents: Collection<Any>, relevantVariables: Collection<RandomVariable>? = null): HashMap<RandomVariable, RandomVariable> {
     val i = ArrayList<RandomVariable>()
     for(o in parents){
         when (o) {
@@ -99,13 +99,13 @@ fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVari
             else -> throw Exception("Wrong class")
         }
     }
-
+//    i.removeIf { relevantVariables?.contains(it) ?: false }
     val map = HashMap<RandomVariable, RandomVariable>()
     for (parent1 in i){
         for (parent2 in i){
             if(parent1 != parent2) {
                 map[parent1] = parent2
-                map[parent2] = parent1
+//                map[parent2] = parent1
             }
         }
     }

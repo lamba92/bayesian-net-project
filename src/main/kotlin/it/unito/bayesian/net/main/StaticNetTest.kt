@@ -21,7 +21,7 @@ fun main(args: Array<String>){
           add(constructCloudySprinklerRainWetGrassNetwork())
 //        add(getComplexDynamicNetworkExample())
     }
-    val inference = CustomEliminationAsk()
+    val inference = getCustomEliminationAsk(minNeighboursHeuristicFunction(), true)
     for(net in nets){
         val queryVar = net.variablesInTopologicalOrder.last()
         val evidenceVar = net.variablesInTopologicalOrder.first()
