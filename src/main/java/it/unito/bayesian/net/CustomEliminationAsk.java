@@ -334,13 +334,13 @@ public class CustomEliminationAsk implements BayesInference {
         if(!list.isEmpty()) {
             ArrayList<RandomVariable> rv_children = new ArrayList<>();
             bn.getNode(var).getChildren().forEach(node -> rv_children.add(node.getRandomVariable()));
-            rv_children.add(0, var);
             System.out.println(rv_children);
             Arrays.stream(unboxed).forEach(value -> System.out.print(value + " "));
-            ProbabilityTable currentRandVarPT = new ProbabilityTable(unboxed, rv_children.toArray(new RandomVariable[0]));
+            Factor currentRandVarPT = ((Factor) new CPT(var, unboxed, rv_children.toArray(new RandomVariable[0])));
+
             Set<AssignmentProposition> parentsPropositions = new HashSet<>();
 
-            ProbabilityTable.Iterator iterator = (possibleAssignment, probability) -> {
+            Factor.Iterator iterator = (possibleAssignment, probability) -> {
 
                 System.out.println(possibleAssignment.entrySet() + " " + probability);
 
@@ -358,7 +358,8 @@ public class CustomEliminationAsk implements BayesInference {
 
 
             AssignmentProposition[] propositionsArray = parentsPropositions.toArray(new AssignmentProposition[0]);
-            currentRandVarPT.iterateOverTable(iterator, propositionsArray);
+            //currentRandVarPT.iterateOver(iterator, propositionsArray);
+            currentRandVarPT.iterateOver(iterator, propositionsArray);
             System.out.println("\n" + termValues);
             termValues.forEach(
                 mapDoublePair -> {

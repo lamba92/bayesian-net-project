@@ -7,6 +7,7 @@ import aima.core.probability.bayes.exact.EnumerationAsk
 import aima.core.probability.example.BayesNetExampleFactory.*
 import aima.core.probability.proposition.AssignmentProposition
 import it.unito.bayesian.net.CustomEliminationAsk
+import it.unito.bayesian.net.CustomEliminationAsk.MPE
 import it.unito.bayesian.net.Inferences.getCustomEliminationAsk
 import it.unito.bayesian.net.Inferences.minNeighboursHeuristicFunction
 import it.unito.bayesian.net.Inferences.minWeightHeuristicFunction
@@ -21,7 +22,7 @@ fun main(args: Array<String>){
           add(constructCloudySprinklerRainWetGrassNetwork())
 //        add(getComplexDynamicNetworkExample())
     }
-    val inference = getCustomEliminationAsk(minNeighboursHeuristicFunction())
+    val inference = getCustomEliminationAsk(minNeighboursHeuristicFunction(), MPE)
     for(net in nets){
         val queryVar = net.variablesInTopologicalOrder.last()
         val evidenceVar = net.variablesInTopologicalOrder[2]
