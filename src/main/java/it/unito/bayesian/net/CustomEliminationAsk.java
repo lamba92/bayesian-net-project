@@ -115,16 +115,17 @@ public class CustomEliminationAsk implements BayesInference {
     }
 
     private CategoricalDistribution executeMaxOut(List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] e, List<RandomVariable> VARS) {
-        System.out.println("I fattori del grafo sono: " + factors);
-        ArrayList<RandomVariable> assignments = new ArrayList<>();
+        //ArrayList<RandomVariable> assignments = new ArrayList<>();
+        //Arrays.stream(e).forEach(assignmentProposition -> assignments.add(assignmentProposition.getTermVariable()));
+
+        List<RandomVariable> assignments = new ArrayList<>();
         Arrays.stream(e).forEach(assignmentProposition -> assignments.add(assignmentProposition.getTermVariable()));
 
-
+        System.out.println("I fattori del grafo sono: " + factors);
         for (RandomVariable rv : order(bn, VARS)) {
-            List<RandomVariable> container = new ArrayList<>();
-            Arrays.stream(e).forEach(assignmentProposition -> container.add(assignmentProposition.getTermVariable()));
-            if(container.contains(rv)){
+            if(assignments.contains(rv)){
                 double[] values = ((CPT) bn.getNode(rv).getCPD()).getFactorFor().getValues();
+                System.out.println("\n PROVA: \n" + ((CPT) bn.getNode(rv).getCPD()).getFactorFor());
                 Pair<Map, Double> maxedOut = maxOut(rv, values, bn, e);
             } else {
                 Factor rvFactor = (((CPT) bn.getNode(rv).getCPD())).getFactorFor();
@@ -132,10 +133,12 @@ public class CustomEliminationAsk implements BayesInference {
                 bn.getNode(rv).getChildren().forEach(node ->
                         childrenFactors.add(((CPT) node.getCPD()).getFactorFor()));
                 childrenFactors.add(0, rvFactor);
-                Factor product = pointwiseProduct(childrenFactors);
+                Factor product = pointwiseProduct(childrenFactors); // ho fatto il prodotto dei figli, ora devo fare max
+                System.out.println("Product " + product);
                 Pair<Map, Double> maxedOut = maxOut(rv, product.getValues(), bn, e);
+
+                //System.out.println("\n " + maxedOut.getValue());
             }
-            System.out.println();
         }
 
         /*List<Factor> evidencesFactors = new ArrayList<>();
@@ -319,30 +322,29 @@ public class CustomEliminationAsk implements BayesInference {
     private Pair<Map, Double> maxOut(RandomVariable var, double[] values, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
         //Double[] arr = generateVectorFromCPT((CPT)bn.getNode(var).getCPD(),false);
         // double[] unboxedArr = Stream.of(arr).mapToDouble(Double::doubleValue).toArray();
+        List<RandomVariable> list = new ArrayList<>();
+        ArrayList<Pair<Map, Double>> termValues = new ArrayList<>();
         final Pair<Map, Double>[] max = new Pair[]{new Pair<>(new HashMap(), 0.0)};
-
+        Set<Node> parents = bn.getNode(var).getParents();
         double[] unboxed = getDoubles(values);
 
-        Set<Node> parents = bn.getNode(var).getParents();
-
-        ArrayList<Pair<Map, Double>> termValues = new ArrayList<>();
-
-        List<RandomVariable> list = new ArrayList<>();
         list.add(var);
         parents.forEach(p -> list.add(p.getRandomVariable()));
 
         if(!list.isEmpty()) {
             ArrayList<RandomVariable> rv_children = new ArrayList<>();
             bn.getNode(var).getChildren().forEach(node -> rv_children.add(node.getRandomVariable()));
-            System.out.println(rv_children);
+            System.out.println("\n PADRE: " + var + "\n FIGLI: \n" + rv_children);
+            calculateComplementary(unboxed);
             Arrays.stream(unboxed).forEach(value -> System.out.print(value + " "));
-            Factor currentRandVarPT = ((Factor) new CPT(var, unboxed, rv_children.toArray(new RandomVariable[0])));
+
+            Factor currentRandVarPT = new CPT(var, unboxed, rv_children.toArray(new RandomVariable[0])).getFactorFor();
 
             Set<AssignmentProposition> parentsPropositions = new HashSet<>();
 
             Factor.Iterator iterator = (possibleAssignment, probability) -> {
 
-                System.out.println(possibleAssignment.entrySet() + " " + probability);
+                // System.out.println(possibleAssignment.entrySet() + " " + probability);
 
                 boolean flag = true;
                 for (AssignmentProposition ass: assignmentPropositions) {
@@ -360,7 +362,7 @@ public class CustomEliminationAsk implements BayesInference {
             AssignmentProposition[] propositionsArray = parentsPropositions.toArray(new AssignmentProposition[0]);
             //currentRandVarPT.iterateOver(iterator, propositionsArray);
             currentRandVarPT.iterateOver(iterator, propositionsArray);
-            System.out.println("\n" + termValues);
+            System.out.println("\n termValues: \n" + termValues);
             termValues.forEach(
                 mapDoublePair -> {
                     if (mapDoublePair.getValue() > max[0].getValue())
@@ -377,6 +379,14 @@ public class CustomEliminationAsk implements BayesInference {
         Arrays.stream(cpt.getFactorFor().getValues()).forEach(System.out::println); */
 
         return max[0];
+    }
+
+    private void calculateComplementary(double[] unboxed) {
+        for (int i=0; i<unboxed.length; i++) {
+            if (i%2!=0) {
+                unboxed[i] = 1 - unboxed[i-1];
+            }
+        }
     }
 
     private double[] getDoubles(double[] arr) {
