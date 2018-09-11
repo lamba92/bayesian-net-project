@@ -115,17 +115,14 @@ public class CustomEliminationAsk implements BayesInference {
     }
 
     private CategoricalDistribution executeMaxOut(List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] e, List<RandomVariable> VARS) {
-        //ArrayList<RandomVariable> assignments = new ArrayList<>();
-        //Arrays.stream(e).forEach(assignmentProposition -> assignments.add(assignmentProposition.getTermVariable()));
 
         List<RandomVariable> assignments = new ArrayList<>();
         Arrays.stream(e).forEach(assignmentProposition -> assignments.add(assignmentProposition.getTermVariable()));
 
-        System.out.println("I fattori del grafo sono: " + factors);
+        System.out.println("I fattori del grafo sono: " + factors + "\n");
         for (RandomVariable rv : order(bn, VARS)) {
             if(assignments.contains(rv)){
                 double[] values = ((CPT) bn.getNode(rv).getCPD()).getFactorFor().getValues();
-                System.out.println("\n PROVA: \n" + ((CPT) bn.getNode(rv).getCPD()).getFactorFor());
                 Pair<Map, Double> maxedOut = maxOut(rv, values, bn, e);
             } else {
                 Factor rvFactor = (((CPT) bn.getNode(rv).getCPD())).getFactorFor();
@@ -134,34 +131,9 @@ public class CustomEliminationAsk implements BayesInference {
                         childrenFactors.add(((CPT) node.getCPD()).getFactorFor()));
                 childrenFactors.add(0, rvFactor);
                 Factor product = pointwiseProduct(childrenFactors); // ho fatto il prodotto dei figli, ora devo fare max
-                System.out.println("Product " + product);
-                Pair<Map, Double> maxedOut = maxOut(rv, product.getValues(), bn, e);
-
-                //System.out.println("\n " + maxedOut.getValue());
+                Pair<Map, Double> maxedOut = maxOut(product, bn, e);
             }
         }
-
-        /*List<Factor> evidencesFactors = new ArrayList<>();
-        for(AssignmentProposition ap : e) {
-            //mpeEvidencesResult *= Arrays.stream(((CPT) bn.getNode(ap.getTermVariable()).getCPD()).getFactorFor().getValues()).max().getAsDouble();
-            Factor factor = ((CPT) bn.getNode(ap.getTermVariable()).getCPD()).getFactorFor();
-            evidencesFactors.add(factor);
-        }
-
-        List<Factor> rvFactors = new ArrayList<>();
-        for (RandomVariable rv : noEvidences) {
-            System.out.println("\nNode " + rv.getName() + ":");
-            if (!assignments.contains(rv)) {
-                CPT maxedOut = maxOut(rv, factors, bn, e);
-                Factor f = maxedOut.getFactorFor();
-                rvFactors.add(f);
-                System.out.println(f);
-            }
-        }
-
-        Factor mpeEvidencesResults = pointwiseProduct(evidencesFactors);
-        Factor mpeRvResults = pointwiseProduct(factors);*/
-
 
         return null;
     }
@@ -320,8 +292,7 @@ public class CustomEliminationAsk implements BayesInference {
     }
 
     private Pair<Map, Double> maxOut(RandomVariable var, double[] values, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
-        //Double[] arr = generateVectorFromCPT((CPT)bn.getNode(var).getCPD(),false);
-        // double[] unboxedArr = Stream.of(arr).mapToDouble(Double::doubleValue).toArray();
+
         List<RandomVariable> list = new ArrayList<>();
         ArrayList<Pair<Map, Double>> termValues = new ArrayList<>();
         final Pair<Map, Double>[] max = new Pair[]{new Pair<>(new HashMap(), 0.0)};
@@ -342,43 +313,60 @@ public class CustomEliminationAsk implements BayesInference {
 
             Set<AssignmentProposition> parentsPropositions = new HashSet<>();
 
-            Factor.Iterator iterator = (possibleAssignment, probability) -> {
-
-                // System.out.println(possibleAssignment.entrySet() + " " + probability);
-
-                boolean flag = true;
-                for (AssignmentProposition ass: assignmentPropositions) {
-                    boolean check1 = possibleAssignment.get(ass.getTermVariable()) != null;
-                    if (check1 && !possibleAssignment.get(ass.getTermVariable()).equals(ass.getValue())) {
-                        flag = false;
-                    }
-                }
-                if(flag) {
-                    termValues.add(new Pair(mapCaster(possibleAssignment), probability));
-                }
-            };
-
+            Factor.Iterator iterator = iterateFactor(assignmentPropositions, termValues);
 
             AssignmentProposition[] propositionsArray = parentsPropositions.toArray(new AssignmentProposition[0]);
-            //currentRandVarPT.iterateOver(iterator, propositionsArray);
+
             currentRandVarPT.iterateOver(iterator, propositionsArray);
             System.out.println("\n termValues: \n" + termValues);
             termValues.forEach(
-                mapDoublePair -> {
-                    if (mapDoublePair.getValue() > max[0].getValue())
-                        max[0] = mapDoublePair;
-                }
+                    mapDoublePair -> {
+                        if (mapDoublePair.getValue() > max[0].getValue())
+                            max[0] = mapDoublePair;
+                    }
+            );
+        }
+        return max[0];
+    }
+
+    private Pair<Map, Double> maxOut(Factor currentRandVarPT, BayesianNetwork bn, AssignmentProposition[] assignmentPropositions) {
+        List<RandomVariable> list = new ArrayList<>();
+        ArrayList<Pair<Map, Double>> termValues = new ArrayList<>();
+        final Pair<Map, Double>[] max = new Pair[]{new Pair<>(new HashMap(), 0.0)};
+
+        if(!list.isEmpty()) {
+            Factor.Iterator iterator = iterateFactor(assignmentPropositions, termValues);
+
+            currentRandVarPT.iterateOver(iterator);
+            System.out.println("\n termValues: \n" + termValues);
+            termValues.forEach(
+                    mapDoublePair -> {
+                        if (mapDoublePair.getValue() > max[0].getValue())
+                            max[0] = mapDoublePair;
+                    }
             );
         }
 
-        /* ArrayList<RandomVariable> rvList = new ArrayList<>();
-        bn.getNode(var).getParents().forEach(node -> rvList.add(node.getRandomVariable()));
-        RandomVariable[] rvArr = rvList.toArray(new RandomVariable[0]);
-
-        CPT cpt = new CPT(var, unboxed, rvArr);
-        Arrays.stream(cpt.getFactorFor().getValues()).forEach(System.out::println); */
-
         return max[0];
+    }
+
+    private Factor.Iterator iterateFactor(AssignmentProposition[] assignmentPropositions, ArrayList<Pair<Map, Double>> termValues) {
+        Factor.Iterator iterator = (possibleAssignment, probability) -> {
+
+            // System.out.println(possibleAssignment.entrySet() + " " + probability);
+
+            boolean flag = true;
+            for (AssignmentProposition ass: assignmentPropositions) {
+                boolean check1 = possibleAssignment.get(ass.getTermVariable()) != null;
+                if (check1 && !possibleAssignment.get(ass.getTermVariable()).equals(ass.getValue())) {
+                    flag = false;
+                }
+            }
+            if(flag) {
+                termValues.add(new Pair(mapCaster(possibleAssignment), probability));
+            }
+        };
+        return iterator;
     }
 
     private void calculateComplementary(double[] unboxed) {
