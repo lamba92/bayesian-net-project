@@ -24,7 +24,7 @@ fun main(args: Array<String>){
     val inference = getCustomEliminationAsk(minNeighboursHeuristicFunction())
     for(net in nets){
         val queryVar = net.variablesInTopologicalOrder.last()
-        val evidenceVar = net.variablesInTopologicalOrder.first()
+        val evidenceVar = net.variablesInTopologicalOrder[2]
         val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net)
         println(
                 "Query variable is: $queryVar | Evidence variable is: $evidenceVar.\n" +

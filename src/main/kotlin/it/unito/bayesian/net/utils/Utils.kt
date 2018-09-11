@@ -5,6 +5,7 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
 import aima.core.probability.util.RandVar
+import com.sun.deploy.cache.Cache
 import weka.core.pmml.jaxbbindings.False
 import java.util.*
 import java.util.regex.Pattern
@@ -165,3 +166,10 @@ fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNet
 
 fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) =
         !this.isAncestorOf(rvs, bn)
+
+fun mapCaster (originalMap : Map<RandomVariable, Any>) =
+        HashMap<RandomVariable, Any>().apply{
+            originalMap.forEach { t, u ->
+                this[t] = u
+            }
+        }
