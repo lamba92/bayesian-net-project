@@ -1,6 +1,5 @@
 package it.unito.bayesian.net;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -13,7 +12,7 @@ import aima.core.probability.proposition.AssignmentProposition;
 import aima.core.probability.util.ProbabilityTable;
 import javafx.util.Pair;
 
-import static it.unito.bayesian.net.utils.UtilsKt.generateVectorFromCPT;
+import static it.unito.bayesian.net.utils.MpeUtilsKt.kotlinExecuteMaxOut;
 import static it.unito.bayesian.net.utils.UtilsKt.mapCaster;
 
 /**
@@ -91,9 +90,7 @@ public class CustomEliminationAsk implements BayesInference {
             factors.add(0, makeFactor(rv, e, bn));
         }
 
-        executeMaxOut(factors, bn, e, VARS);
-
-        return null;
+        return _executeMaxOut(X, hidden, VARS, factors, bn, e);
         // return ((ProbabilityTable) .... ).normalize();
     }
 
@@ -112,6 +109,10 @@ public class CustomEliminationAsk implements BayesInference {
         }
 
         return executeSumOut(X, hidden, VARS, factors, bn, e);
+    }
+
+    private CategoricalDistribution _executeMaxOut(final RandomVariable[] X, Set<RandomVariable> hidden, List<RandomVariable> VARS, List<Factor> factors, final BayesianNetwork bn, AssignmentProposition[] e){
+        return kotlinExecuteMaxOut(X, hidden, order(bn, VARS), factors, _identity);
     }
 
     private CategoricalDistribution executeMaxOut(List<Factor> factors, BayesianNetwork bn, AssignmentProposition[] e, List<RandomVariable> VARS) {
@@ -144,7 +145,7 @@ public class CustomEliminationAsk implements BayesInference {
         for (RandomVariable var : order(bn, VARS)) {
             // if var is hidden variable then factors <- SUM-OUT(var, factors)
             if (hidden.contains(var)) {
-                factors = sumOut(var, factors, bn);
+                factors = sumOut(var, factors);
             }
         }
         // return NORMALIZE(POINTWISE-PRODUCT(factors))
@@ -274,7 +275,7 @@ public class CustomEliminationAsk implements BayesInference {
                 evidence.toArray(new AssignmentProposition[0]));
     }
 
-    private List<Factor> sumOut(RandomVariable var, List<Factor> factors, BayesianNetwork bn) {
+    private List<Factor> sumOut(RandomVariable var, List<Factor> factors) {
         List<Factor> summedOutFactors = new ArrayList<>();
         List<Factor> toMultiply = new ArrayList<>();
         for (Factor f : factors) {

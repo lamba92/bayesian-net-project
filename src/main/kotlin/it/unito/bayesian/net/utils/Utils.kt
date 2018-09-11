@@ -1,12 +1,14 @@
 package it.unito.bayesian.net.utils
 
+import aima.core.probability.CategoricalDistribution
+import aima.core.probability.Factor
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
+import aima.core.probability.domain.FiniteDomain
+import aima.core.probability.proposition.AssignmentProposition
 import aima.core.probability.util.RandVar
-import com.sun.deploy.cache.Cache
-import weka.core.pmml.jaxbbindings.False
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
