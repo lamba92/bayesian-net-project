@@ -3,6 +3,7 @@
 package it.unito.bayesian.net.example
 
 import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.impl.BayesNet
 import aima.core.probability.bayes.impl.DynamicBayesNet
 import aima.core.probability.bayes.impl.FullCPTNode
@@ -22,6 +23,13 @@ object BayesNetsFactory{
     val s_1 = RandVar("S_1", BooleanDomain())
 
     val e_1 = RandVar("E_1",BooleanDomain())
+
+    val j = RandVar("J", BooleanDomain())
+    val i = RandVar("I", BooleanDomain())
+    val y = RandVar("Y", BooleanDomain())
+    val x = RandVar("X", BooleanDomain())
+    val o = RandVar("O", BooleanDomain())
+
 
     fun getComplexDynamicNetworkExample(): DynamicBayesNet {
         val priorNetwork = BayesNet(
@@ -57,5 +65,33 @@ object BayesNetsFactory{
         }
         val evidences = HashSet<RandomVariable>().apply { add(e_1) }
         return DynamicBayesNet(priorNetwork, rvMap, evidences, r_0_node, s_0_node)
+    }
+
+    fun getDigitalCircuitNetExample(): BayesianNetwork {
+        val j_node = FullCPTNode(j, doubleArrayOf(0.5, 0.5))
+        val i_node = FullCPTNode(i, doubleArrayOf(0.5, 0.5))
+
+        val y_node = FullCPTNode(y, doubleArrayOf(
+                0.01, 0.99,
+                0.99, 0.01),
+                j_node
+        )
+
+        val x_node = FullCPTNode(x, doubleArrayOf(
+                0.95, 0.05,
+                0.05, 0.95,
+                0.05, 0.95,
+                0.05, 0.95),
+                j_node, i_node
+        )
+
+        val o_node = FullCPTNode(o, doubleArrayOf(
+                0.98, 0.02,
+                0.98, 0.02,
+                0.98, 0.02,
+                0.02, 0.98),
+                y_node, x_node
+        )
+        return BayesNet(j_node, i_node)
     }
 }

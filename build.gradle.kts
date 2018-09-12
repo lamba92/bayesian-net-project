@@ -34,6 +34,7 @@ repositories {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
+    compile("de.vandermeer", "asciitable", "0.3.2")
     compile("com.googlecode.aima-java", "aima-core", "3.0.0")
     compile("org.graphstream", "gs-core", "1.1.1")
     compile("nz.ac.waikato.cms.weka", "weka-dev", "3.9.2")

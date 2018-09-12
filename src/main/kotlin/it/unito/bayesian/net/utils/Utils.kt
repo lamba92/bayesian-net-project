@@ -4,25 +4,52 @@ import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.RandomVariable
+import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
 import aima.core.probability.domain.FiniteDomain
 import aima.core.probability.proposition.AssignmentProposition
 import aima.core.probability.util.RandVar
+import it.unito.bayesian.net.CustomProbabilityTable
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+
+
 fun CPT.generateVector(verbose: Boolean = false) = generateVectorFromCPT(this, verbose)
 
 fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
     val N = cpt.parents.size
+
+    // array to store combinations
+    val flips = arrayOfBooleanArrays(N)
+    val reverseFlip = flips.reversedArray()
+    if(verbose){
+        println("Original truth table before reversing")
+        printTruthTable(flips)
+
+        println("Reversed truth table")
+        printTruthTable(reverseFlip)
+    }
+    val output = ArrayList<ArrayList<Double>>()
+    for(line in reverseFlip){
+        val d = cpt.getConditioningCase(*line.toTypedArray()).values
+        output.add(ArrayList(d.toList()))
+        if(verbose){println(Arrays.toString(d))}
+    }
+
+    return ArrayList<Double>().apply {
+        for(line in output) addAll(line)
+    }.toTypedArray()
+}
+
+fun arrayOfBooleanArrays(N: Int): Array<BooleanArray> {
     // number of combinations
     // using bitshift to power 2
     val NN = 1 shl N
 
-    // array to store combinations
     val flips = Array(NN) { BooleanArray(N) }
 
     // generating an array
@@ -42,24 +69,7 @@ fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
             //flips[nn][n] = (((nn>>n) & 1)==1);
         }
     }
-    val reverseFlip = flips.reversedArray()
-    if(verbose){
-        println("Original truth table before reversing")
-        printTruthTable(flips)
-
-        println("Reversed truth table")
-        printTruthTable(reverseFlip)
-    }
-    val output = ArrayList<ArrayList<Double>>()
-    for(line in reverseFlip){
-        val d = cpt.getConditioningCase(*line.toTypedArray()).values
-        output.add(ArrayList(d.toList()))
-        if(verbose){println(Arrays.toString(d))}
-    }
-
-    return ArrayList<Double>().apply {
-        for(line in output) addAll(line)
-    }.toTypedArray()
+    return flips
 }
 
 fun printTruthTable(array: Array<BooleanArray>){
@@ -175,3 +185,43 @@ fun mapCaster (originalMap : Map<RandomVariable, Any>) =
                 this[t] = u
             }
         }
+
+fun generateRandomListOfNumbers(targetSum: Int, numberOfDraws: Int): ArrayList<Int> {
+    val r = Random()
+    val load = ArrayList<Int>()
+
+    //random numbers
+    var sum = 0
+    for (i in 0 until numberOfDraws) {
+        val next = r.nextInt(targetSum) + 1
+        load.add(next)
+        sum += next
+    }
+
+    //scale to the desired target sum
+    val scale = 1.0 * targetSum / sum
+    sum = 0
+    for (i in 0 until numberOfDraws) {
+        load[i] = (load[i] * scale).toInt()
+        sum += load[i]
+    }
+
+    //take rounding issues into account
+    while (sum++ < targetSum) {
+        val i = r.nextInt(numberOfDraws)
+        load[i] = load[i] + 1
+    }
+
+    return load
+}
+
+fun Factor.convertToCustom(): CustomProbabilityTable {
+    val table = HashMap<HashMap<RandomVariable, Any>, Double>()
+    iterateOver { possibleAssignment, probability ->
+        table[HashMap(possibleAssignment)] = probability
+    }
+    return CustomProbabilityTable(table)
+}
+
+fun BayesInference.ask(X: Collection<RandomVariable>, e: Collection<AssignmentProposition>, bn: BayesianNetwork) =
+        ask(X.toTypedArray(), e.toTypedArray(), bn)

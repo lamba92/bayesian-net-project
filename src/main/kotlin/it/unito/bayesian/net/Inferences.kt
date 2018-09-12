@@ -4,16 +4,13 @@ import aima.core.probability.bayes.exact.EliminationAsk
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.proposition.AssignmentProposition
-import aima.core.probability.util.ProbabilityTable
-import it.unito.bayesian.net.CustomEliminationAsk.STANDARD
 import it.unito.bayesian.net.utils.MoralGraph
-import it.unito.bayesian.net.utils.MoralGraph.MoralNode
 import it.unito.bayesian.net.utils.combineParents
-import it.unito.bayesian.net.utils.isAncestorOf
 import it.unito.bayesian.net.utils.isNotAncestorOf
 import org.graphstream.graph.implementations.AbstractEdge
 import java.util.ArrayList
-import java.util.HashSet
+import it.unito.bayesian.net.KCustomEliminationAsk.InferenceMethod
+import it.unito.bayesian.net.KCustomEliminationAsk.InferenceMethod.STANDARD
 
 /**
  * Exact inference algorithm (Variable Elimination) for static [BayesianNetwork]s.
@@ -27,33 +24,30 @@ object Inferences {
      */
     fun getCustomEliminationAsk(
             hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int = minWeightHeuristicFunction(),
-            inferenceMethod: Int = STANDARD,
+            inferenceMethod: InferenceMethod = STANDARD,
             showMoralGraph: Boolean = false,
             delay: Long = 3000)
-        = object : CustomEliminationAsk(inferenceMethod) {
+        = object : KCustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
                 MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
 
-        override fun calculateVariables(
-                X: Array<out RandomVariable>,
-                e: Array<out AssignmentProposition>,
-                bn: BayesianNetwork,
-                hidden: MutableSet<RandomVariable>,
-                bnVARS: MutableCollection<RandomVariable>) {
-            hidden.addAll(bn.variablesInTopologicalOrder)
-            bnVARS.addAll(bn.variablesInTopologicalOrder)
-            val mainRvs = ArrayList<RandomVariable>().apply {
-                addAll(X)
-                e.forEach { addAll(it.scope) }
-            }
-            hidden.removeAll(mainRvs)
-            hidden.removeIf { it.isNotAncestorOf(mainRvs, bn) }
-            bnVARS.removeIf {
-                if(mainRvs.contains(it)) false
-                else it.isNotAncestorOf(mainRvs, bn)
-            }
-        }
+//        override fun calculateVariables(
+//                X: Array<RandomVariable>,
+//                e: Array<AssignmentProposition>,
+//                bn: BayesianNetwork)
+//                    : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
+//
+//            val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
+//            val mainRvs = ArrayList<RandomVariable>().apply {
+//                addAll(X)
+//                addAll(e.map { it.termVariable })
+//            }
+//            hiddenRVs.removeAll(mainRvs)
+//            hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
+//
+//            return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
+//        }
     }
 
     /**
