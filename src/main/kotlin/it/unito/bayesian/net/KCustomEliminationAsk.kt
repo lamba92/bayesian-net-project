@@ -1,48 +1,53 @@
 package it.unito.bayesian.net
 
 import aima.core.probability.CategoricalDistribution
-import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
 import aima.core.probability.proposition.AssignmentProposition
-import aima.core.probability.util.ProbabilityTable
 import it.unito.bayesian.net.utils.convertToCustom
+import it.unito.bayesian.net.utils.multiplyAll
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class KCustomEliminationAsk(val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
+open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
     enum class InferenceMethod {
         STANDARD, MPE, MAP
     }
 
-    override fun ask(X: Array<RandomVariable>, observedEvidence: Array<AssignmentProposition>, bn: BayesianNetwork): CategoricalDistribution {
-        val (hidden, vars) = calculateVariables(X, observedEvidence, bn)
+    override fun ask(X: Array<RandomVariable>, observedEvidences: Array<AssignmentProposition>, bn: BayesianNetwork): CategoricalDistribution? {
+        val (hidden, vars) = calculateVariables(X, observedEvidences, bn)
 
+        val factors = ArrayList<CustomFactor>()
+        for (rv in vars) {
+            factors.add(0, makeFactor(rv, observedEvidences, bn))
+        }
+        return when(inferenceMethod){
+            InferenceMethod.STANDARD -> exactInference(order(bn, hidden), factors)
+            InferenceMethod.MPE -> mpeInference(order(bn, hidden), factors)
+            InferenceMethod.MAP -> null
+        }
+    }
 
-        // factors <- []
-        var factors = ArrayList<Factor>()
-        for (rv in vars.subtract(observedEvidence.map { it.termVariable })) {
-            // factors <- [MAKE-FACTOR(rv, e) | factors]
-            factors.add(0, makeFactor(rv, observedEvidence, bn))
+    private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
+                               factors: ArrayList<CustomFactor>): CategoricalDistribution {
+        var newFactors = ArrayList(factors)
+        for(rv in orderedHiddenRVs){
+            newFactors = sumOut(rv, newFactors)
         }
+        return (pointwiseProduct(newFactors) as CustomProbabilityTable).normalize()
+    }
 
-        for (rv in order(bn, hidden)) {
-            factors = when (inferenceMethod) {
-                InferenceMethod.STANDARD -> sumOut(rv, factors)
-                InferenceMethod.MPE -> maxOut(rv, factors)
-                InferenceMethod.MAP -> if (X.contains(rv)) sumOut(rv, factors) else maxOut(rv, factors)
-            }
+    private fun mpeInference(hiddenOrdered : ArrayList<RandomVariable>,
+                             factors: ArrayList<CustomFactor>): CategoricalDistribution {
+        var newFactors = ArrayList(factors)
+        for(rv in hiddenOrdered){
+            newFactors = maxOut(rv, newFactors)
         }
-        val k = pointwiseProduct(factors)
-        return when(k){
-            is CustomProbabilityTable -> k.normalize()
-            is ProbabilityTable -> k.normalize()
-            else -> throw IllegalArgumentException("Illegal class idiot")
-        }
+        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
     }
 
     open fun calculateVariables(X: Array<RandomVariable>, e: Array<AssignmentProposition>, bn: BayesianNetwork)
@@ -59,8 +64,9 @@ open class KCustomEliminationAsk(val inferenceMethod: InferenceMethod = Inferenc
         return Pair(hidden, rvs)
     }
 
-    private fun makeFactor(rv: RandomVariable, e: Array<AssignmentProposition>,
-                           bn: BayesianNetwork): Factor {
+    private fun makeFactor(rv: RandomVariable,
+                           e: Array<AssignmentProposition>,
+                           bn: BayesianNetwork): CustomFactor {
         val n = bn.getNode(rv) as? FiniteNode ?: throw IllegalArgumentException("Elimination-Ask only works with finite Nodes.")
         val evidence = ArrayList<AssignmentProposition>()
         for (ap in e) {
@@ -78,46 +84,46 @@ open class KCustomEliminationAsk(val inferenceMethod: InferenceMethod = Inferenc
             e.forEach {
                 assignment[it.termVariable] = it.value
             }
-            f.iterateOver { possibleAssignment, value ->
-                if(possibleAssignment == assignment) table[assignment] = value
-            }
-            return CustomProbabilityTable(table)
+            table[assignment] = f.values[0]
+            return CustomProbabilityTable(table, assignment)
         }
     }
 
     open fun order(bn: BayesianNetwork,
-                        vars: Collection<RandomVariable>) = vars.reversed()
+                        vars: Collection<RandomVariable>) = ArrayList(vars.reversed())
 
-    private fun sumOut(rv: RandomVariable, factors: List<Factor>): ArrayList<Factor> {
-        val summedOutFactors = ArrayList<Factor>()
-        val toMultiply = ArrayList<Factor>()
+    private fun sumOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
+        val summedOutFactors = ArrayList<CustomFactor>()
+        val toMultiply = ArrayList<CustomFactor>()
         for (f in factors) {
             if (f.contains(rv))
                 toMultiply.add(f)
             else
                 summedOutFactors.add(f)
         }
-        summedOutFactors.add(pointwiseProduct(toMultiply).sumOut(rv))
+        summedOutFactors.add(pointwiseProduct(toMultiply).sumOut(rv) as CustomFactor)
         return summedOutFactors
     }
 
-    private fun maxOut(rv: RandomVariable, factors: List<Factor>): ArrayList<Factor> {
-        val summedOutFactors = ArrayList<Factor>()
-        val toMultiply = ArrayList<Factor>()
+    private fun maxOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
+        val summedOutFactors = ArrayList<CustomFactor>()
+        val toMultiply = ArrayList<CustomFactor>()
         for (f in factors) {
             if (f.contains(rv))
                 toMultiply.add(f)
             else
                 summedOutFactors.add(f)
         }
-        summedOutFactors.add((pointwiseProduct(toMultiply).convertToCustom() as CustomFactor).maxOut(rv))
+        val pointWised = pointwiseProduct(toMultiply)
+        val maxedOut = pointWised.maxOut(rv)
+        summedOutFactors.add(maxedOut)
         return summedOutFactors
     }
 
-    private fun pointwiseProduct(factors: List<Factor>): Factor {
+    private fun pointwiseProduct(factors: List<CustomFactor>): CustomFactor {
         var product = factors[0]
         for (i in 1 until factors.size) {
-            product = product.pointwiseProduct(factors[i])
+            product = product.pointwiseProduct(factors[i]) as CustomFactor
         }
         return product
     }

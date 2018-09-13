@@ -4,20 +4,31 @@ import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
+import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 
-class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>) : CustomFactor, CategoricalDistribution {
+class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
+                             maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
+                             private val verbose: Boolean = false)
+    : CustomFactor, CategoricalDistribution {
+
+    val maxedOutAssignments = HashMap(maxedOutAssignments)
+
+    init {
+        if(verbose) println("instancing: \n$this\nmaxedOutAssignments is: $maxedOutAssignments")
+    }
 
     override fun maxOut(vararg vars: RandomVariable): CustomFactor {
         if(vars.isEmpty()) return this
         if(!argumentVariables.containsAll(vars.toList()))
             throw IllegalArgumentException("Invalid argument. Input RVs must be contained inside the factor.")
-        var f = maxOutHelper(vars[0])
-        for(i in 1 until vars.size - 1){
-            f = f.maxOutHelper(vars[i])
+        val iter = vars.iterator()
+        var f = maxOutHelper(iter.next())
+        iter.forEachRemaining {
+            f = f.maxOutHelper(it)
         }
-        return f.normalize()
+        return f
     }
 
     override fun iterateOver(cdi: CategoricalDistribution.Iterator?) {
@@ -70,7 +81,8 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
                 newTable[newPossibleAssignment] = newProbability
             }
         }
-        return CustomProbabilityTable(newTable)
+        val previousAssignments = HashMap(maxedOutAssignments).apply { putAll((multiplier as CustomProbabilityTable).maxedOutAssignments)}
+        return CustomProbabilityTable(newTable, previousAssignments)
     }
 
     private fun buildCommonRows(multiplierTable: HashMap<Map<RandomVariable, Any>, Double>, intersectionCurrentAssignment: HashMap<RandomVariable, Any>): Map<Map<RandomVariable, Any>, Double> {
@@ -104,17 +116,19 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         return this
     }
 
-    override fun maxOutHelper(randVar: RandomVariable): CustomProbabilityTable {
+    private fun maxOutHelper(randVar: RandomVariable): CustomProbabilityTable {
         val table = HashMap<HashMap<RandomVariable, Any>, Double>()
         iterateOver { possibleAssignment, value ->
-            possibleAssignment.remove(randVar)
-            if(!table.containsKey(possibleAssignment) || value >= table[possibleAssignment]!!)
-                table[possibleAssignment as HashMap] = value
+            val newPossibleAssignment = HashMap(possibleAssignment).apply { remove(randVar) }
+            if(!table.containsKey(newPossibleAssignment) || value >= table[newPossibleAssignment]!!) {
+                table[newPossibleAssignment] = value
+                maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
+            }
         }
-        return CustomProbabilityTable(table)
+        return CustomProbabilityTable(table, maxedOutAssignments)
     }
 
-    override fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
+    private fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
         val subSet = argumentVariables.subtract(ArrayList<RandomVariable>().apply { add(rv) })
         val resultTable = HashMap<HashMap<RandomVariable, Any>, Double>()
         table.forEach { possibleAssignment, probability ->
@@ -182,5 +196,17 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     override fun marginal(vararg vars: RandomVariable?): CategoricalDistribution {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    operator fun times(op: CustomProbabilityTable): CustomProbabilityTable {
+        if(table.size != 1 && op.table.size != 1)
+            throw ArithmeticException("Factors are not scalars. Arithmetic multiplication is inconsistent")
+        val newTable = HashMap<HashMap<RandomVariable, Any>, Double>()
+        val key = HashMap<RandomVariable, Any>().apply {
+            putAll(maxedOutAssignments)
+            putAll(op.maxedOutAssignments)
+        }
+        newTable[key] = table.entries.first().value * op.table.entries.first().value
+        return CustomProbabilityTable(newTable)
     }
 }

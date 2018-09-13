@@ -7,7 +7,6 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.Node
-import aima.core.probability.domain.FiniteDomain
 import aima.core.probability.proposition.AssignmentProposition
 import aima.core.probability.util.RandVar
 import it.unito.bayesian.net.CustomProbabilityTable
@@ -15,7 +14,6 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-
 
 
 fun CPT.generateVector(verbose: Boolean = false) = generateVectorFromCPT(this, verbose)
@@ -215,13 +213,27 @@ fun generateRandomListOfNumbers(targetSum: Int, numberOfDraws: Int): ArrayList<I
     return load
 }
 
-fun Factor.convertToCustom(): CustomProbabilityTable {
+fun Factor.convertToCustom(verbose: Boolean = false): CustomProbabilityTable {
     val table = HashMap<HashMap<RandomVariable, Any>, Double>()
     iterateOver { possibleAssignment, probability ->
         table[HashMap(possibleAssignment)] = probability
     }
-    return CustomProbabilityTable(table)
+    return CustomProbabilityTable(table, verbose = verbose)
 }
 
 fun BayesInference.ask(X: Collection<RandomVariable>, e: Collection<AssignmentProposition>, bn: BayesianNetwork) =
         ask(X.toTypedArray(), e.toTypedArray(), bn)
+
+fun Collection<CustomProbabilityTable>.multiplyAll(): CustomProbabilityTable {
+    if(size == 1) return this.first()
+
+    val it = iterator()
+    var res = it.next() * it.next()
+    it.forEachRemaining {
+        res *= it
+    }
+    return res
+}
+
+fun BayesInference.ask(X: RandVar, proposition: AssignmentProposition, bn: BayesianNetwork) = ask(arrayOf(X), arrayOf(proposition), bn)
+fun BayesInference.ask(X: Array<RandVar>, observedEvidences: AssignmentProposition, bn: BayesianNetwork?) = ask(X, arrayOf(observedEvidences), bn)

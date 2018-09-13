@@ -26,28 +26,30 @@ object Inferences {
             hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int = minWeightHeuristicFunction(),
             inferenceMethod: InferenceMethod = STANDARD,
             showMoralGraph: Boolean = false,
-            delay: Long = 3000)
+            delay: Long = 3000,
+            overrideCV: Boolean= true)
         = object : KCustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
                 MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
 
-//        override fun calculateVariables(
-//                X: Array<RandomVariable>,
-//                e: Array<AssignmentProposition>,
-//                bn: BayesianNetwork)
-//                    : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
-//
-//            val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
-//            val mainRvs = ArrayList<RandomVariable>().apply {
-//                addAll(X)
-//                addAll(e.map { it.termVariable })
-//            }
-//            hiddenRVs.removeAll(mainRvs)
-//            hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
-//
-//            return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
-//        }
+        override fun calculateVariables(
+                X: Array<RandomVariable>,
+                e: Array<AssignmentProposition>,
+                bn: BayesianNetwork)
+                    : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
+            if(overrideCV){
+            val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
+            val mainRvs = ArrayList<RandomVariable>().apply {
+                addAll(X)
+                addAll(e.map { it.termVariable })
+            }
+            hiddenRVs.removeAll(mainRvs)
+            hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
+
+            return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
+            } else return super.calculateVariables(X, e, bn)
+        }
     }
 
     /**
