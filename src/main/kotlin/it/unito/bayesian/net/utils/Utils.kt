@@ -1,6 +1,5 @@
 package it.unito.bayesian.net.utils
 
-import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.RandomVariable
@@ -155,10 +154,11 @@ fun generateRvsToBeSummedOut(rvs: Collection<RandomVariable>, nextRvs: List<Rand
     return toReturn
 }
 
-fun Node.isAncestorOf(node: Node): Boolean {
-    return if(node.parents.contains(this)) true
+fun Node.isAncestorOf(eventuallyChildNode: Node): Boolean {
+    return if(eventuallyChildNode.parents.contains(this)) true
         else {
-            node.parents.forEach { if(it.isAncestorOf(this)) return true }
+            for(parent in eventuallyChildNode.parents)
+                if(isAncestorOf(parent)) return true
             false
         }
 }
@@ -168,8 +168,7 @@ fun RandomVariable.isAncestorOf(rv: RandomVariable, bn: BayesianNetwork) =
 
 fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork): Boolean {
     rvs.forEach {
-        if(this.isAncestorOf(it, bn))
-            return true
+        if(isAncestorOf(it, bn)) return true
     }
     return false
 }
@@ -237,3 +236,5 @@ fun Collection<CustomProbabilityTable>.multiplyAll(): CustomProbabilityTable {
 
 fun BayesInference.ask(X: RandVar, proposition: AssignmentProposition, bn: BayesianNetwork) = ask(arrayOf(X), arrayOf(proposition), bn)
 fun BayesInference.ask(X: Array<RandVar>, observedEvidences: AssignmentProposition, bn: BayesianNetwork?) = ask(X, arrayOf(observedEvidences), bn)
+
+fun <K, V> MutableMap<K, V>.put(entry: Map.Entry<K, V>) = put(entry.key, entry.value)

@@ -27,7 +27,7 @@ object Inferences {
             inferenceMethod: InferenceMethod = STANDARD,
             showMoralGraph: Boolean = false,
             delay: Long = 3000,
-            overrideCV: Boolean= true)
+            removeIrrelevantRVs: Boolean= true)
         = object : KCustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
@@ -38,16 +38,16 @@ object Inferences {
                 e: Array<AssignmentProposition>,
                 bn: BayesianNetwork)
                     : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
-            if(overrideCV){
-            val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
-            val mainRvs = ArrayList<RandomVariable>().apply {
-                addAll(X)
-                addAll(e.map { it.termVariable })
-            }
-            hiddenRVs.removeAll(mainRvs)
-            hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
+            if(removeIrrelevantRVs){
+                val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
+                val mainRvs = ArrayList<RandomVariable>().apply {
+                    addAll(X)
+                    addAll(e.map { it.termVariable })
+                }
+                hiddenRVs.removeAll(mainRvs)
+                hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
 
-            return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
+                return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
             } else return super.calculateVariables(X, e, bn)
         }
     }

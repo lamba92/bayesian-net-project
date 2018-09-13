@@ -19,9 +19,10 @@ open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = 
     }
 
     override fun ask(X: Array<RandomVariable>, observedEvidences: Array<AssignmentProposition>, bn: BayesianNetwork): CategoricalDistribution? {
-        val (hidden, vars) = calculateVariables(X, observedEvidences, bn)
 
+        val (hidden, vars) = calculateVariables(X, observedEvidences, bn)
         val factors = ArrayList<CustomFactor>()
+
         for (rv in vars) {
             factors.add(0, makeFactor(rv, observedEvidences, bn))
         }
@@ -53,15 +54,14 @@ open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = 
     open fun calculateVariables(X: Array<RandomVariable>, e: Array<AssignmentProposition>, bn: BayesianNetwork)
             : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
 
-        val hidden = HashSet<RandomVariable>()
-        val rvs = ArrayList<RandomVariable>(bn.variablesInTopologicalOrder)
-
-        hidden.addAll(rvs)
+        val hidden = HashSet<RandomVariable>(bn.variablesInTopologicalOrder)
 
         hidden.removeAll(X)
         hidden.removeAll(e.map { it.termVariable })
 
-        return Pair(hidden, rvs)
+        val relevantRVs = ArrayList(hidden).apply { addAll(X); addAll(e.map { it.termVariable }) }
+
+        return Pair(hidden, relevantRVs)
     }
 
     private fun makeFactor(rv: RandomVariable,
@@ -85,7 +85,7 @@ open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = 
                 assignment[it.termVariable] = it.value
             }
             table[assignment] = f.values[0]
-            return CustomProbabilityTable(table, assignment)
+            return CustomProbabilityTable(table)
         }
     }
 

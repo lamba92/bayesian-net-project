@@ -7,6 +7,7 @@ import aima.core.probability.proposition.AssignmentProposition
 import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import it.unito.bayesian.net.utils.put
 
 class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
                              maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
@@ -151,8 +152,8 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
             asciiTable.addRule()
         }
         asciiTable.addRow(ArrayList<String>().apply {
-            argumentVariables.forEach { add(" ") }
-            add("SUM: ${table.values.sum()}")
+            argumentVariables.forEach { _ -> add(" ") }
+            add("SUM: %.4f".format(table.values.sum()))
         }).apply { setTextAlignment(TextAlignment.CENTER) }
         asciiTable.addRule()
         return asciiTable.render()
@@ -205,8 +206,13 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         val key = HashMap<RandomVariable, Any>().apply {
             putAll(maxedOutAssignments)
             putAll(op.maxedOutAssignments)
+            put(table.entries.first().key.entries.first())
+            put(op.table.entries.first().key.entries.first())
         }
         newTable[key] = table.entries.first().value * op.table.entries.first().value
         return CustomProbabilityTable(newTable)
     }
 }
+
+
+
