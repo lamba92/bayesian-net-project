@@ -1,4 +1,4 @@
-package it.unito.bayesian.net
+package it.unito.probability
 
 import aima.core.probability.Factor
 import aima.core.probability.RandomVariable

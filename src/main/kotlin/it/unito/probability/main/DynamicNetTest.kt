@@ -1,14 +1,12 @@
-package it.unito.bayesian.net.main
+package it.unito.probability.main
 
 import aima.core.probability.example.DynamicBayesNetExampleFactory.getUmbrellaWorldNetwork
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.CustomDynamicBayesianNet
-import it.unito.bayesian.net.Inferences.getCustomEliminationAsk
-import it.unito.bayesian.net.Inferences.minFillHeuristicFunction
-import it.unito.bayesian.net.Inferences.minNeighboursHeuristicFunction
-import it.unito.bayesian.net.Inferences.minWeightHeuristicFunction
-import it.unito.bayesian.net.KCustomEliminationAsk
-import it.unito.bayesian.net.example.BayesNetsFactory.getComplexDynamicNetworkExample
+import it.unito.probability.bayes.BayesNetsFactory.getComplexDynamicNetworkExample
+import it.unito.probability.bayes.CustomDynamicBayesianNet
+import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
+import it.unito.probability.bayes.Inferences.minFillHeuristicFunction
+import it.unito.probability.bayes.KCustomEliminationAsk
 
 fun main(args: Array<String>){
     val inference = getCustomEliminationAsk(minFillHeuristicFunction(), KCustomEliminationAsk.InferenceMethod.MPE)

@@ -1,16 +1,16 @@
-package it.unito.bayesian.net
+package it.unito.probability.bayes
 
 import aima.core.probability.bayes.exact.EliminationAsk
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.utils.MoralGraph
-import it.unito.bayesian.net.utils.combineParents
-import it.unito.bayesian.net.utils.isNotAncestorOf
+import it.unito.probability.utils.MoralGraph
+import it.unito.probability.utils.combineParents
+import it.unito.probability.utils.isNotAncestorOf
 import org.graphstream.graph.implementations.AbstractEdge
 import java.util.ArrayList
-import it.unito.bayesian.net.KCustomEliminationAsk.InferenceMethod
-import it.unito.bayesian.net.KCustomEliminationAsk.InferenceMethod.STANDARD
+import it.unito.probability.bayes.KCustomEliminationAsk.InferenceMethod
+import it.unito.probability.bayes.KCustomEliminationAsk.InferenceMethod.STANDARD
 
 /**
  * Exact inference algorithm (Variable Elimination) for static [BayesianNetwork]s.

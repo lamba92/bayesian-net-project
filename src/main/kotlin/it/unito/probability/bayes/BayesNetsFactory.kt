@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "UNUSED_VARIABLE")
 
-package it.unito.bayesian.net.example
+package it.unito.probability.bayes
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork

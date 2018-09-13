@@ -1,13 +1,13 @@
-package it.unito.bayesian.net.main
+package it.unito.probability.main
 
 import aima.core.probability.bayes.exact.EliminationAsk
 import aima.core.probability.example.BayesNetExampleFactory.constructBurglaryAlarmNetwork
 import aima.core.probability.example.ExampleRV
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.Inferences.getCustomEliminationAsk
-import it.unito.bayesian.net.KCustomEliminationAsk
-import it.unito.bayesian.net.KCustomEliminationAsk.InferenceMethod.STANDARD
-import it.unito.bayesian.net.utils.ask
+import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
+import it.unito.probability.bayes.KCustomEliminationAsk
+import it.unito.probability.utils.ask
+
 
 fun main(args: Array<String>){
     val net = constructBurglaryAlarmNetwork()

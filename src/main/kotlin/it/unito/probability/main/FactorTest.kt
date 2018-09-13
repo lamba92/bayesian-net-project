@@ -1,7 +1,7 @@
-package it.unito.bayesian.net.main
+package it.unito.probability.main
 
-import it.unito.bayesian.net.CustomProbabilityTable
-import it.unito.bayesian.net.example.CustomFactorFactory.getTestFactor
+import it.unito.probability.CustomProbabilityTable
+import it.unito.probability.CustomFactorFactory.getTestFactor
 
 fun main(args: Array<String>){
     val f1 = getTestFactor("A", "B", "C")

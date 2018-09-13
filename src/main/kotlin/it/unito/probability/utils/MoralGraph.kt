@@ -1,4 +1,4 @@
-package it.unito.bayesian.net.utils
+package it.unito.probability.utils
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork

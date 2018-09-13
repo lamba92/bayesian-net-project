@@ -1,3 +1,3 @@
-package it.unito.bayesian.net.utils
+package it.unito.probability.utils
 
 class WrongDistributionException(msg: String? = null) : Throwable(msg)

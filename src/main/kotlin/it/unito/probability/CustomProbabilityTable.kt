@@ -1,13 +1,12 @@
-package it.unito.bayesian.net
+package it.unito.probability
 
 import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
-import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import it.unito.bayesian.net.utils.put
+import it.unito.probability.utils.put
 
 class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
                              maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
@@ -107,7 +106,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     override fun getArgumentVariables() = table.entries.first().key.keys
 
-    override fun normalize(): CustomProbabilityTable{
+    override fun normalize(): CustomProbabilityTable {
         val sum = table.values.sum()
         if(sum != 0.0 && sum != 1.0){
             table.forEach { t, u ->

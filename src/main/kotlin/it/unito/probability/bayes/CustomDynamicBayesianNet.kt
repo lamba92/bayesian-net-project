@@ -1,6 +1,6 @@
 //@file:Suppress("HasPlatformType", "FunctionName")
 
-package it.unito.bayesian.net
+package it.unito.probability.bayes
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesInference
@@ -11,11 +11,8 @@ import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.bayes.impl.DynamicBayesNet
 import aima.core.probability.bayes.impl.FullCPTNode
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.utils.WrongDistributionException
-import it.unito.bayesian.net.utils.generateVectorFromCPT
+import it.unito.probability.utils.*
 import java.util.*
-import it.unito.bayesian.net.utils.getNext
-import it.unito.bayesian.net.utils.log
 import kotlin.collections.ArrayList
 
 /**
@@ -106,7 +103,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
                 val parentRV = parent.randomVariable
                 newParents.add(nextBeliefs[currentSlice.x_0_to_X_1[parentRV]]!!)
             }
-            val distribution = generateVectorFromCPT(currentSlice.getNode(oldRV).cpd as CPT).toDoubleArray()
+            val distribution = (currentSlice.getNode(oldRV).cpd as CPT).generateVector().toDoubleArray()
             newStateVariables[newRv] = FullCPTNode(newRv, distribution, *newParents.toTypedArray())
             X_1_to_X_2[oldRV] = newRv
             if (verbose){
@@ -127,7 +124,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
                 val parentRv = parent.randomVariable
                 newParents.add(newStateVariables[X_1_to_X_2[parentRv]]!!)
             }
-            val distribution = generateVectorFromCPT(currentSlice.getNode(oldEvRv).cpd as CPT).toDoubleArray()
+            val distribution = (currentSlice.getNode(oldEvRv).cpd as CPT).generateVector().toDoubleArray()
             newEvidences[newEvRv] = FullCPTNode(newEvRv, distribution, *newParents.toTypedArray())
             if (verbose){
                 log("Old RV name: $oldEvRv\n" +

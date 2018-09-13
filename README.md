@@ -219,8 +219,8 @@ val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenc
 
 Create a `CustomDynamicBayesianNet` using a newly generated dynamic network or use an example from the factories of this library and aima's:
 ```
-import it.unito.bayesian.net.CustomDynamicBayesianNet
-import it.unito.bayesian.net.Inferences.*
+import it.unito.probability.net.CustomDynamicBayesianNet
+import it.unito.probability.net.Inferences.*
 
 ...
 

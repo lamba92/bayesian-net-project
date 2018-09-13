@@ -1,18 +1,17 @@
-package it.unito.bayesian.net.example
+package it.unito.probability
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.domain.BooleanDomain
 import aima.core.probability.util.RandVar
-import it.unito.bayesian.net.CustomProbabilityTable
-import it.unito.bayesian.net.utils.arrayOfBooleanArrays
-import it.unito.bayesian.net.utils.generateRandomListOfNumbers
+import it.unito.probability.utils.arrayOfBooleanArrays
+import it.unito.probability.utils.generateRandomListOfNumbers
 import java.util.Random
 
 object CustomFactorFactory {
 
     val r = Random()
 
-    fun getTestFactor(vararg rvs: String): CustomProbabilityTable{
+    fun getTestFactor(vararg rvs: String): CustomProbabilityTable {
         val table = HashMap<HashMap<RandomVariable, Any>, Double>()
         val rvList = ArrayList<RandomVariable>().apply {
             rvs.forEach { add(RandVar(it, BooleanDomain())) }

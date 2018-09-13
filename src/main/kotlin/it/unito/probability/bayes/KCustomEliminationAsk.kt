@@ -1,4 +1,4 @@
-package it.unito.bayesian.net
+package it.unito.probability.bayes
 
 import aima.core.probability.CategoricalDistribution
 import aima.core.probability.RandomVariable
@@ -6,8 +6,10 @@ import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.bayesian.net.utils.convertToCustom
-import it.unito.bayesian.net.utils.multiplyAll
+import it.unito.probability.CustomFactor
+import it.unito.probability.CustomProbabilityTable
+import it.unito.probability.utils.convertToCustom
+import it.unito.probability.utils.multiplyAll
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
