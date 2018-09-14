@@ -101,12 +101,12 @@ The **MPE** inference is similar to the Variable Elimination one, the difference
 </p>
 
 Given Q set of variables in a **BN**, q their instantiations and E set of evidences, then the maximum is computed, formally: 
+
 <p align="center">
   <img src="http://latex.codecogs.com/gif.latex?%5Cbold%7Barg%7D%20%5C%3A%20%5Cunderset%7BQ%7D%7Bmax%7D%20%5C%3A%20P%28q%7Ce_%7B1%7D%2C%20%5C%3A%20e_%7B2%7D%2C%20%5C%3A%20...%5C%3A%20%2C%20e_%7Bn%7D%29%20%5C%3A%2C%20%5C%3A%20%5C%3A%20%5C%3A%20%5C%3A%20e_%7Bi%7D%20%5Cin%20E"/>
 </p>
 
 #### Example
-
 In our code we made a representation of the following **BN**, which models the behavior of a digital circuit:
 <p align="center">
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/BN_Circuit.png" width="50%" height="50%"/>
@@ -130,7 +130,7 @@ The algorithm is the following:
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MAP-algorithm.png" width="80%" height="80%"/>
 </p>
 
-Which computes a factored representation of the joint marginal `P(Q,e)` and then find an MPE for Q using the resulting marginal
+Which computes a factored representation of the joint marginal `P(Q,e)` and then find an MPE for Q using the resulting marginal.
 
 
 ## Dynamic Bayesian Networks
@@ -213,9 +213,85 @@ We also used external libreries:
 - [AsciiTable](https://example.com) to visualize probability tables and debug them. 
 
   Here is an example of a table before and after of a marginalization:
+  
+  \IMG
 
 - [Weka](https://github.com/Waikato/weka-3.8)'s BIFreader to parse BIF file and code their content into our Bayesian Network.
-\IMG
+
+    Here is an example of a BN represented in a BIF format:
+    
+```
+  <NETWORK>
+      <NAME>Dog Problem - Bayes Net</NAME>
+
+    <!-- Variables -->
+    <VARIABLE TYPE="nature">
+      <NAME>Light-on</NAME>
+      <OUTCOME>true</OUTCOME>
+      <OUTCOME>false</OUTCOME>
+      <PROPERTY>position = (73, 165)</PROPERTY>
+    </VARIABLE>
+
+    <VARIABLE TYPE="nature">
+      <NAME>Bowel-problem</NAME>
+      <OUTCOME>true</OUTCOME>
+      <OUTCOME>false</OUTCOME>
+      <PROPERTY>position = (190, 69)</PROPERTY>
+    </VARIABLE>
+
+    <VARIABLE TYPE="nature">
+      <NAME>Dog-out</NAME>
+      <OUTCOME>true</OUTCOME>
+      <OUTCOME>false</OUTCOME>
+      <PROPERTY>position = (155, 165)</PROPERTY>
+    </VARIABLE>
+
+    <VARIABLE TYPE="nature">
+      <NAME>Hear-bark</NAME>
+      <OUTCOME>true</OUTCOME>
+      <OUTCOME>false</OUTCOME>
+      <PROPERTY>position = (154, 241)</PROPERTY>
+    </VARIABLE>
+
+    <VARIABLE TYPE="nature">
+      <NAME>Family-out</NAME>
+      <OUTCOME>true</OUTCOME>
+      <OUTCOME>false</OUTCOME>
+      <PROPERTY>position = (112, 69)</PROPERTY>
+    </VARIABLE>
+
+
+    <!-- Probability distributions -->
+    <DEFINITION>
+      <FOR>Light-on</FOR>
+      <GIVEN>Family-out</GIVEN>
+      <TABLE>0.6 0.4 0.05 0.95 </TABLE>
+    </DEFINITION>
+
+    <DEFINITION>
+      <FOR>Bowel-problem</FOR>
+      <TABLE>0.01 0.99 </TABLE>
+    </DEFINITION>
+
+    <DEFINITION>
+      <FOR>Dog-out</FOR>
+      <GIVEN>Bowel-problem</GIVEN>
+      <GIVEN>Family-out</GIVEN>
+      <TABLE>0.99 0.01 0.97 0.03 0.9 0.1 0.3  0.7 </TABLE>
+    </DEFINITION>
+
+    <DEFINITION>
+      <FOR>Hear-bark</FOR>
+      <GIVEN>Dog-out</GIVEN>
+      <TABLE>0.7 0.3 0.01 0.99 </TABLE>
+    </DEFINITION>
+
+    <DEFINITION>
+      <FOR>Family-out</FOR>
+      <TABLE>0.15 0.85 </TABLE>
+    </DEFINITION>
+  </NETWORK>
+```
 
 
 # Getting Started
