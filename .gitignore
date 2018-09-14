@@ -11,3 +11,5 @@ build/
 bayesian-net-project.iml
 
 .gradle/
+
+src/main/java/it/unito/bayesian/net/CustomEliminationAsk\.java

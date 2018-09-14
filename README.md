@@ -5,9 +5,9 @@
 The project consists in two implementations:
 
    **1.** **Extended Variable Elimination** inference algorithm on `Bayesian Networks`,
- 
+
    **2.** **Rollup Filtering**  inference algorithm on `Dynamic Bayesian Networks` (DBNs).
-      
+
 # Preliminaries
 
 ## Bayesian Networks
@@ -54,7 +54,7 @@ Making inferences on a BN using brutal recurring Bayesian Formulae can be a chal
 
 ### Variable Elimination
 
-`Variable Elimination` (VE) is a simple and general exact inference algorithm. It consists on identifying groups of repeated calculations, which are called **factors**, store them and then use the stored value instead of computing them again. 
+`Variable Elimination` (VE) is a simple and general exact inference algorithm. It consists on identifying groups of repeated calculations, which are called **factors**, store them and then use the stored value instead of computing them again.
 
 Those factors cam be compacted using point-wise multiplication following a custom order; this very order allows to increase the efficiency of the algorithm.
 
@@ -65,20 +65,20 @@ Heuristics may be used to find a **Variable Elimination** order:
 #### Heuristics
 
 The data structure used to find a variable elimination order is called **Moral Graph**.
-In graph theory, a Moral Graph is used to find the equivalent undirected form of a Directed Acyclic Graph. 
+In graph theory, a Moral Graph is used to find the equivalent undirected form of a Directed Acyclic Graph.
 
 The moralized counterpart of a Directed Acyclic Graph is formed by adding edges between all pairs of nodes that have a common child, and then making all edges in the graph undirected.
 
 We define an elimination order through the evaluation function, which uses one of the following heuristics as evaluation metrics:
 
  - **minimum neighbors**: The cost of a vertex is the number of neighbors it has in the current graph.
- 
+
  - **minimum weight**: The cost of a vertex is the product of weights — domain cardinality — of its neighbors.
- 
+
  - **minimum fill**: The cost of a vertex is the number of edges that need to be added to the graph due to its elimination.
- 
+
  - **weighted minimum fill**: The cost of a vertex is the sum of weights of the edges that need to be added to the graph due to its elimination, where a weight of an edge is the product of weights of its constituent vertices.
- 
+
 It is shown that *none of these heuristics is better than another* because their goodness is strictly dependent on the topology of the network on which the algorithm itself is applied.
 
 The one in the following image is the search greedy algorithm for the heuristic sorting of the Variables to be eliminated:
@@ -87,9 +87,53 @@ The one in the following image is the search greedy algorithm for the heuristic 
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/greedy.PNG"/>
 </p>
 
+### MPE
+
+Given an evidence *e*, the **MPE**, also known as max propagation, is an assignment to all the non-evidence variables that has the highest probability.
+It is possible to compute **MPE** through various many different methods.
+The one implemented is still the Variable Elimination inference algorithm.
+
+The difference between standard inference and **MPE** inference, is that when variables are marginalized out from distributions in order to compute queries, instead of summing values, the maximum is used.
+
+That is, if Q are all the variables in a **BN**, then the goal is to find a *q* instantiation of Q such that `P(q|e)` is maximal, which is the same as maximizing `P(q,e)`, since
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?P%28q%7Ce%29%3D%20%5Cfrac%7BP%28q%2C%20e%29%7D%7BP%28e%29%7D"/>
+</p>
+
+Formally:  
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?%5Cboldsymbol%7Barg%7D%20%5C%3A%20%5Cunderset%7B%5Cbold%7Bz%7D%7D%7Bmax%7D%5C%3A%20P%28c%28z%2C%20e%29%29"/>
+</p>
+
+#### Example
+
+In our code we made a representation of the following **BN**, which models the behavior of a digital circuit:
+/IMG
+
+Given the evidences `J=true` and `O=false` and the order J, I, X, Y, O according to min–neighbors heuristic, the following computation is made:
+
+<p align="center">
+  <img src="http://latex.codecogs.com/gif.latex?%5Cunderset%7BJ%2CI%2CX%2CY%2CO%7D%7Bmax%7D%20%5Cbold%7Bf%7D_%7BI%20%5C%3A%7D%20%5Cbold%7Bf%7D_%7BJ%20%5C%3A%7D%20%5Cbold%7Bf%7D_%7BY%20%5C%3A%7D%20%5Cbold%7Bf%7D_%7BX%7CI%20%5C%3A%7D%20%5Cbold%7Bf%7D_%7BO%7CXY%7D%20%3D%20%28%5Cunderset%7BJ%7D%7Bmax%7D%5Cbold%7B%5C%3Af%7D_%7BJ%7D%29%20%5Cunderset%7BO%7D%7B%5C%3Amax%7D%20%28%5Cunderset%7BY%7D%7Bmax%7D%20%28%5Cunderset%7BX%7D%7Bmax%7D%20%28%5Cunderset%7BI%7D%7Bmax%7D%5Cbold%7B%5C%3Af%7D_%7BI%7D%5Cbold%7B%5C%3Af%7D_%7BX%7CI%7D%29%5Cbold%7B%5C%3Af%7D_%7BO%7CXY%7D%29%5Cbold%7B%5C%3Af%7D_%7BY%7D%29"/>
+</p>
+
+
+### MAP
+
+A Maximum a Posteriori Probability (**MAP**) is an estimate of an unobserved quantity on the basis of empirical data.
+
+Computing **MAP** for a set of variables Q and a set of evidence *e* means to find an instantiation q of variables Q which maximizes the probability `P(q|e)`. It is done using a **Variable Elimination and MPE combination**.
+
+The algorithm is the following:
+/IMG
+
+Which computes a factored representation of the joint marginal `P(Q,e)` and then find an MPE for Q using the resulting marginal
+
+
 ## Dynamic Bayesian Networks
 
-`Dynamic Bayesian Networks` (**DBN**s) are static Bayesian Networks that are modeled over an arrangement of **time series** or sequences. 
+`Dynamic Bayesian Networks` (**DBN**s) are static Bayesian Networks that are modeled over an arrangement of **time series** or sequences.
 In a Dynamic Bayesian Network, each **time slice** is conditionally dependent on the previous one. The probabilities among the original distribution determine the probabilities in the successive.
 
 To build a DBN it is necessary:
@@ -113,14 +157,14 @@ Starting from the previously specified parameters it is possible to construct an
 
 However it suffers from an **excessive memory occupation**, since all time slices (which tend to infinity) are kept in memory.
 
-We use the **Rollup Filtering** technique to solve this problem; it makes possible to focus on two slices at a time. 
+We use the **Rollup Filtering** technique to solve this problem; it makes possible to focus on two slices at a time.
 The following interval is created using the Variables Elimination algorithm on the last product interval.
 
 To carry out the inference it can also be possible to provide a sequence of observations.
 
 
 # Project Description
-   
+
 ## 1. VE (Variable Elimination) algorithm extension
 
 The exercise is divided into four steps:
@@ -146,9 +190,9 @@ The project has been divided into three main parts:
   - `MoralGraph.kt`, which implements a Moral Graph and all the necessary methods needed.
 
   - `BIFToBayesNet.kt`, which implements a BIF file parser that instantiate a BayesNet object from a BIF file (Boolean Domain only).
-  
-  - `Utils.kt`, which contains many utility methods. 
-  
+
+  - `Utils.kt`, which contains many utility methods.
+
 - `CustomDynamicaBayesNet` class, which implements the **Rollup Filtering** algorithm.
 
 - `Inferences` object, which instantiates an object which contains the extension of the `Variable Elimination` algorithm required by the project and which exposes the methods.
@@ -157,7 +201,7 @@ We also used [GraphStream](https://github.com/graphstream/gs-core) to visualize 
 
 Here is an example of a graph before and after undergoing the pruning of a node.
 
-<p align="center"> 
+<p align="center">
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine2a.png" width="20%" height="20%"/>
   <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine1.png" width="40%" height="40%" />
 </p>
@@ -232,7 +276,7 @@ customNet.forward() // Moves the network one step forward
 
 `CustomDynamicBayesianNet` constructor needs a network and a `BayesianInference` to proceed forward in time.
 
-Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/master-SNAPSHOT/javadoc/bayesian-net-project/) for details. 
+Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/master-SNAPSHOT/javadoc/bayesian-net-project/) for details.
 
 For a usage example have a look [at some tests here](https://github.com/lamba92/bayesian-net-project/tree/master/src/main/kotlin/it/unito/bayesian/net/main).
 
