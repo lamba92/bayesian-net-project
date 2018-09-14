@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     var kotlinVersion: String by extra
     var dokkaVersion: String by extra
-    kotlinVersion = "1.2.61"
+    kotlinVersion = "1.2.70"
     dokkaVersion = "0.9.17"
 
     repositories {
@@ -20,7 +20,7 @@ buildscript {
 plugins {
     java
     id("maven")
-    kotlin("jvm") version "1.2.61"
+    kotlin("jvm") version "1.2.70"
     id("org.jetbrains.dokka") version "0.9.17"
 }
 

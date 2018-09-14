@@ -13,7 +13,7 @@ import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
+open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
     enum class InferenceMethod {
         STANDARD, MPE, MAP
@@ -35,21 +35,19 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
         return when(inferenceMethod){
             InferenceMethod.STANDARD -> exactInference(order(bn, hidden), factors)
             InferenceMethod.MPE -> mpeInference(order(bn, vars), factors)
-            InferenceMethod.MAP -> null
+            InferenceMethod.MAP -> mapInference(order(bn, hidden), X, factors)
         }
     }
 
-    private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
-        if (inferenceMethod == InferenceMethod.STANDARD) {
-            if (X.isEmpty())
-                throw java.lang.IllegalArgumentException("Cannot apply elimination without a query.")
-            if (!bn.variablesInTopologicalOrder.containsAll(X.toList()) || !bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
-                throw java.lang.IllegalArgumentException("Cannot apply elimination on variables not inside the net.")
-        } else if (inferenceMethod == InferenceMethod.MPE) {
-            if (!bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
-                throw java.lang.IllegalArgumentException("Cannot apply MPE elimination on variables not inside the net.")
-            if (X.isNotEmpty()) println("Query array is not empty. MPE does not need any query variable. Computation will continue...")
+    private fun mapInference(hidden: ArrayList<RandomVariable>, queries: Array<RandomVariable>, factors: ArrayList<CustomFactor>): CategoricalDistribution {
+        var newFactors = ArrayList(factors)
+        hidden.forEach {
+            newFactors = sumOut(it, newFactors)
         }
+        queries.forEach {
+            newFactors = maxOut(it, newFactors)
+        }
+        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
     }
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
@@ -68,6 +66,19 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
             newFactors = maxOut(rv, newFactors)
         }
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+    }
+
+    private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
+        if (inferenceMethod == InferenceMethod.STANDARD) {
+            if (X.isEmpty())
+                throw java.lang.IllegalArgumentException("Cannot apply elimination without a query.")
+            if (!bn.variablesInTopologicalOrder.containsAll(X.toList()) || !bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply elimination on variables not inside the net.")
+        } else if (inferenceMethod == InferenceMethod.MPE) {
+            if (!bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply MPE elimination on variables not inside the net.")
+            if (X.isNotEmpty()) println("Query array is not empty. MPE does not need any query variable. Computation will continue...")
+        }
     }
 
     open fun calculateVariables(X: Array<RandomVariable>, e: Array<AssignmentProposition>, bn: BayesianNetwork)

@@ -14,6 +14,8 @@ import aima.core.probability.proposition.AssignmentProposition
 import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
+import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod.STANDARD
+import java.lang.IllegalArgumentException
 
 /**
  * Representation of a Dynamic Bayesian network unrolling using
@@ -40,6 +42,8 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
                 E_1: Set<RandomVariable>,
                 rootNodes: Array<Node>,
                 inference: BayesInference) {
+        if(inference is CustomEliminationAsk && inference.inferenceMethod != STANDARD)
+            throw IllegalArgumentException("The network can only go forward in time with an exact inference.")
         checkNodes(rootNodes)
         currentSlice = DynamicBayesNet(priorNetwork, X_0_to_X_1, E_1, *rootNodes)
         this.inference = inference
@@ -51,6 +55,8 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
      * @param inference The [BayesInference] technique to be used to propagate in time.
      */
     constructor(net: DynamicBayesianNetwork, inference: BayesInference){
+        if(inference is CustomEliminationAsk && inference.inferenceMethod != STANDARD)
+            throw IllegalArgumentException("The network can only go forward in time with an exact inference.")
         checkNodes(ArrayList<Node>().apply {
             for(rv in net.x_0) add(net.getNode(rv))
         }.toTypedArray())

@@ -3,6 +3,9 @@ package it.unito.probability.utils
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.Node
+import it.unito.probability.bayes.CustomEliminationAsk
+import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
+import it.unito.probability.bayes.Inferences.minNeighboursHeuristicFunction
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

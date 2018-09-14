@@ -34,11 +34,6 @@ Let's say we need to compute how the distribution of **A** changes as we observe
   <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
 </p>
 
-If we have a more complex connection between **A** and **E**, we can iterate over all the variables in between:
-
-<p align="center">
-  <img src="http://latex.codecogs.com/gif.latex?P%28A%29%20%3D%20%5Csum_eP%28A%7Ce%29P%28e%29"/>
-</p>
 
 The key point of this process is to be able to calculate distributions of RVs representing phenomenons whose are not observable directly while their possible consequences are. This is possible thanks to the Bayes Formulae which states how parent RVs changes fixing the value of his dependent variables:
 
@@ -56,7 +51,7 @@ Making inferences on a BN using recurring Bayesian Formulae can be a challenging
 
 `Variable Elimination` (VE) is a simple and general exact inference algorithm. It consists on identifying groups of repeated calculations, which are called **factors**, store them and then use the stored value instead of computing them again.
 
-Those factors cam be compacted using point-wise multiplication following a custom order; this very order allows to increase the efficiency of the algorithm.
+Those factors can be compacted using point-wise multiplication following a custom order; this very order allows to increase the efficiency of the algorithm.
 
 **VE** has an exponential time complexity, but can be efficient in practice for low tree-width graphs, if the proper elimination order is found (which is a NP-hard problem).  
 
@@ -97,7 +92,7 @@ Given an evidence *e*, the **MPE**, also known as *max propagation*, is the assi
 The **MPE** inference is similar to the Variable Elimination one, the difference is that when variables are marginalized out from distributions in order to compute queries, instead of summing values like in the Variable Elimination, the **maximum is used in the MPE**.
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm.png" width="80%" height="80%/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm.png"/>
 </p>
 
 Given Q set of variables in a **BN**, q their instantiations and E set of evidences, then the maximum is computed, formally: 
@@ -210,89 +205,11 @@ We also used external libreries:
     <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Immagine1.png" width="40%" height="40%" />
   </p>
 
-- [AsciiTable](https://example.com) to visualize probability tables and debug them. 
+- [AsciiTable](https://github.com/vdmeer/asciitable) to visualize probability tables and debug them. 
 
   Here is an example of a table before and after of a marginalization:
   
-  \IMG
-
 - [Weka](https://github.com/Waikato/weka-3.8)'s BIFreader to parse BIF file and code their content into our Bayesian Network.
-
-    Here is an example of a BN represented in a BIF format:
-    
-```
-  <NETWORK>
-      <NAME>Dog Problem - Bayes Net</NAME>
-
-    <!-- Variables -->
-    <VARIABLE TYPE="nature">
-      <NAME>Light-on</NAME>
-      <OUTCOME>true</OUTCOME>
-      <OUTCOME>false</OUTCOME>
-      <PROPERTY>position = (73, 165)</PROPERTY>
-    </VARIABLE>
-
-    <VARIABLE TYPE="nature">
-      <NAME>Bowel-problem</NAME>
-      <OUTCOME>true</OUTCOME>
-      <OUTCOME>false</OUTCOME>
-      <PROPERTY>position = (190, 69)</PROPERTY>
-    </VARIABLE>
-
-    <VARIABLE TYPE="nature">
-      <NAME>Dog-out</NAME>
-      <OUTCOME>true</OUTCOME>
-      <OUTCOME>false</OUTCOME>
-      <PROPERTY>position = (155, 165)</PROPERTY>
-    </VARIABLE>
-
-    <VARIABLE TYPE="nature">
-      <NAME>Hear-bark</NAME>
-      <OUTCOME>true</OUTCOME>
-      <OUTCOME>false</OUTCOME>
-      <PROPERTY>position = (154, 241)</PROPERTY>
-    </VARIABLE>
-
-    <VARIABLE TYPE="nature">
-      <NAME>Family-out</NAME>
-      <OUTCOME>true</OUTCOME>
-      <OUTCOME>false</OUTCOME>
-      <PROPERTY>position = (112, 69)</PROPERTY>
-    </VARIABLE>
-
-
-    <!-- Probability distributions -->
-    <DEFINITION>
-      <FOR>Light-on</FOR>
-      <GIVEN>Family-out</GIVEN>
-      <TABLE>0.6 0.4 0.05 0.95 </TABLE>
-    </DEFINITION>
-
-    <DEFINITION>
-      <FOR>Bowel-problem</FOR>
-      <TABLE>0.01 0.99 </TABLE>
-    </DEFINITION>
-
-    <DEFINITION>
-      <FOR>Dog-out</FOR>
-      <GIVEN>Bowel-problem</GIVEN>
-      <GIVEN>Family-out</GIVEN>
-      <TABLE>0.99 0.01 0.97 0.03 0.9 0.1 0.3  0.7 </TABLE>
-    </DEFINITION>
-
-    <DEFINITION>
-      <FOR>Hear-bark</FOR>
-      <GIVEN>Dog-out</GIVEN>
-      <TABLE>0.7 0.3 0.01 0.99 </TABLE>
-    </DEFINITION>
-
-    <DEFINITION>
-      <FOR>Family-out</FOR>
-      <TABLE>0.15 0.85 </TABLE>
-    </DEFINITION>
-  </NETWORK>
-```
-
 
 # Getting Started
 
@@ -313,6 +230,7 @@ dependencies {
     compile 'com.googlecode.aima-java:aima-core:3.0.0'
     compile 'org.graphstream:gs-core:1.1.1'
     compile 'nz.ac.waikato.cms.weka:weka-dev:3.9.2'
+    compile 'de.vandermeer:asciitable:0.3.2'
 }
 ```
 
@@ -324,6 +242,7 @@ repositories {
 ...
 dependencies {
     compile("com.github.Lamba92", "bayesian-net-project", "{latest_version}")
+    compile("de.vandermeer", "asciitable", "0.3.2")
     compile("com.googlecode.aima-java", "aima-core", "3.0.0")
     compile("org.graphstream", "gs-core", "1.1.1")
     compile("nz.ac.waikato.cms.weka", "weka-dev", "3.9.2")
@@ -337,10 +256,18 @@ dependencies {
 Use `Inferences.getCustomEliminationAsk()` to get an `CustomEliminationAsk()` object and then `ask()` using it:
 ```
 val net = constructCloudySprinklerRainWetGrassNetwork()
-val inference = getCustomEliminationAsk()
+val inf = getCustomEliminationAsk(
+            inferenceMethod = CustomEliminationAsk.InferenceMethod.STANDARD,
+            hMetrics = minNeighboursHeuristicFunction(),
+            removeIrrelevantRVs = true,
+            showMoralGraph = true,
+            delay = 1000
+    )
 val queryVar = net.variablesInTopologicalOrder.last()
 val evidenceVar = net.variablesInTopologicalOrder.first()
-val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net)
+val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net) as CustomFactor
+
+println(res.printTable())
 
 ```
 
@@ -349,6 +276,7 @@ val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenc
 ### Dynamic Bayes Network
 
 Create a `CustomDynamicBayesianNet` using a newly generated dynamic network or use an example from the factories of this library and aima's:
+
 ```
 import it.unito.probability.net.CustomDynamicBayesianNet
 import it.unito.probability.net.Inferences.*
@@ -363,9 +291,7 @@ customNet.forward() // Moves the network one step forward
 
 `CustomDynamicBayesianNet` constructor needs a network and a `BayesianInference` to proceed forward in time.
 
-Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/master-SNAPSHOT/javadoc/bayesian-net-project/) for details.
-
-For a usage example have a look [at some tests here](https://github.com/lamba92/bayesian-net-project/tree/master/src/main/kotlin/it/unito/bayesian/net/main).
+Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/1.0/javadoc/bayesian-net-project/) for details.
 
 ## Authors
 
