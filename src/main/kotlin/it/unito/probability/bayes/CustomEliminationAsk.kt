@@ -6,6 +6,7 @@ import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
 import aima.core.probability.proposition.AssignmentProposition
+import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import it.unito.probability.CustomFactor
 import it.unito.probability.CustomProbabilityTable
 import it.unito.probability.utils.convertToCustom
@@ -14,7 +15,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
+open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
     enum class InferenceMethod {
         STANDARD, MPE, MAP
@@ -22,15 +23,29 @@ open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = 
 
     override fun ask(X: Array<RandomVariable>, observedEvidences: Array<AssignmentProposition>, bn: BayesianNetwork): CategoricalDistribution? {
 
-        val (hidden, vars) = calculateVariables(X, observedEvidences, bn)
-        val factors = ArrayList<CustomFactor>()
+        if(inferenceMethod == InferenceMethod.STANDARD){
+            if(X.isEmpty())
+                throw java.lang.IllegalArgumentException("Cannot apply elimination without a query.")
+            if(!bn.variablesInTopologicalOrder.containsAll(X.toList()) || !bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply elimination on variables not inside the net.")
+        } else if (inferenceMethod == InferenceMethod.MPE){
+            if(!bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply MPE elimination on variables not inside the net.")
+            if(X.isNotEmpty()) println("Query array is not empty. MPE does not need any query variable. Computation will continue...")
+        }
 
+        val (hidden, vars) = when(inferenceMethod){
+            InferenceMethod.MPE -> Pair(ArrayList<RandomVariable>(), ArrayList<RandomVariable>(bn.variablesInTopologicalOrder))
+            else -> calculateVariables(X, observedEvidences, bn)
+        }
+
+        val factors = ArrayList<CustomFactor>()
         for (rv in vars) {
             factors.add(0, makeFactor(rv, observedEvidences, bn))
         }
         return when(inferenceMethod){
             InferenceMethod.STANDARD -> exactInference(order(bn, hidden), factors)
-            InferenceMethod.MPE -> mpeInference(order(bn, hidden), factors)
+            InferenceMethod.MPE -> mpeInference(order(bn, vars), factors)
             InferenceMethod.MAP -> null
         }
     }
@@ -70,20 +85,15 @@ open class KCustomEliminationAsk(private val inferenceMethod: InferenceMethod = 
                            e: Array<AssignmentProposition>,
                            bn: BayesianNetwork): CustomFactor {
         val n = bn.getNode(rv) as? FiniteNode ?: throw IllegalArgumentException("Elimination-Ask only works with finite Nodes.")
-        val evidence = ArrayList<AssignmentProposition>()
-        for (ap in e) {
-            if (n.cpt.contains(ap.termVariable)) {
-                evidence.add(ap)
-            }
-        }
-        val f = n.cpt.getFactorFor(
-                *evidence.toTypedArray())
+        val evidence = e.filter { n.cpt.contains(it.termVariable) }
+        val f = n.cpt.getFactorFor(*evidence.toTypedArray())
         return try{
-            f.convertToCustom()
+            val k = f.convertToCustom()
+            k
         } catch (ex: Exception){
             val table = HashMap<HashMap<RandomVariable, Any>, Double>()
             val assignment = HashMap<RandomVariable, Any>()
-            e.forEach {
+            evidence.forEach {
                 assignment[it.termVariable] = it.value
             }
             table[assignment] = f.values[0]

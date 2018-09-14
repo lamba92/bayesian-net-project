@@ -9,8 +9,8 @@ import it.unito.probability.utils.combineParents
 import it.unito.probability.utils.isNotAncestorOf
 import org.graphstream.graph.implementations.AbstractEdge
 import java.util.ArrayList
-import it.unito.probability.bayes.KCustomEliminationAsk.InferenceMethod
-import it.unito.probability.bayes.KCustomEliminationAsk.InferenceMethod.STANDARD
+import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod
+import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod.STANDARD
 
 /**
  * Exact inference algorithm (Variable Elimination) for static [BayesianNetwork]s.
@@ -28,7 +28,7 @@ object Inferences {
             showMoralGraph: Boolean = false,
             delay: Long = 3000,
             removeIrrelevantRVs: Boolean= true)
-        = object : KCustomEliminationAsk(inferenceMethod) {
+        = object : CustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
                 MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)

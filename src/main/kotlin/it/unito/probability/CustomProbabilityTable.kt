@@ -13,7 +13,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
                              private val verbose: Boolean = false)
     : CustomFactor, CategoricalDistribution {
 
-    val maxedOutAssignments = HashMap(maxedOutAssignments)
+    private val maxedOutAssignments = HashMap(maxedOutAssignments)
 
     init {
         if(verbose) println("instancing: \n$this\nmaxedOutAssignments is: $maxedOutAssignments")
@@ -59,8 +59,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     override fun pointwiseProductPOS(multiplier: Factor, vararg prodVarOrder: RandomVariable): Factor {
         val intersection = argumentVariables.intersect(multiplier.argumentVariables)
-//        if(intersection.isEmpty()) throw IllegalArgumentException(
-//                "Intersection between factors is empty. Factors must have at least a common random variable.")
         val multiplierTable = HashMap<Map<RandomVariable, Any>, Double>()
         multiplier.iterateOver { multiplierPossibleAssignment, multiplierValue ->
             multiplierTable[multiplierPossibleAssignment] = multiplierValue
@@ -85,7 +83,9 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         return CustomProbabilityTable(newTable, previousAssignments)
     }
 
-    private fun buildCommonRows(multiplierTable: HashMap<Map<RandomVariable, Any>, Double>, intersectionCurrentAssignment: HashMap<RandomVariable, Any>): Map<Map<RandomVariable, Any>, Double> {
+    private fun buildCommonRows(multiplierTable: HashMap<Map<RandomVariable, Any>, Double>,
+                                intersectionCurrentAssignment: HashMap<RandomVariable, Any>)
+            : Map<Map<RandomVariable, Any>, Double> {
         return multiplierTable.filter {
             for ((itcRV, itcV) in intersectionCurrentAssignment) {
                 if (it.key[itcRV] != itcV) return@filter false
@@ -205,8 +205,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         val key = HashMap<RandomVariable, Any>().apply {
             putAll(maxedOutAssignments)
             putAll(op.maxedOutAssignments)
-            put(table.entries.first().key.entries.first())
-            put(op.table.entries.first().key.entries.first())
         }
         newTable[key] = table.entries.first().value * op.table.entries.first().value
         return CustomProbabilityTable(newTable)

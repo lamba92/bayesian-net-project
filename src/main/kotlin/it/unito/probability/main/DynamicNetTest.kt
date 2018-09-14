@@ -6,10 +6,10 @@ import it.unito.probability.bayes.BayesNetsFactory.getComplexDynamicNetworkExamp
 import it.unito.probability.bayes.CustomDynamicBayesianNet
 import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
 import it.unito.probability.bayes.Inferences.minFillHeuristicFunction
-import it.unito.probability.bayes.KCustomEliminationAsk
+import it.unito.probability.bayes.CustomEliminationAsk
 
 fun main(args: Array<String>){
-    val inference = getCustomEliminationAsk(minFillHeuristicFunction(), KCustomEliminationAsk.InferenceMethod.MPE)
+    val inference = getCustomEliminationAsk(minFillHeuristicFunction(), CustomEliminationAsk.InferenceMethod.MPE)
     val nets = ArrayList<CustomDynamicBayesianNet>().apply {
         add(CustomDynamicBayesianNet(getUmbrellaWorldNetwork(), inference))
         add(CustomDynamicBayesianNet(getComplexDynamicNetworkExample(), inference))
