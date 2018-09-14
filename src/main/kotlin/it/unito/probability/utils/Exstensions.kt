@@ -34,9 +34,6 @@ fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNet
 fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) =
         !this.isAncestorOf(rvs, bn)
 
-fun BayesInference.ask(X: Collection<RandomVariable>, e: Collection<AssignmentProposition>, bn: BayesianNetwork) =
-        ask(X.toTypedArray(), e.toTypedArray(), bn)
-
 fun Collection<CustomProbabilityTable>.multiplyAll(): CustomProbabilityTable {
     if(size == 1) return this.first().exposeMaxedOutAssignment()
 
@@ -48,6 +45,7 @@ fun Collection<CustomProbabilityTable>.multiplyAll(): CustomProbabilityTable {
     return res
 }
 
+fun BayesInference.ask(X: Collection<RandomVariable>, e: Collection<AssignmentProposition>, bn: BayesianNetwork) = ask(X.toTypedArray(), e.toTypedArray(), bn)
 fun BayesInference.ask(X: RandVar, proposition: AssignmentProposition, bn: BayesianNetwork) = ask(arrayOf(X), arrayOf(proposition), bn)
 fun BayesInference.ask(X: Array<RandVar>, observedEvidences: AssignmentProposition, bn: BayesianNetwork?) = ask(X, arrayOf(observedEvidences), bn)
 
@@ -62,6 +60,10 @@ fun RandomVariable.getNext(): RandVar{
     } else RandVar(name + "_1", domain)
 }
 
+/**
+ * Converts the [CPT] representation to [CustomProbabilityTable].
+ * @return A [CustomProbabilityTable] containing the same probability table.
+ */
 fun CPT.convertToCustom(): CustomProbabilityTable {
     val randVars = ArrayList(parents). apply { add(on) }
     val table = HashMap<HashMap<RandomVariable, Any>, Double>()

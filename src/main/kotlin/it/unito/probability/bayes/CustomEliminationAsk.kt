@@ -81,6 +81,25 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         }
     }
 
+    /**
+     * Override this method for a more efficient implementation as
+     * outlined in AIMA3e pgs. 527-28. Calculate the hidden variables from the
+     * Bayesian Network. The default implementation does not perform any of
+     * these.
+     *
+     * Two calcuations to be performed here in order to optimize iteration over
+     * the Bayesian Network:<br>
+     * 1. Calculate the hidden variables to be enumerated over. An optimization
+     * (AIMA3e pg. 528) is to remove 'every variable that is not an ancestor of
+     * a query variable or evidence variable as it is irrelevant to the query'
+     * (i.e. sums to 1). 2. The subset of variables from the Bayesian Network to
+     * be retained after irrelevant hidden variables have been removed.
+     *
+     * @param X Query random variables.
+     * @param e Evidences on the network.
+     * @param bn The [BayesianNetwork] on which execute the ordering.
+     * @return A [Pair]<[Set]<[RandomVariable]>, [ArrayList]<[RandomVariable]>> where the first element are the relevant hidden, the second all the relevant hiddens comprising the query variables
+     */
     open fun calculateVariables(X: Array<RandomVariable>, e: Array<AssignmentProposition>, bn: BayesianNetwork)
             : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
 
@@ -102,6 +121,13 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         return (n.cpt as CPT).convertToCustom().getFactorFor(relevantEvidences)
     }
 
+    /**
+     * Override this method for a more efficient implementation as
+     * outlined in AIMA3e pgs. 527-28. The default implementation does not
+     * perform any of these.
+     * @param vars The collection [RandomVariable]s to order.
+     * @param bn The network from which generate the ordering of [vars]
+     */
     open fun order(bn: BayesianNetwork,
                         vars: Collection<RandomVariable>) = ArrayList(vars.reversed())
 

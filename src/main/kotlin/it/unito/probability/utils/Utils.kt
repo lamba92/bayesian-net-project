@@ -83,7 +83,7 @@ fun combineParents(parents: Iterator<MoralGraph.MoralNode>): HashMap<RandomVaria
     })
 }
 
-fun combineParents(parents: Collection<Any>, relevantVariables: Collection<RandomVariable>? = null): HashMap<RandomVariable, RandomVariable> {
+fun combineParents(parents: Collection<Any>): HashMap<RandomVariable, RandomVariable> {
     val i = ArrayList<RandomVariable>()
     for(o in parents){
         when (o) {
@@ -92,18 +92,14 @@ fun combineParents(parents: Collection<Any>, relevantVariables: Collection<Rando
             else -> throw Exception("Wrong class")
         }
     }
-//    i.removeIf { relevantVariables?.contains(it) ?: false }
     val map = HashMap<RandomVariable, RandomVariable>()
-    for (parent1 in i){
-        for (parent2 in i){
-            if(parent1 != parent2) {
+    for (parent1 in i) {
+        for (parent2 in i) {
+            if (parent1 != parent2) {
                 map[parent1] = parent2
-//                map[parent2] = parent1
             }
         }
     }
-
-//    map.entries.removeIf { map[it.value]==it.key }
 
     val iter = map.iterator()
     while (iter.hasNext()){

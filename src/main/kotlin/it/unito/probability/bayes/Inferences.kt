@@ -13,14 +13,18 @@ import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod
 import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod.STANDARD
 
 /**
- * Exact inference algorithm (Variable Elimination) for static [BayesianNetwork]s.
+ * Support object containing methods for Inferences over [BayesianNetwork]s.
  */
 object Inferences {
 
     /**
-     * Used to get a Variable Elimination algorithm with a custom ordering using an heuristic based on a [MoralGraph].
+     * Used to get a Variable Elimination algorithm with customizations. Allows to personalize many aspects of the inference. See the parameters below for details.
      * @param hMetrics The lambda used to assign an heuristic to a node of the [MoralGraph].
-     * @return A custom [EliminationAsk] object.
+     * @param inferenceMethod The method to be used to evaluate the probability.
+     * @param showMoralGraph Shows the moral graph used to compute the ordering elimination.
+     * @param delay Delay imposed to moral graph between one node prunings.
+     * @param removeIrrelevantRVs Enables the overriding of [CustomEliminationAsk.calculateVariables] to actually eliminate the irrelevant variables for the computation.
+     * @return A customized [CustomEliminationAsk] object.
      */
     fun getCustomEliminationAsk(
             hMetrics: (MoralGraph.MoralNode, MoralGraph) -> Int = minWeightHeuristicFunction(),
@@ -38,7 +42,7 @@ object Inferences {
                 e: Array<AssignmentProposition>,
                 bn: BayesianNetwork)
                     : Pair<Set<RandomVariable>, Collection<RandomVariable>> {
-            if(removeIrrelevantRVs){
+            return if(removeIrrelevantRVs){
                 val hiddenRVs = HashSet(bn.variablesInTopologicalOrder)
                 val mainRvs = ArrayList<RandomVariable>().apply {
                     addAll(X)
@@ -47,8 +51,8 @@ object Inferences {
                 hiddenRVs.removeAll(mainRvs)
                 hiddenRVs.removeIf { it.isNotAncestorOf(mainRvs, bn) }
 
-                return Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
-            } else return super.calculateVariables(X, e, bn)
+                Pair(hiddenRVs, ArrayList(hiddenRVs).apply { addAll(mainRvs) })
+            } else super.calculateVariables(X, e, bn)
         }
     }
 

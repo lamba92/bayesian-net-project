@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package it.unito.probability.utils
 
 import aima.core.probability.RandomVariable
@@ -46,7 +48,7 @@ class MoralGraph(
                 if(vars.contains(p.randomVariable) && getNode(rv).hasNotEdgeBetween(getNode(p.randomVariable)))
                     addEdge<AbstractEdge>("${rv.name}--${p.randomVariable.name}", getNode(rv), getNode(p.randomVariable), false)
             }
-            combineParents(net.getNode(rv).parents, vars).forEach { p1, p2 ->
+            combineParents(net.getNode(rv).parents).forEach { p1, p2 ->
                 val n1 = getNode(p1)
                 val n2 = getNode(p2)
                 if(n1 != null && n2 != null && n1.hasNotEdgeBetween(n2))

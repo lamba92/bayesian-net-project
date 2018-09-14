@@ -8,16 +8,16 @@ import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import it.unito.probability.utils.put
 
+/**
+ * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.
+ * @param table The table containing the distribution.
+ * @param maxedOutAssignments A map containing previous maxed out random variables on the given [table].
+ */
 class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
-                             maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
-                             private val verbose: Boolean = false)
+                             maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap())
     : CustomFactor, CategoricalDistribution {
 
     private val maxedOutAssignments = HashMap(maxedOutAssignments)
-
-    init {
-        if(verbose) println("instancing: \n$this\nmaxedOutAssignments is: $maxedOutAssignments")
-    }
 
     override fun maxOut(vararg vars: RandomVariable): CustomFactor {
         if(vars.isEmpty()) return this
@@ -227,7 +227,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
     override fun toString(): String {
         var toReturn = ""
         table.forEach { possibleAssignment, probability ->
-            possibleAssignment.forEach { randVar, rvAssignment ->
+            possibleAssignment.forEach { _, rvAssignment ->
                 toReturn += if(rvAssignment as Boolean) "T" else "F"
             }
             toReturn += "=%.03f".format(probability)
