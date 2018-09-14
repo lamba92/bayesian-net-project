@@ -125,7 +125,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
                 maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
             }
         }
-        return CustomProbabilityTable(table, maxedOutAssignments)
+        return CustomProbabilityTable(table, HashMap(maxedOutAssignments))
     }
 
     private fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
@@ -141,7 +141,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         return CustomProbabilityTable(resultTable)
     }
 
-    override fun toString(): String {
+    override fun printTable(): String {
         val asciiTable = AsciiTable()
         asciiTable.addRule()
         asciiTable.addRow(ArrayList<String>(argumentVariables.map { it.toString() }).apply { add("Prob") }).apply { setTextAlignment(TextAlignment.CENTER) }
@@ -209,7 +209,37 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         newTable[key] = table.entries.first().value * op.table.entries.first().value
         return CustomProbabilityTable(newTable)
     }
+
+    fun getFactorFor(evidences: List<AssignmentProposition>) =
+            CustomProbabilityTable(HashMap(table).apply {
+                entries.removeIf {
+                    for (e in evidences) {
+                        if (it.key[e.termVariable] != e.value) return@removeIf true
+                    }
+                    false
+                }
+            })
+
+    fun exposeMaxedOutAssignment() = CustomProbabilityTable(HashMap<HashMap<RandomVariable, Any>, Double>().apply {
+            this[maxedOutAssignments] = table.entries.first().value
+        })
+
+    override fun toString(): String {
+        var toReturn = ""
+        table.forEach { possibleAssignment, probability ->
+            possibleAssignment.forEach { randVar, rvAssignment ->
+                toReturn += if(rvAssignment as Boolean) "T" else "F"
+            }
+            toReturn += "=%.03f".format(probability)
+            toReturn += " | "
+        }
+        if(argumentVariables.isNotEmpty()){
+            argumentVariables.forEach {
+                toReturn += "$it, "
+            }
+            toReturn = toReturn.dropLast(2)
+        }
+        else toReturn = toReturn.dropLast(3)
+        return toReturn
+    }
 }
-
-
-

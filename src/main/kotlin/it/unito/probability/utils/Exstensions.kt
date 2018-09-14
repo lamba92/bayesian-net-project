@@ -1,6 +1,5 @@
 package it.unito.probability.utils
 
-import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
@@ -35,19 +34,11 @@ fun RandomVariable.isAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNet
 fun RandomVariable.isNotAncestorOf(rvs: Collection<RandomVariable>, bn: BayesianNetwork) =
         !this.isAncestorOf(rvs, bn)
 
-fun Factor.convertToCustom(verbose: Boolean = false): CustomProbabilityTable {
-    val table = HashMap<HashMap<RandomVariable, Any>, Double>()
-    iterateOver { possibleAssignment, probability ->
-        table[HashMap(possibleAssignment)] = probability
-    }
-    return CustomProbabilityTable(table, verbose = verbose)
-}
-
 fun BayesInference.ask(X: Collection<RandomVariable>, e: Collection<AssignmentProposition>, bn: BayesianNetwork) =
         ask(X.toTypedArray(), e.toTypedArray(), bn)
 
 fun Collection<CustomProbabilityTable>.multiplyAll(): CustomProbabilityTable {
-    if(size == 1) return this.first()
+    if(size == 1) return this.first().exposeMaxedOutAssignment()
 
     val it = iterator()
     var res = it.next() * it.next()
@@ -69,4 +60,21 @@ fun RandomVariable.getNext(): RandVar{
         val current = (m.group(m.groupCount()-1).toInt() + 1).toString()
         RandVar(name.replace(Regex("([0-9]+$)"), current), domain)
     } else RandVar(name + "_1", domain)
+}
+
+fun CPT.convertToCustom(): CustomProbabilityTable {
+    val randVars = ArrayList(parents). apply { add(on) }
+    val table = HashMap<HashMap<RandomVariable, Any>, Double>()
+    val probabilities = generateVector()
+    val assignments = arrayOfBooleanArrays(randVars.size).reversedArray()
+    for(i in 0 until probabilities.size){
+        val keyMap = HashMap<RandomVariable, Any>()
+        val parentsIterator = randVars.iterator()
+        val assignmentsIterator = assignments[i].iterator()
+        while(parentsIterator.hasNext() && assignmentsIterator.hasNext()){
+            keyMap[parentsIterator.next()] = assignmentsIterator.next()
+        }
+        table[keyMap] = probabilities[i]
+    }
+    return CustomProbabilityTable(table)
 }

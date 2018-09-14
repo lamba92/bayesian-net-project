@@ -11,11 +11,10 @@ fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
     val N = cpt.parents.size
 
     // array to store combinations
-    val flips = arrayOfBooleanArrays(N)
-    val reverseFlip = flips.reversedArray()
+    val reverseFlip = arrayOfBooleanArrays(N).reversedArray()
     if(verbose){
         println("Original truth table before reversing")
-        printTruthTable(flips)
+        printTruthTable(reverseFlip.reversedArray())
 
         println("Reversed truth table")
         printTruthTable(reverseFlip)

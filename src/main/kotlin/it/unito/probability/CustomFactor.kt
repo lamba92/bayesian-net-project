@@ -5,4 +5,5 @@ import aima.core.probability.RandomVariable
 
 interface CustomFactor: Factor {
     fun maxOut(vararg vars: RandomVariable): CustomFactor
+    fun printTable(): String
 }

@@ -5,15 +5,13 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
+import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.proposition.AssignmentProposition
-import com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table
 import it.unito.probability.CustomFactor
 import it.unito.probability.CustomProbabilityTable
-import it.unito.probability.utils.convertToCustom
-import it.unito.probability.utils.multiplyAll
+import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
@@ -23,16 +21,7 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
 
     override fun ask(X: Array<RandomVariable>, observedEvidences: Array<AssignmentProposition>, bn: BayesianNetwork): CategoricalDistribution? {
 
-        if(inferenceMethod == InferenceMethod.STANDARD){
-            if(X.isEmpty())
-                throw java.lang.IllegalArgumentException("Cannot apply elimination without a query.")
-            if(!bn.variablesInTopologicalOrder.containsAll(X.toList()) || !bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
-                throw java.lang.IllegalArgumentException("Cannot apply elimination on variables not inside the net.")
-        } else if (inferenceMethod == InferenceMethod.MPE){
-            if(!bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
-                throw java.lang.IllegalArgumentException("Cannot apply MPE elimination on variables not inside the net.")
-            if(X.isNotEmpty()) println("Query array is not empty. MPE does not need any query variable. Computation will continue...")
-        }
+        checkQuery(X, bn, observedEvidences)
 
         val (hidden, vars) = when(inferenceMethod){
             InferenceMethod.MPE -> Pair(ArrayList<RandomVariable>(), ArrayList<RandomVariable>(bn.variablesInTopologicalOrder))
@@ -47,6 +36,19 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
             InferenceMethod.STANDARD -> exactInference(order(bn, hidden), factors)
             InferenceMethod.MPE -> mpeInference(order(bn, vars), factors)
             InferenceMethod.MAP -> null
+        }
+    }
+
+    private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
+        if (inferenceMethod == InferenceMethod.STANDARD) {
+            if (X.isEmpty())
+                throw java.lang.IllegalArgumentException("Cannot apply elimination without a query.")
+            if (!bn.variablesInTopologicalOrder.containsAll(X.toList()) || !bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply elimination on variables not inside the net.")
+        } else if (inferenceMethod == InferenceMethod.MPE) {
+            if (!bn.variablesInTopologicalOrder.containsAll(observedEvidences.map { it.termVariable }))
+                throw java.lang.IllegalArgumentException("Cannot apply MPE elimination on variables not inside the net.")
+            if (X.isNotEmpty()) println("Query array is not empty. MPE does not need any query variable. Computation will continue...")
         }
     }
 
@@ -85,20 +87,8 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
                            e: Array<AssignmentProposition>,
                            bn: BayesianNetwork): CustomFactor {
         val n = bn.getNode(rv) as? FiniteNode ?: throw IllegalArgumentException("Elimination-Ask only works with finite Nodes.")
-        val evidence = e.filter { n.cpt.contains(it.termVariable) }
-        val f = n.cpt.getFactorFor(*evidence.toTypedArray())
-        return try{
-            val k = f.convertToCustom()
-            k
-        } catch (ex: Exception){
-            val table = HashMap<HashMap<RandomVariable, Any>, Double>()
-            val assignment = HashMap<RandomVariable, Any>()
-            evidence.forEach {
-                assignment[it.termVariable] = it.value
-            }
-            table[assignment] = f.values[0]
-            return CustomProbabilityTable(table)
-        }
+        val relevantEvidences = e.filter { n.cpt.contains(it.termVariable) }
+        return (n.cpt as CPT).convertToCustom().getFactorFor(relevantEvidences)
     }
 
     open fun order(bn: BayesianNetwork,
@@ -106,30 +96,20 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
 
     private fun sumOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
         val summedOutFactors = ArrayList<CustomFactor>()
-        val toMultiply = ArrayList<CustomFactor>()
-        for (f in factors) {
-            if (f.contains(rv))
-                toMultiply.add(f)
-            else
-                summedOutFactors.add(f)
-        }
+        val (toMultiply, notTo) = factors.partition { it.contains(rv) }
+        summedOutFactors.addAll(notTo)
         summedOutFactors.add(pointwiseProduct(toMultiply).sumOut(rv) as CustomFactor)
         return summedOutFactors
     }
 
     private fun maxOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
-        val summedOutFactors = ArrayList<CustomFactor>()
-        val toMultiply = ArrayList<CustomFactor>()
-        for (f in factors) {
-            if (f.contains(rv))
-                toMultiply.add(f)
-            else
-                summedOutFactors.add(f)
-        }
+        val maxedOutFactors = ArrayList<CustomFactor>()
+        val (toMultiply, notTo) = factors.partition { it.contains(rv) }
+        maxedOutFactors.addAll(notTo)
         val pointWised = pointwiseProduct(toMultiply)
         val maxedOut = pointWised.maxOut(rv)
-        summedOutFactors.add(maxedOut)
-        return summedOutFactors
+        maxedOutFactors.add(maxedOut)
+        return maxedOutFactors
     }
 
     private fun pointwiseProduct(factors: List<CustomFactor>): CustomFactor {
@@ -140,3 +120,5 @@ open class CustomEliminationAsk(private val inferenceMethod: InferenceMethod = I
         return product
     }
 }
+
+
