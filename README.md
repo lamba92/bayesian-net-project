@@ -92,10 +92,10 @@ Given an evidence *e*, the **MPE**, also known as *max propagation*, is the assi
 The **MPE** inference is similar to the Variable Elimination one, the difference is that when variables are marginalized out from distributions in order to compute queries, instead of summing values like in the Variable Elimination, the **maximum is used in the MPE**.
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm.png"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm.png" width="80%" height="80%"/>
 </p>
 
-Given Q set of variables in a **BN**, q their instantiations and E set of evidences, then the maximum is computed, formally: 
+Given Q set of variables in a **BN**, q their instantiations and E set of evidences, then the **maximum** is computed, formally: 
 
 <p align="center">
   <img src="http://latex.codecogs.com/gif.latex?%5Cbold%7Barg%7D%20%5C%3A%20%5Cunderset%7BQ%7D%7Bmax%7D%20%5C%3A%20P%28q%7Ce_%7B1%7D%2C%20%5C%3A%20e_%7B2%7D%2C%20%5C%3A%20...%5C%3A%20%2C%20e_%7Bn%7D%29%20%5C%3A%2C%20%5C%3A%20%5C%3A%20%5C%3A%20%5C%3A%20e_%7Bi%7D%20%5Cin%20E"/>
