@@ -206,8 +206,6 @@ We also used external libreries:
   </p>
 
 - [AsciiTable](https://github.com/vdmeer/asciitable) to visualize probability tables and debug them. 
-
-  Here is an example of a table before and after of a marginalization:
   
 - [Weka](https://github.com/Waikato/weka-3.8)'s BIFreader to parse BIF file and code their content into our Bayesian Network.
 
