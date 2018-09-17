@@ -6,7 +6,6 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import it.unito.probability.utils.put
 
 /**
  * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.

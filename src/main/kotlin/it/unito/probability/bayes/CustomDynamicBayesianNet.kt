@@ -15,6 +15,7 @@ import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod.STANDARD
+import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
 import java.lang.IllegalArgumentException
 
 /**
@@ -41,7 +42,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
                 X_0_to_X_1: Map<RandomVariable, RandomVariable>,
                 E_1: Set<RandomVariable>,
                 rootNodes: Array<Node>,
-                inference: BayesInference) {
+                inference: BayesInference = getCustomEliminationAsk()) {
         if(inference is CustomEliminationAsk && inference.inferenceMethod != STANDARD)
             throw IllegalArgumentException("The network can only go forward in time with an exact inference.")
         checkNodes(rootNodes)
@@ -54,7 +55,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
      * @param net The [DynamicBayesianNetwork] which will be evolved over time.
      * @param inference The [BayesInference] technique to be used to propagate in time.
      */
-    constructor(net: DynamicBayesianNetwork, inference: BayesInference){
+    constructor(net: DynamicBayesianNetwork, inference: BayesInference = getCustomEliminationAsk()){
         if(inference is CustomEliminationAsk && inference.inferenceMethod != STANDARD)
             throw IllegalArgumentException("The network can only go forward in time with an exact inference.")
         checkNodes(ArrayList<Node>().apply {
