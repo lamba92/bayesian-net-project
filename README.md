@@ -289,7 +289,7 @@ customNet.forward() // Moves the network one step forward
 
 `CustomDynamicBayesianNet` constructor needs a network and a `BayesianInference` to proceed forward in time.
 
-Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/1.0.1/javadoc/bayesian-net-project/) for details.
+Check out the [KDocs](https://jitpack.io/com/github/lamba92/bayesian-net-project/1.0.2/javadoc/bayesian-net-project/) for details.
 
 ## Authors
 
