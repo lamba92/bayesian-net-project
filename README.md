@@ -92,7 +92,7 @@ Given an evidence *e*, the **MPE**, also known as *max propagation*, is the assi
 The **MPE** inference is similar to the Variable Elimination one, the difference is that when variables are marginalized out from distributions in order to compute queries, instead of summing values like in the Variable Elimination, the **maximum is used in the MPE**.
 
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm.png" width="80%" height="80%"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MPE-algorithm%20-2.png" width="80%" height="80%"/>
 </p>
 
 Given Q set of variables in a **BN**, q their instantiations and E set of evidences, then the **maximum** is computed, formally: 
@@ -122,7 +122,7 @@ Computing **MAP** for a set of variables Q and a set of evidence E means to find
 
 The algorithm is the following:
 <p align="center">
-  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MAP-algorithm.png" width="80%" height="80%"/>
+  <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/MAP-algorithm%20-2.png" width="80%" height="80%"/>
 </p>
 
 Which computes a factored representation of the joint marginal `P(Q,e)` and then find an MPE for Q using the resulting marginal.
@@ -206,8 +206,6 @@ We also used external libreries:
   </p>
 
 - [AsciiTable](https://github.com/vdmeer/asciitable) to visualize probability tables and debug them. 
-
-  Here is an example of a table before and after of a marginalization:
   
 - [Weka](https://github.com/Waikato/weka-3.8)'s BIFreader to parse BIF file and code their content into our Bayesian Network.
 
