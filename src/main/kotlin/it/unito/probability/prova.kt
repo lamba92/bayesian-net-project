@@ -9,10 +9,10 @@ import it.unito.probability.bayes.Inferences.minNeighboursHeuristicFunction
 fun main(args: Array<String>) {
     var net = getFullAdderCircuitNet()
     val inference = getCustomEliminationAsk(
-            inferenceMethod = CustomEliminationAsk.InferenceMethod.MPE,
+            inferenceMethod = CustomEliminationAsk.InferenceMethod.STANDARD,
             hMetrics = minNeighboursHeuristicFunction(),
             removeIrrelevantRVs = true,
-            showMoralGraph = true,
+            showMoralGraph = false,
             delay = 1000
     )
     val queryVar = net.variablesInTopologicalOrder.last()
