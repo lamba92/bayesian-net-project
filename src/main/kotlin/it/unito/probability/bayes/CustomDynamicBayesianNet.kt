@@ -13,7 +13,7 @@ import aima.core.probability.bayes.impl.FullCPTNode
 import aima.core.probability.proposition.AssignmentProposition
 import it.unito.probability.utils.*
 import java.util.*
-import kotlin.collections.ArrayList
+import kotlin.collections.*
 import it.unito.probability.bayes.CustomEliminationAsk.InferenceMethod.STANDARD
 import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
 import java.lang.IllegalArgumentException
@@ -78,7 +78,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
      * @param propositions The [Array]<[AssignmentProposition]> used to represent the observation of the evidence [RandomVariable]s.
      * @param verbose Allows to print logs while calculating. Default is `false`.
      */
-    fun forward(propositions: Array<AssignmentProposition> = emptyArray(), verbose: Boolean = false){
+    fun forward(propositions: Array<AssignmentProposition> = emptyArray(), verbose: Boolean = false){ /*
         val nextBeliefs = HashMap<RandomVariable, Node>()
         val nextRootNodes = ArrayList<Node>()
         val newStateVariables = HashMap<RandomVariable, Node>()
@@ -140,7 +140,7 @@ class CustomDynamicBayesianNet: DynamicBayesianNetwork {
             }
         }
 
-        currentSlice = DynamicBayesNet(currentSlice.priorNetwork, X_1_to_X_2, newEvidences.keys, *nextRootNodes.toTypedArray())
+        currentSlice = DynamicBayesNet(currentSlice.priorNetwork, X_1_to_X_2, newEvidences.keys, *nextRootNodes.toTypedArray()) */
     }
 
     override fun getE_1() = currentSlice.e_1

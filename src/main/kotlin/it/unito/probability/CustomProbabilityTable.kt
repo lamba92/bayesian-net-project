@@ -4,8 +4,8 @@ import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
-import de.vandermeer.asciitable.AsciiTable
-import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+//import de.vandermeer.asciitable.AsciiTable
+//import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 
 /**
  * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.
@@ -140,7 +140,8 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         return CustomProbabilityTable(resultTable)
     }
 
-    override fun printTable(): String {
+   override fun printTable(): String {
+       /*
         val asciiTable = AsciiTable()
         asciiTable.addRule()
         asciiTable.addRow(ArrayList<String>(argumentVariables.map { it.toString() }).apply { add("Prob") }).apply { setTextAlignment(TextAlignment.CENTER) }
@@ -154,8 +155,9 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
             add("SUM: %.4f".format(table.values.sum()))
         }).apply { setTextAlignment(TextAlignment.CENTER) }
         asciiTable.addRule()
-        return asciiTable.render()
-    }
+        return asciiTable.render()*/
+       return ""
+  }
 
     override fun setValue(idx: Int, value: Double) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

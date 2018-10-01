@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
+fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): DoubleArray? {
     val N = cpt.parents.size
 
     // array to store combinations
@@ -31,7 +31,7 @@ fun generateVectorFromCPT(cpt: CPT, verbose: Boolean = false): Array<Double> {
 
     return ArrayList<Double>().apply {
         for(line in output) addAll(line)
-    }.toTypedArray()
+    }.toDoubleArray()
 }
 
 fun arrayOfBooleanArrays(N: Int): Array<BooleanArray> {

@@ -69,7 +69,7 @@ fun CPT.convertToCustom(): CustomProbabilityTable {
     val table = HashMap<HashMap<RandomVariable, Any>, Double>()
     val probabilities = generateVector()
     val assignments = arrayOfBooleanArrays(randVars.size).reversedArray()
-    for(i in 0 until probabilities.size){
+    for(i in 0 until probabilities!!.size){
         val keyMap = HashMap<RandomVariable, Any>()
         val parentsIterator = randVars.iterator()
         val assignmentsIterator = assignments[i].iterator()
