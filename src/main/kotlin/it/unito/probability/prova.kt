@@ -11,7 +11,7 @@ import it.unito.probability.bayes.Inferences.minNeighboursHeuristicFunction
 fun main(args: Array<String>) {
     var net = getDigitalCircuitNetExample()
     val inference = getCustomEliminationAsk(
-            inferenceMethod = CustomEliminationAsk.InferenceMethod.MPE,
+            inferenceMethod = CustomEliminationAsk.InferenceMethod.STANDARD,
             hMetrics = minNeighboursHeuristicFunction(),
             removeIrrelevantRVs = true,
             showMoralGraph = false,
