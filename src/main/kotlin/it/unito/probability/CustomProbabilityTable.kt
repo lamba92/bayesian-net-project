@@ -4,8 +4,13 @@ import aima.core.probability.CategoricalDistribution
 import aima.core.probability.Factor
 import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
-//import de.vandermeer.asciitable.AsciiTable
-//import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import java.util.*
+import java.util.concurrent.LinkedBlockingQueue
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 /**
  * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.
@@ -13,10 +18,14 @@ import aima.core.probability.proposition.AssignmentProposition
  * @param maxedOutAssignments A map containing previous maxed out random variables on the given [table].
  */
 class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
-                             maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap())
+                             maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
+                             finalAssignment:ArrayList<ArrayList<HashMap<RandomVariable, Any>>> = ArrayList() )
+
     : CustomFactor, CategoricalDistribution {
 
     private val maxedOutAssignments = HashMap(maxedOutAssignments)
+    private val finalAssignment = ArrayList(finalAssignment)
+
 
     override fun maxOut(vararg vars: RandomVariable): CustomFactor {
         if(vars.isEmpty()) return this
@@ -117,14 +126,21 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     private fun maxOutHelper(randVar: RandomVariable): CustomProbabilityTable {
         val table = HashMap<HashMap<RandomVariable, Any>, Double>()
+        val el = ArrayList<HashMap<RandomVariable, Any>>()
         iterateOver { possibleAssignment, value ->
             val newPossibleAssignment = HashMap(possibleAssignment).apply { remove(randVar) }
-            if(!table.containsKey(newPossibleAssignment) || value >= table[newPossibleAssignment]!!) {
+            if(!table.containsKey(newPossibleAssignment) || value > table[newPossibleAssignment]!!) {
                 table[newPossibleAssignment] = value
-                maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
+                el.add(possibleAssignment as HashMap<RandomVariable, Any>)
+//                maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
+
             }
         }
-        return CustomProbabilityTable(table, HashMap(maxedOutAssignments))
+        finalAssignment.add(el)
+        println(finalAssignment)
+        println("----------------------------------")
+
+        return CustomProbabilityTable(table, HashMap(maxedOutAssignments), ArrayList(finalAssignment))
     }
 
     private fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
@@ -141,7 +157,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
     }
 
    override fun printTable(): String {
-       /*
         val asciiTable = AsciiTable()
         asciiTable.addRule()
         asciiTable.addRow(ArrayList<String>(argumentVariables.map { it.toString() }).apply { add("Prob") }).apply { setTextAlignment(TextAlignment.CENTER) }
@@ -155,8 +170,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
             add("SUM: %.4f".format(table.values.sum()))
         }).apply { setTextAlignment(TextAlignment.CENTER) }
         asciiTable.addRule()
-        return asciiTable.render()*/
-       return ""
+        return asciiTable.render()
   }
 
     override fun setValue(idx: Int, value: Double) {

@@ -20,18 +20,25 @@ object BayesNetsFactory{
 
     val r_0 = RandVar("R_0", BooleanDomain())
     val s_0 = RandVar("S_0", BooleanDomain())
-
     val r_1 = RandVar("R_1", BooleanDomain())
     val s_1 = RandVar("S_1", BooleanDomain())
-
     val e_1 = RandVar("E_1",BooleanDomain())
 
     val j = RandVar("J", BooleanDomain())
     val i = RandVar("I", BooleanDomain())
-
     val y = RandVar("Y", BooleanDomain())
     val x = RandVar("X", BooleanDomain())
     val o = RandVar("O", BooleanDomain())
+
+    val a = RandVar("A", BooleanDomain())
+    val b = RandVar("B", BooleanDomain())
+    val c_in = RandVar("C_IN", BooleanDomain())
+    val xor = RandVar("XOR", BooleanDomain())
+    val and1 = RandVar("AND1", BooleanDomain())
+    val and2 = RandVar("AND2", BooleanDomain())
+    val s = RandVar("S", BooleanDomain())
+    val c_out = RandVar("C_OUT", BooleanDomain())
+
 
 
     fun getComplexDynamicNetworkExample(): DynamicBayesNet {
@@ -98,6 +105,52 @@ object BayesNetsFactory{
         return BayesNet(j_node, i_node)
     }
 
+    fun getAdderNetExample(): BayesianNetwork {
+        val a_node = FullCPTNode(a, doubleArrayOf(0.5, 0.5))
+        val b_node = FullCPTNode(b, doubleArrayOf(0.5, 0.5))
+        val cIN_node = FullCPTNode(c_in, doubleArrayOf(0.5, 0.5))
+
+        val xor_node = FullCPTNode(xor, doubleArrayOf(
+                0.02, 0.98,
+                0.98, 0.02,
+                0.98, 0.02,
+                0.02, 0.98),
+                a_node, b_node
+        )
+
+        val and_node1 = FullCPTNode(and1, doubleArrayOf(
+                0.95, 0.05,
+                0.05, 0.95,
+                0.05, 0.95,
+                0.05, 0.95),
+                xor_node, cIN_node
+        )
+
+        val and_node2 = FullCPTNode(and2, doubleArrayOf(
+                0.95, 0.05,
+                0.05, 0.95,
+                0.05, 0.95,
+                0.05, 0.95),
+                a_node, b_node
+        )
+
+        val s_node = FullCPTNode(s, doubleArrayOf(
+                0.02, 0.98,
+                0.98, 0.02,
+                0.98, 0.02,
+                0.02, 0.98),
+                xor_node, cIN_node
+        )
+
+        val cOut_node = FullCPTNode(c_out, doubleArrayOf(
+                0.98, 0.02,
+                0.98, 0.02,
+                0.98, 0.02,
+                0.02, 0.98),
+                and_node1, and_node2
+        )
+        return BayesNet(a_node, b_node, cIN_node)
+    }
 
     fun getFullAdderCircuitNet(): BayesianNetwork {
 
