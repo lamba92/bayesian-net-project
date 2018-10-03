@@ -34,6 +34,15 @@ object BayesNetsFactory{
     val x = RandVar("X", BooleanDomain())
     val o = RandVar("O", BooleanDomain())
 
+    val a = RandVar("A", BooleanDomain())
+    val b = RandVar("B", BooleanDomain())
+    val c_in = RandVar("C_IN", BooleanDomain())
+    val xor = RandVar("XOR", BooleanDomain())
+    val and1 = RandVar("AND1", BooleanDomain())
+    val and2 = RandVar("AND2", BooleanDomain())
+    val s = RandVar("S", BooleanDomain())
+    val c_out = RandVar("C_OUT", BooleanDomain())
+
 
     fun getComplexDynamicNetworkExample(): DynamicBayesNet {
         val priorNetwork = BayesNet(
