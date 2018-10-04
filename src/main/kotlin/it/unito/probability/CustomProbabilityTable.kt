@@ -6,11 +6,16 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import it.unito.probability.utils.getNext
+import it.unito.probability.utils.put
+import org.apache.commons.lang3.concurrent.ConcurrentUtils.putIfAbsent
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+
+//import de.vandermeer.asciitable.AsciiTable
+//import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 
 /**
  * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.
@@ -19,13 +24,11 @@ import kotlin.collections.HashSet
  */
 class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Double>,
                              maxedOutAssignments: HashMap<RandomVariable, Any> = HashMap(),
-                             finalAssignment:ArrayList<ArrayList<HashMap<RandomVariable, Any>>> = ArrayList() )
-
+                             finalAssignment: ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>> = ArrayList())
     : CustomFactor, CategoricalDistribution {
 
     private val maxedOutAssignments = HashMap(maxedOutAssignments)
     private val finalAssignment = ArrayList(finalAssignment)
-
 
     override fun maxOut(vararg vars: RandomVariable): CustomFactor {
         if(vars.isEmpty()) return this
@@ -126,18 +129,21 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     private fun maxOutHelper(randVar: RandomVariable): CustomProbabilityTable {
         val table = HashMap<HashMap<RandomVariable, Any>, Double>()
-        val el = ArrayList<HashMap<RandomVariable, Any>>()
+        val el = ArrayList<HashMap<RandomVariable,ArrayList<HashMap<RandomVariable, Any>>>>()
+        val enumAssignment =
+                HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>().apply { this.put(randVar, ArrayList()) } //singola riga
+
         iterateOver { possibleAssignment, value ->
             val newPossibleAssignment = HashMap(possibleAssignment).apply { remove(randVar) }
             if(!table.containsKey(newPossibleAssignment) || value > table[newPossibleAssignment]!!) {
                 table[newPossibleAssignment] = value
-                el.add(possibleAssignment as HashMap<RandomVariable, Any>)
 //                maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
-
+                enumAssignment[randVar]!!.add(HashMap(possibleAssignment))
             }
         }
+        el.add(enumAssignment)
         finalAssignment.add(el)
-        println(finalAssignment)
+        finalAssignment.forEach { it.forEach { it.forEach { println(it)  } } }
         println("----------------------------------")
 
         return CustomProbabilityTable(table, HashMap(maxedOutAssignments), ArrayList(finalAssignment))

@@ -4,6 +4,7 @@ package it.unito.probability.bayes
 
 import aima.core.probability.RandomVariable
 import aima.core.probability.bayes.BayesianNetwork
+import aima.core.probability.bayes.Node
 import aima.core.probability.bayes.impl.BayesNet
 import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.bayes.impl.DynamicBayesNet
@@ -20,12 +21,15 @@ object BayesNetsFactory{
 
     val r_0 = RandVar("R_0", BooleanDomain())
     val s_0 = RandVar("S_0", BooleanDomain())
+
     val r_1 = RandVar("R_1", BooleanDomain())
     val s_1 = RandVar("S_1", BooleanDomain())
+
     val e_1 = RandVar("E_1",BooleanDomain())
 
     val j = RandVar("J", BooleanDomain())
     val i = RandVar("I", BooleanDomain())
+
     val y = RandVar("Y", BooleanDomain())
     val x = RandVar("X", BooleanDomain())
     val o = RandVar("O", BooleanDomain())
@@ -38,7 +42,6 @@ object BayesNetsFactory{
     val and2 = RandVar("AND2", BooleanDomain())
     val s = RandVar("S", BooleanDomain())
     val c_out = RandVar("C_OUT", BooleanDomain())
-
 
 
     fun getComplexDynamicNetworkExample(): DynamicBayesNet {
@@ -152,27 +155,28 @@ object BayesNetsFactory{
         return BayesNet(a_node, b_node, cIN_node)
     }
 
+
     fun getFullAdderCircuitNet(): BayesianNetwork {
 
         // Random Variables
-        val a = RandVar("A", BooleanDomain())
-        val b = RandVar ("B", BooleanDomain())
-        val carryIn = RandVar("CarryIn", BooleanDomain())
-        val sum = RandVar("Sum", BooleanDomain())
-        val carryOut = RandVar ("CarryOut", BooleanDomain())
+        val a = RandVar("A_0", BooleanDomain())
+        val b = RandVar ("B_0", BooleanDomain())
+        val carryIn = RandVar("CarryIn_-1", BooleanDomain())
 
-        // Nodes
-        var aRootNode = FullCPTNode(a, doubleArrayOf(0.5, 0.5))
-        var bRootNode = FullCPTNode(b, doubleArrayOf(0.5, 0.5))
-        var carryInRootNode = FullCPTNode(carryIn, doubleArrayOf(0.5, 0.5))
+        // Roots
+        val aRootNode = FullCPTNode(a, doubleArrayOf(0.5, 0.5))
+        val bRootNode = FullCPTNode(b, doubleArrayOf(0.5, 0.5))
+        val carryInRootNode = FullCPTNode(carryIn, doubleArrayOf(0.5, 0.5))
+        val rootList = arrayListOf<Node>(aRootNode, bRootNode, carryInRootNode)
 
+        //Nodes
         var aNode = aRootNode
         var bNode = bRootNode
         var carryInNode = carryInRootNode
 
-        for (i in 1..500){ //8962
-
-            val sumNode = FullCPTNode(sum, doubleArrayOf(
+        for (i in 1..1){ //8962
+            val sumTmp = RandVar ("Sum_$i", BooleanDomain())
+            val sumNode = FullCPTNode(sumTmp, doubleArrayOf(
                     0.99, 0.01,
                     0.01, 0.99,
                     0.01, 0.99,
@@ -184,7 +188,8 @@ object BayesNetsFactory{
                     aNode, bNode, carryInNode
             )
 
-            val carryOutNode = FullCPTNode(carryOut, doubleArrayOf(
+            val carryOutTmp = RandVar ("""CarryOut_${i - 1}""", BooleanDomain())
+            val carryOutNode = FullCPTNode(carryOutTmp, doubleArrayOf(
                     0.99, 0.01,
                     0.99, 0.01,
                     0.99, 0.01,
@@ -203,8 +208,9 @@ object BayesNetsFactory{
         aNode = FullCPTNode(aTmp, doubleArrayOf(0.5, 0.5))
         bNode = FullCPTNode(bTmp, doubleArrayOf(0.5, 0.5))
         carryInNode = FullCPTNode(carryInTmp, doubleArrayOf(0.99, 0.01, 0.01, 0.99), carryOutNode)
+        rootList.apply { this.add(aNode); this.add(bNode);}
         }
-        return BayesNet(aRootNode, bRootNode, carryInRootNode)
+        return BayesNet(*rootList.toTypedArray())
     }
 
 }
