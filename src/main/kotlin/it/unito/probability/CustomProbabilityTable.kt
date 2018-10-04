@@ -137,13 +137,15 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
             val newPossibleAssignment = HashMap(possibleAssignment).apply { remove(randVar) }
             if(!table.containsKey(newPossibleAssignment) || value > table[newPossibleAssignment]!!) {
                 table[newPossibleAssignment] = value
-//                maxedOutAssignments[randVar] = possibleAssignment[randVar]!!
+                enumAssignment[randVar]!!.removeIf { it.entries.containsAll(newPossibleAssignment.entries) }
                 enumAssignment[randVar]!!.add(HashMap(possibleAssignment))
             }
         }
         el.add(enumAssignment)
         finalAssignment.add(el)
-        finalAssignment.forEach { it.forEach { it.forEach { println(it)  } } }
+        finalAssignment.forEach { it.forEach { it.forEach {
+            println(it.key)
+            it.value.forEach { println(it) }  } } }
         println("----------------------------------")
 
         return CustomProbabilityTable(table, HashMap(maxedOutAssignments), ArrayList(finalAssignment))
