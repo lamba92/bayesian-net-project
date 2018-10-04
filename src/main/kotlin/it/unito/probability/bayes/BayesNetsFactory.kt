@@ -161,23 +161,21 @@ object BayesNetsFactory{
         // Random Variables
         val a = RandVar("A_0", BooleanDomain())
         val b = RandVar ("B_0", BooleanDomain())
-        val carryIn = RandVar("CarryIn_0", BooleanDomain())
-        // val sum = RandVar("Sum_0", BooleanDomain())
-        // val carryOut = RandVar ("CarryOut_0", BooleanDomain())
+        val carryIn = RandVar("CarryIn_-1", BooleanDomain())
 
         // Roots
         val aRootNode = FullCPTNode(a, doubleArrayOf(0.5, 0.5))
         val bRootNode = FullCPTNode(b, doubleArrayOf(0.5, 0.5))
         val carryInRootNode = FullCPTNode(carryIn, doubleArrayOf(0.5, 0.5))
-        val rootList = ArrayList<Node>().apply { this.add(aRootNode); this.add(bRootNode); this.add(carryInRootNode)}
+        val rootList = arrayListOf<Node>(aRootNode, bRootNode, carryInRootNode)
 
         //Nodes
         var aNode = aRootNode
         var bNode = bRootNode
         var carryInNode = carryInRootNode
 
-        for (i in 1..2){ //8962
-            val sumTmp = RandVar ("Sum_$i-1", BooleanDomain())
+        for (i in 1..1){ //8962
+            val sumTmp = RandVar ("Sum_$i", BooleanDomain())
             val sumNode = FullCPTNode(sumTmp, doubleArrayOf(
                     0.99, 0.01,
                     0.01, 0.99,
@@ -190,7 +188,7 @@ object BayesNetsFactory{
                     aNode, bNode, carryInNode
             )
 
-            val carryOutTmp = RandVar ("CarryOut_$i", BooleanDomain())
+            val carryOutTmp = RandVar ("""CarryOut_${i - 1}""", BooleanDomain())
             val carryOutNode = FullCPTNode(carryOutTmp, doubleArrayOf(
                     0.99, 0.01,
                     0.99, 0.01,
@@ -210,7 +208,7 @@ object BayesNetsFactory{
         aNode = FullCPTNode(aTmp, doubleArrayOf(0.5, 0.5))
         bNode = FullCPTNode(bTmp, doubleArrayOf(0.5, 0.5))
         carryInNode = FullCPTNode(carryInTmp, doubleArrayOf(0.99, 0.01, 0.01, 0.99), carryOutNode)
-        rootList.apply { this.add(aNode); this.add(bNode) }
+        rootList.apply { this.add(aNode); this.add(bNode);}
         }
         return BayesNet(*rootList.toTypedArray())
     }
