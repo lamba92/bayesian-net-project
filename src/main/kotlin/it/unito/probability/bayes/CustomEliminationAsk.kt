@@ -6,7 +6,9 @@ import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
 import aima.core.probability.bayes.impl.CPT
+import aima.core.probability.domain.BooleanDomain
 import aima.core.probability.proposition.AssignmentProposition
+import aima.core.probability.util.RandVar
 import it.unito.probability.CustomFactor
 import it.unito.probability.CustomProbabilityTable
 import it.unito.probability.utils.*
@@ -66,18 +68,52 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         var newFactors = ArrayList(factors)
         var finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
         for(rv in hiddenOrdered){
-            var a = maxOut(rv, newFactors)
+            val a = maxOut(rv, newFactors)
             newFactors = a.first
             finalAssignments.add(a.second)
         }
-        finalAssignments.forEach{
-            it.forEach { it.forEach { it.forEach {
-                println(it.key)
-                it.value.forEach { println(it) }  } } }
-            println("----------------------------------")
+
+        finalAssignments.forEach{ block ->
+            block.forEach { it.forEach { it.forEach { table1 ->
+
+                finalAssignments.forEach{it.forEach { it.forEach { it.forEach { table2 ->
+                    if (table1 != table2) intersectAssignments(table1.value, table2.value)
+                } } } }
+            } } }
         }
 
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+    }
+
+    private fun intersectAssignments(table1: ArrayList<HashMap<RandomVariable, Any>>,
+                                    table2: ArrayList<HashMap<RandomVariable, Any>>) {
+
+        val commonColumn = table1.first().keys.intersect(table2.first().keys)
+        val diff1 = table1.first().keys.minus(commonColumn)
+        val diff2 = table2.first().keys.minus(commonColumn)
+
+        println("----------------------------------")
+        println(" 1:$commonColumn 2:$diff1 3:$diff2")
+
+
+        println(table2)
+
+        var clone1 = table1.clone() as ArrayList<HashMap<RandomVariable, Any>>
+        clone1 = clone1.filter { row ->
+            commonColumn.any {
+                !row.contains(it)
+            }
+        } as ArrayList<HashMap<RandomVariable, Any>>
+
+        val clone2 = table2.clone() as ArrayList<HashMap<RandomVariable, Any>>
+        clone2.forEach { c2 ->
+            commonColumn.forEach { c2.remove(it) }
+        }
+
+        println("\n" + table1.toString() + "\n -> \n" + clone1.toString())
+        println("\n" + table2.toString() + "\n -> \n" + clone2.toString())
+        println("----------------------------------")
+
     }
 
     private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
