@@ -12,6 +12,7 @@ import it.unito.probability.CustomProbabilityTable
 import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
@@ -40,14 +41,15 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
     }
 
     private fun mapInference(hidden: ArrayList<RandomVariable>, queries: Array<RandomVariable>, factors: ArrayList<CustomFactor>): CategoricalDistribution {
-        var newFactors = ArrayList(factors)
-        hidden.forEach {
-            newFactors = sumOut(it, newFactors)
-        }
-        queries.forEach {
-            newFactors = maxOut(it, newFactors)
-        }
-        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+//        var newFactors = ArrayList(factors)
+//        hidden.forEach {
+//            newFactors = sumOut(it, newFactors)
+//        }
+//        queries.forEach {
+//            newFactors = maxOut(it, newFactors)
+//        }
+//        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+        return CustomProbabilityTable(HashMap())
     }
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
@@ -62,9 +64,19 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
     private fun mpeInference(hiddenOrdered : ArrayList<RandomVariable>,
                              factors: ArrayList<CustomFactor>): CategoricalDistribution {
         var newFactors = ArrayList(factors)
+        var finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
         for(rv in hiddenOrdered){
-            newFactors = maxOut(rv, newFactors)
+            var a = maxOut(rv, newFactors)
+            newFactors = a.first
+            finalAssignments.add(a.second)
         }
+        finalAssignments.forEach{
+            it.forEach { it.forEach { it.forEach {
+                println(it.key)
+                it.value.forEach { println(it) }  } } }
+            println("----------------------------------")
+        }
+
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
     }
 
@@ -139,14 +151,16 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         return summedOutFactors
     }
 
-    private fun maxOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
+    private fun maxOut(rv: RandomVariable, factors: List<CustomFactor>)
+            : Pair<ArrayList<CustomFactor>, ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>{
         val maxedOutFactors = ArrayList<CustomFactor>()
         val (toMultiply, notTo) = factors.partition { it.contains(rv) }
         maxedOutFactors.addAll(notTo)
         val pointWised = pointwiseProduct(toMultiply)
         val maxedOut = pointWised.maxOut(rv)
         maxedOutFactors.add(maxedOut)
-        return maxedOutFactors
+        //maxedOut contiene finalAssignment. Devi ritornarlo!
+        return Pair(maxedOutFactors, (maxedOut as CustomProbabilityTable).finalAssignment)
     }
 
     private fun pointwiseProduct(factors: List<CustomFactor>): CustomFactor {

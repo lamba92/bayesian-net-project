@@ -28,7 +28,8 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
     : CustomFactor, CategoricalDistribution {
 
     private val maxedOutAssignments = HashMap(maxedOutAssignments)
-    private val finalAssignment = ArrayList(finalAssignment)
+    val finalAssignment = ArrayList(finalAssignment)
+
 
     override fun maxOut(vararg vars: RandomVariable): CustomFactor {
         if(vars.isEmpty()) return this
@@ -143,11 +144,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         }
         el.add(enumAssignment)
         finalAssignment.add(el)
-        finalAssignment.forEach { it.forEach { it.forEach {
-            println(it.key)
-            it.value.forEach { println(it) }  } } }
-        println("----------------------------------")
-
         return CustomProbabilityTable(table, HashMap(maxedOutAssignments), ArrayList(finalAssignment))
     }
 
