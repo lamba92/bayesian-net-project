@@ -83,6 +83,16 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             } } }
         }
 
+        finalAssignments.forEach {
+            it.forEach {
+                it.forEach {
+                    it.forEach {
+                        it.value.forEach { println(it) } }
+                }
+            }
+        }
+
+
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
     }
 
@@ -93,36 +103,27 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         val diff1 = table1.first().keys.minus(commonColumn)
         val diff2 = table2.first().keys.minus(commonColumn)
 
-        println("----------------------------------")
-        println(" 1:$commonColumn 2:$diff1 3:$diff2")
-        println("\n" + table1.toString())
-        println(table2.toString() + "\n")
+        if (commonColumn.isNotEmpty()) {
+            val deleteSet = HashSet<Map<RandomVariable, Any>>()
+            println("\n 1:$commonColumn \n 2:$diff1 \n 3:$diff2")
 
-        val deleteSet = HashSet<Map<RandomVariable, Any>>()
+            table1.forEach { row -> deleteSet.add(row.minus(diff1)) }
+            val table2 = table2.filter { row ->
+                deleteSet.any {
+                    row.entries.containsAll(it.entries)
+                }
+            }
 
-        table1.forEach { row ->
-            row.filterKeys { diff1.contains(it) }
-            deleteSet.add(row)
-            println(row)
+            table2.forEach { row -> deleteSet.add(row.minus(diff2)) }
+            val table1 = table1.filter { row ->
+                deleteSet.any {
+                    row.entries.containsAll(it.entries)
+                }
+            }
+            println("\n" + table1.toString())
+            println(table2.toString())
+            println("----------------------------------")
         }
-
-        table2.forEach { row ->
-            row.filterKeys { diff2.contains(it) }
-            deleteSet.add(row)
-            println(row)
-        }
-
-
-//        val clone1 = table1.clone() as ArrayList<HashMap<RandomVariable, Any>>
-//        clone1.forEach { row -> diff1.forEach { it-> row.remove(it) } }
-//
-//        val clone2 = table2.clone() as ArrayList<HashMap<RandomVariable, Any>>
-//        clone2.forEach { row -> diff2.forEach { it-> row.remove(it) } }
-
-//        println("\n" + table1.toString() + "\n -> \n" + clone1.toString())
-//        println("\n" + table2.toString() + "\n -> \n" + clone2.toString())
-        println("----------------------------------")
-
     }
 
     private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
