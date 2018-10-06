@@ -15,6 +15,7 @@ import it.unito.probability.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
@@ -94,24 +95,32 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
         println("----------------------------------")
         println(" 1:$commonColumn 2:$diff1 3:$diff2")
+        println("\n" + table1.toString())
+        println(table2.toString() + "\n")
 
+        val deleteSet = HashSet<Map<RandomVariable, Any>>()
 
-        println(table2)
-
-        var clone1 = table1.clone() as ArrayList<HashMap<RandomVariable, Any>>
-        clone1 = clone1.filter { row ->
-            commonColumn.any {
-                !row.contains(it)
-            }
-        } as ArrayList<HashMap<RandomVariable, Any>>
-
-        val clone2 = table2.clone() as ArrayList<HashMap<RandomVariable, Any>>
-        clone2.forEach { c2 ->
-            commonColumn.forEach { c2.remove(it) }
+        table1.forEach { row ->
+            row.filterKeys { diff1.contains(it) }
+            deleteSet.add(row)
         }
 
-        println("\n" + table1.toString() + "\n -> \n" + clone1.toString())
-        println("\n" + table2.toString() + "\n -> \n" + clone2.toString())
+        table2.forEach { row ->
+            row.filterKeys { diff2.contains(it) }
+            deleteSet.add(row)
+            println(row)
+        }
+
+        // deleteSet.forEach { println(it) }
+
+//        val clone1 = table1.clone() as ArrayList<HashMap<RandomVariable, Any>>
+//        clone1.forEach { row -> diff1.forEach { it-> row.remove(it) } }
+//
+//        val clone2 = table2.clone() as ArrayList<HashMap<RandomVariable, Any>>
+//        clone2.forEach { row -> diff2.forEach { it-> row.remove(it) } }
+
+//        println("\n" + table1.toString() + "\n -> \n" + clone1.toString())
+//        println("\n" + table2.toString() + "\n -> \n" + clone2.toString())
         println("----------------------------------")
 
     }
