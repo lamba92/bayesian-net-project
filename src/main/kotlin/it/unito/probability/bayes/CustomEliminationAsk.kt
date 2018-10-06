@@ -74,30 +74,53 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             finalAssignments.add(a.second)
         }
 
-        finalAssignments.forEach{ block ->
-            block.forEach { it.forEach { it.forEach { table1 ->
 
-                finalAssignments.forEach{it.forEach { it.forEach { it.forEach { table2 ->
-                    if (table1 != table2) intersectAssignments(table1.value, table2.value)
-                } } } }
-            } } }
+        val tables = ArrayList<ArrayList<HashMap<RandomVariable, Any>>>()
+        finalAssignments.forEach { block ->
+            block.forEach { it.forEach { it.forEach { table -> tables.add(table.value) } } }
         }
 
-        finalAssignments.forEach {
-            it.forEach {
-                it.forEach {
-                    it.forEach {
-                        it.value.forEach { println(it) } }
+        var size = tables.size-1
+        for (i in 0..size) {
+            for (j in 0..size) {
+                if (i!=j) {
+                    intersectAssignments(tables[i], tables[j])
                 }
             }
         }
+
+        println(tables)
+
+//        finalAssignments.forEach { block ->
+//            block.forEach { it.forEach { it.forEach { table1 ->
+//
+//                finalAssignments.forEach {it.forEach { it.forEach { it.forEach { table2 ->
+//                    if (table1 != table2) {
+//                        var (table1, table2)
+//                                = intersectAssignments(table1.value, table2.value)
+//                    }
+//                } } } }
+//
+//
+//            } } }
+//        }
+
+//        finalAssignments.forEach {
+//            it.forEach {
+//                it.forEach {
+//                    it.forEach {
+//                        it.value.forEach { println(it) } }
+//                }
+//            }
+//        }
 
 
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
     }
 
     private fun intersectAssignments(table1: ArrayList<HashMap<RandomVariable, Any>>,
-                                    table2: ArrayList<HashMap<RandomVariable, Any>>) {
+                                    table2: ArrayList<HashMap<RandomVariable, Any>>) :
+    Pair<ArrayList<HashMap<RandomVariable, Any>>, ArrayList<HashMap<RandomVariable, Any>>> {
 
         val commonColumn = table1.first().keys.intersect(table2.first().keys)
         val diff1 = table1.first().keys.minus(commonColumn)
@@ -114,16 +137,20 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
                 }
             }
 
+            deleteSet.clear()
+
             table2.forEach { row -> deleteSet.add(row.minus(diff2)) }
             val table1 = table1.filter { row ->
                 deleteSet.any {
                     row.entries.containsAll(it.entries)
                 }
             }
-            println("\n" + table1.toString())
-            println(table2.toString())
-            println("----------------------------------")
+//            println("\n" + table1.toString())
+//            println(table2.toString())
+//            println("----------------------------------")
         }
+
+        return Pair(table1, table2)
     }
 
     private fun checkQuery(X: Array<RandomVariable>, bn: BayesianNetwork, observedEvidences: Array<AssignmentProposition>) {
