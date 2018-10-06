@@ -208,6 +208,168 @@ object BayesNetsFactory{
         return BayesNet(*rootList.toTypedArray())
     }
 
+    fun getChildNet(): BayesianNetwork {
+
+        /**
+         * [RandomVariable]s declaration
+         */
+        val birthAsphyxia = RandVar("BIRTH_ASPHYXIA", BooleanDomain())
+        val hypDistrib = RandVar("HYP_DISTRIB", BooleanDomain())
+        val hypoxiaInO2 = RandVar("HYPOXIA_IN_O2", BooleanDomain())
+        val co2 = RandVar("CO2", BooleanDomain())
+        val chestXray = RandVar("CHEST_XRAY", BooleanDomain())
+        val grunting = RandVar("GRUNTING", BooleanDomain())
+        val lVHreport = RandVar("LVH_REPORT", BooleanDomain())
+        val lowerBodyO2 = RandVar("LOWER_BODY_O2", BooleanDomain())
+        val rUQO2 = RandVar("RUQ_O2", BooleanDomain())
+        val cO2Report = RandVar("CO2_REPORT", BooleanDomain())
+        val xrayReport = RandVar("XRAY_REPORT", BooleanDomain())
+        val disease = RandVar("DISEASE", BooleanDomain())
+        val gruntingReport = RandVar("GRUNTING_REPORT", BooleanDomain())
+        val age = RandVar("AGE", BooleanDomain())
+        val lVH = RandVar("LVH", BooleanDomain())
+        val ductFlow = RandVar("DUCT_FLOW", BooleanDomain())
+        val cardiacMixing = RandVar("CARDIAC_MIXING", BooleanDomain())
+        val lungParench = RandVar("LUNG_PARENCH", BooleanDomain())
+        val lungFlow = RandVar("LUNG_FLOW", BooleanDomain())
+        val sick = RandVar("SICK", BooleanDomain())
+
+        /**
+         * [FullCPTNode]s declaration
+         */
+        val birthAsphyxia_node = FullCPTNode(birthAsphyxia, doubleArrayOf(0.1, 0.9))
+
+        val disease_node = FullCPTNode(disease, doubleArrayOf(
+                0.75, 0.25,
+                0.63, 0.37),
+                birthAsphyxia_node
+        )
+
+        val lVH_node = FullCPTNode(lVH, doubleArrayOf(
+                0.9, 0.1,
+                0.05, 0.95),
+                disease_node
+        )
+
+        val ductFlow_node = FullCPTNode(ductFlow, doubleArrayOf(
+                0.2, 0.8,
+                0.66, 0.34),
+                disease_node
+        )
+
+        val cardiacMixing_node = FullCPTNode(cardiacMixing, doubleArrayOf(
+                0.83, 0.17,
+                0.04, 0.96),
+                disease_node
+        )
+
+        val lungParench_node = FullCPTNode(lungParench, doubleArrayOf(
+                0.6, 0.4,
+                0.1, 0.9),
+                disease_node
+        )
+
+        val lungFlow_node = FullCPTNode(lungFlow, doubleArrayOf(
+                0.15, 0.85,
+                0.3, 0.7),
+                disease_node
+        )
+
+        val sick_node = FullCPTNode(sick, doubleArrayOf(
+                0.2, 0.8,
+                0.7, 0.3),
+                disease_node
+        )
+
+        val age_node = FullCPTNode(age, doubleArrayOf(
+                0.95, 0.05,
+                0.25, 0.75,
+                0.63, 0.37,
+                0.55, 0.45),
+                disease_node, sick_node
+        )
+
+        val grunting_node = FullCPTNode(grunting, doubleArrayOf(
+                0.2, 0.8,
+                0.4, 0.6,
+                0.8, 0.2,
+                0.2, 0.8),
+                lungParench_node, sick_node
+        )
+
+        val co2_node = FullCPTNode(co2, doubleArrayOf(
+                0.8, 0.2,
+                0.5, 0.5),
+                lungParench_node
+        )
+
+        val chestXray_node = FullCPTNode(chestXray, doubleArrayOf(
+                0.93, 0.07,
+                0.94, 0.06,
+                0.17, 0.83,
+                0.24, 0.76),
+                lungParench_node, lungFlow_node
+        )
+
+        val hypDistrib_node = FullCPTNode(hypDistrib, doubleArrayOf(
+                0.95, 0.05,
+                0.5, 0.5,
+                0.95, 0.05,
+                0.5, 0.5),
+                ductFlow_node, cardiacMixing_node
+        )
+
+
+        val hypoxiaInO2_node = FullCPTNode(hypoxiaInO2, doubleArrayOf(
+                0.93, 0.07,
+                0.9, 0.1,
+                0.70, 0.3,
+                0.35, 0.65),
+                cardiacMixing_node, lungParench_node
+        )
+
+        val lVHreport_node = FullCPTNode(lVHreport, doubleArrayOf(
+                0.2, 0.8,
+                0.05, 0.95),
+                lVH_node
+        )
+
+        val lowerBodyO2_node = FullCPTNode(lowerBodyO2, doubleArrayOf(
+                0.4, 0.6,
+                0.5, 0.5,
+                0.1, 0.9,
+                0.6, 0.4),
+                hypDistrib_node, hypoxiaInO2_node
+        )
+
+        val rUQO2_node = FullCPTNode(rUQO2, doubleArrayOf(
+                0.1, 0.9,
+                0.3, 0.7),
+                hypoxiaInO2_node
+        )
+
+        val cO2Report_node = FullCPTNode(cO2Report, doubleArrayOf(
+                0.9, 0.1,
+                0.1, 0.9),
+                co2_node
+        )
+
+        val xrayReport_node = FullCPTNode(xrayReport, doubleArrayOf(
+                0.7, 0.3,
+                0.1, 0.9),
+                chestXray_node
+        )
+
+        val gruntingReport_node = FullCPTNode(gruntingReport, doubleArrayOf(
+                0.8, 0.2,
+                0.1, 0.9),
+                grunting_node
+        )
+
+        return BayesNet(birthAsphyxia_node)
+    }
+
+
     fun getAlarmNet(): BayesianNetwork{
 
         /**
