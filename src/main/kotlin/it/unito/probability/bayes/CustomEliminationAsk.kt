@@ -84,14 +84,15 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         for (i in 0..size) {
             for (j in 0..size) {
                 if (i!=j) {
-                    var (a, b) =intersectAssignments(tables[i], tables[j])
+                    var (a, b) = intersectAssignments(tables[i], tables[j])
                     tables[i] = a
                     tables[j] = b
                 }
             }
         }
 
-        println(tables)
+        tables.forEach { it.forEach { println(it) } }
+
 
 //        finalAssignments.forEach { block ->
 //            block.forEach { it.forEach { it.forEach { table1 ->
@@ -132,8 +133,12 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             val deleteSet = HashSet<Map<RandomVariable, Any>>()
             println("\n 1:$commonColumn \n 2:$diff1 \n 3:$diff2")
 
+            println("PRIMA:\n" + table1.toString())
+            println(table2.toString())
+
+            val newTable2 = ArrayList<HashMap<RandomVariable, Any>>()
             table1.forEach { row -> deleteSet.add(row.minus(diff1)) }
-            val table2 = table2.filter { row ->
+            table2.filterTo(newTable2) { row ->
                 deleteSet.any {
                     row.entries.containsAll(it.entries)
                 }
@@ -141,17 +146,18 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
             deleteSet.clear()
 
+            val newTable1 = ArrayList<HashMap<RandomVariable, Any>>()
             table2.forEach { row -> deleteSet.add(row.minus(diff2)) }
-            val table1 = table1.filter { row ->
+            table1.filterTo(newTable1) { row ->
                 deleteSet.any {
                     row.entries.containsAll(it.entries)
                 }
             }
-//            println("\n" + table1.toString())
-//            println(table2.toString())
-//            println("----------------------------------")
+            println("DOPO:\n" + table1.toString())
+            println(table2.toString())
+            println("----------------------------------")
+            return Pair(newTable1, newTable2)
         }
-
         return Pair(table1, table2)
     }
 
