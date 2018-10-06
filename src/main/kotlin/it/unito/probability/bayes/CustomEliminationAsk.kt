@@ -103,6 +103,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         table1.forEach { row ->
             row.filterKeys { diff1.contains(it) }
             deleteSet.add(row)
+            println(row)
         }
 
         table2.forEach { row ->
@@ -111,7 +112,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             println(row)
         }
 
-        // deleteSet.forEach { println(it) }
 
 //        val clone1 = table1.clone() as ArrayList<HashMap<RandomVariable, Any>>
 //        clone1.forEach { row -> diff1.forEach { it-> row.remove(it) } }
