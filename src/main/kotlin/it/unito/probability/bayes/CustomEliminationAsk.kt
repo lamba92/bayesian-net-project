@@ -84,7 +84,9 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         for (i in 0..size) {
             for (j in 0..size) {
                 if (i!=j) {
-                    intersectAssignments(tables[i], tables[j])
+                    var (a, b) =intersectAssignments(tables[i], tables[j])
+                    tables[i] = a
+                    tables[j] = b
                 }
             }
         }
