@@ -66,59 +66,50 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
     private fun mpeInference(hiddenOrdered : ArrayList<RandomVariable>,
                              factors: ArrayList<CustomFactor>): CategoricalDistribution {
+
         var newFactors = ArrayList(factors)
-        var finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
+        val finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
         for(rv in hiddenOrdered){
             val a = maxOut(rv, newFactors)
             newFactors = a.first
             finalAssignments.add(a.second)
         }
 
-
         val tables = ArrayList<ArrayList<HashMap<RandomVariable, Any>>>()
         finalAssignments.forEach { block ->
             block.forEach { it.forEach { it.forEach { table -> tables.add(table.value) } } }
         }
 
-        var size = tables.size-1
-        for (i in 0..size) {
-            for (j in 0..size) {
-                if (i!=j) {
-                    var (a, b) = intersectAssignments(tables[i], tables[j])
-                    tables[i] = a
-                    tables[j] = b
+        val mpeAssignments = getMpeAssignments(tables)
+
+        return newFactors.map { it as CustomProbabilityTable}.multiplyAll()
+    }
+
+    private fun getMpeAssignments(tables: ArrayList<ArrayList<HashMap<RandomVariable, Any>>>): HashSet<Map.Entry<RandomVariable, Any>> {
+
+        do {
+            val size = tables.size - 1
+            for (i in 0..size) {
+                for (j in 0..size) {
+                    if (i != j) {
+                        val (firstTable, secondTable)
+                                = intersectAssignments(tables[i], tables[j])
+                        tables[i] = firstTable
+                        tables[j] = secondTable
+                    }
                 }
+            }
+        } while (tables.count { it.size == 1 } != tables.size)
+
+
+        val resultSet =  HashSet<Map.Entry<RandomVariable, Any>>()
+        tables.forEach {
+            it.forEach {
+                resultSet.addAll(it.entries)
             }
         }
 
-        tables.forEach { it.forEach { println(it) } }
-
-
-//        finalAssignments.forEach { block ->
-//            block.forEach { it.forEach { it.forEach { table1 ->
-//
-//                finalAssignments.forEach {it.forEach { it.forEach { it.forEach { table2 ->
-//                    if (table1 != table2) {
-//                        var (table1, table2)
-//                                = intersectAssignments(table1.value, table2.value)
-//                    }
-//                } } } }
-//
-//
-//            } } }
-//        }
-//
-//        finalAssignments.forEach {
-//            it.forEach {
-//                it.forEach {
-//                    it.forEach {
-//                        it.value.forEach { println(it) } }
-//                }
-//            }
-//        }
-
-
-        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+        return resultSet
     }
 
     private fun intersectAssignments(table1: ArrayList<HashMap<RandomVariable, Any>>,
@@ -153,8 +144,8 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
                     row.entries.containsAll(it.entries)
                 }
             }
-            println("DOPO:\n" + table1.toString())
-            println(table2.toString())
+            println("DOPO:\n" + newTable1.toString())
+            println(newTable2.toString())
             println("----------------------------------")
             return Pair(newTable1, newTable2)
         }
