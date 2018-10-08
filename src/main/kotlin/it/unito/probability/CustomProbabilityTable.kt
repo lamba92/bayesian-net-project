@@ -64,7 +64,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         for(i in 1 until vars.size - 1){
             f = f.sumOutHelper(vars[i])
         }
-        //calcolo dimensione del fattore intermedio generato dopo la sum-out
         return f.normalize()
     }
 
@@ -150,6 +149,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     private fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
         val subSet = argumentVariables.subtract(ArrayList<RandomVariable>().apply { add(rv) })
+        //println("Size of intermediate factor ${subSet.size}")
         val resultTable = HashMap<HashMap<RandomVariable, Any>, Double>()
         table.forEach { possibleAssignment, probability ->
             val currentSubsetAssignment = HashMap<RandomVariable, Any>()

@@ -213,7 +213,10 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
      * @param bn The network from which generate the ordering of [vars]
      */
     open fun order(bn: BayesianNetwork,
-                        vars: Collection<RandomVariable>) = ArrayList(vars.reversed())
+                        vars: Collection<RandomVariable>): ArrayList<RandomVariable>{
+        println(vars.toString())
+        return ArrayList(vars.reversed())
+    }
 
     private fun sumOut(rv: RandomVariable, factors: List<CustomFactor>): ArrayList<CustomFactor> {
         val summedOutFactors = ArrayList<CustomFactor>()
@@ -241,7 +244,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         for (i in 1 until factors.size) {
             product = product.pointwiseProduct(factors[i]) as CustomFactor
         }
-        println("Vars: $product.argumentVariables \t Size: ${product.argumentVariables.size}")
+        println("Vars: ${product.argumentVariables } Size: ${product.argumentVariables.size}")
         return product
     }
 }

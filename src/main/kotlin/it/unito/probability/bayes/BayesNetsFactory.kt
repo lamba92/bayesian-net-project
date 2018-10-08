@@ -1178,115 +1178,115 @@ object BayesNetsFactory{
         /**
          * [RandomVariable]s declaration
          */
-        val fault = RandVar("R_0", BooleanDomain())
-        val f1 = RandVar("R_0", BooleanDomain())
-        val f97 = RandVar("R_0", BooleanDomain())
-        val f2 = RandVar("R_0", BooleanDomain())
-        val f78 = RandVar("R_0", BooleanDomain())
-        val f3 = RandVar("R_0", BooleanDomain())
-        val f4 = RandVar("R_0", BooleanDomain())
-        val f5 = RandVar("R_0", BooleanDomain())
-        val f53 = RandVar("R_0", BooleanDomain())
-        val f6 = RandVar("R_0", BooleanDomain())
-        val f7 = RandVar("R_0", BooleanDomain())
-        val f56 = RandVar("R_0", BooleanDomain())
-        val f8 = RandVar("R_0", BooleanDomain())
-        val f9 = RandVar("R_0", BooleanDomain())
-        val f10 = RandVar("R_0", BooleanDomain())
-        val f55 = RandVar("R_0", BooleanDomain())
-        val f52 = RandVar("R_0", BooleanDomain())
-        val f11 = RandVar("R_0", BooleanDomain())
-        val f12 = RandVar("R_0", BooleanDomain())
-        val f13 = RandVar("R_0", BooleanDomain())
-        val f14 = RandVar("R_0", BooleanDomain())
-        val f15 = RandVar("R_0", BooleanDomain())
-        val f16 = RandVar("R_0", BooleanDomain())
-        val f17 = RandVar("R_0", BooleanDomain())
-        val f18 = RandVar("R_0", BooleanDomain())
-        val f19 = RandVar("R_0", BooleanDomain())
-        val f41 = RandVar("R_0", BooleanDomain())
-        val f44 = RandVar("R_0", BooleanDomain())
-        val f20 = RandVar("R_0", BooleanDomain())
-        val f90 = RandVar("R_0", BooleanDomain())
-        val f21 = RandVar("R_0", BooleanDomain())
-        val f22 = RandVar("R_0", BooleanDomain())
-        val f23 = RandVar("R_0", BooleanDomain())
-        val f24 = RandVar("R_0", BooleanDomain())
-        val f25 = RandVar("R_0", BooleanDomain())
-        val f26 = RandVar("R_0", BooleanDomain())
-        val f27 = RandVar("R_0", BooleanDomain())
-        val f28 = RandVar("R_0", BooleanDomain())
-        val f92 = RandVar("R_0", BooleanDomain())
-        val f29 = RandVar("R_0", BooleanDomain())
-        val f98 = RandVar("R_0", BooleanDomain())
-        val f30 = RandVar("R_0", BooleanDomain())
-        val f31 = RandVar("R_0", BooleanDomain())
-        val f32 = RandVar("R_0", BooleanDomain())
-        val f33 = RandVar("R_0", BooleanDomain())
-        val f34 = RandVar("R_0", BooleanDomain())
-        val f35 = RandVar("R_0", BooleanDomain())
-        val f36 = RandVar("R_0", BooleanDomain())
-        val f37 = RandVar("R_0", BooleanDomain())
-        val f84 = RandVar("R_0", BooleanDomain())
-        val f96 = RandVar("R_0", BooleanDomain())
-        val f38 = RandVar("R_0", BooleanDomain())
-        val f39 = RandVar("R_0", BooleanDomain())
-        val f40 = RandVar("R_0", BooleanDomain())
-        val f42 = RandVar("R_0", BooleanDomain())
-        val f43 = RandVar("R_0", BooleanDomain())
-        val f45 = RandVar("R_0", BooleanDomain())
-        val f46 = RandVar("R_0", BooleanDomain())
-        val f47 = RandVar("R_0", BooleanDomain())
-        val f85 = RandVar("R_0", BooleanDomain())
-        val f48 = RandVar("R_0", BooleanDomain())
-        val f49 = RandVar("R_0", BooleanDomain())
-        val f50 = RandVar("R_0", BooleanDomain())
-        val f51 = RandVar("R_0", BooleanDomain())
-        val f83 = RandVar("R_0", BooleanDomain())
-        val f54 = RandVar("R_0", BooleanDomain())
-        val f57 = RandVar("R_0", BooleanDomain())
-        val f58 = RandVar("R_0", BooleanDomain())
-        val f59 = RandVar("R_0", BooleanDomain())
-        val f60 = RandVar("R_0", BooleanDomain())
-        val f61 = RandVar("R_0", BooleanDomain())
-        val f62 = RandVar("R_0", BooleanDomain())
-        val f63 = RandVar("R_0", BooleanDomain())
-        val f64 = RandVar("R_0", BooleanDomain())
-        val f65 = RandVar("R_0", BooleanDomain())
-        val f66 = RandVar("R_0", BooleanDomain())
-        val f67 = RandVar("R_0", BooleanDomain())
-        val f68 = RandVar("R_0", BooleanDomain())
-        val f69 = RandVar("R_0", BooleanDomain())
-        val f72 = RandVar("R_0", BooleanDomain())
-        val f86 = RandVar("R_0", BooleanDomain())
-        val f70 = RandVar("R_0", BooleanDomain())
-        val f71 = RandVar("R_0", BooleanDomain())
-        val f73 = RandVar("R_0", BooleanDomain())
-        val f74 = RandVar("R_0", BooleanDomain())
-        val f75 = RandVar("R_0", BooleanDomain())
-        val f76 = RandVar("R_0", BooleanDomain())
-        val f77 = RandVar("R_0", BooleanDomain())
-        val f79 = RandVar("R_0", BooleanDomain())
-        val f80 = RandVar("R_0", BooleanDomain())
-        val f81 = RandVar("R_0", BooleanDomain())
-        val f82 = RandVar("R_0", BooleanDomain())
-        val f87 = RandVar("R_0", BooleanDomain())
-        val f88 = RandVar("R_0", BooleanDomain())
-        val f89 = RandVar("R_0", BooleanDomain())
-        val f91 = RandVar("R_0", BooleanDomain())
-        val f93 = RandVar("R_0", BooleanDomain())
-        val f94 = RandVar("R_0", BooleanDomain())
-        val f95 = RandVar("R_0", BooleanDomain())
-        val f99 = RandVar("R_0", BooleanDomain())
-        val f100 = RandVar("R_0", BooleanDomain())
-        val f105 = RandVar("R_0", BooleanDomain())
-        val f101 = RandVar("R_0", BooleanDomain())
-        val f102 = RandVar("R_0", BooleanDomain())
-        val f103 = RandVar("R_0", BooleanDomain())
-        val f104 = RandVar("R_0", BooleanDomain())
-        val f106 = RandVar("R_0", BooleanDomain())
-        val f107 = RandVar("R_0", BooleanDomain())
-        val f108 = RandVar("R_0", BooleanDomain())
+        val fault = RandVar("FAULT", BooleanDomain())
+        val f1 = RandVar("F1", BooleanDomain())
+        val f97 = RandVar("F97", BooleanDomain())
+        val f2 = RandVar("F2", BooleanDomain())
+        val f78 = RandVar("F78", BooleanDomain())
+        val f3 = RandVar("F3", BooleanDomain())
+        val f4 = RandVar("F4", BooleanDomain())
+        val f5 = RandVar("F5", BooleanDomain())
+        val f53 = RandVar("F53", BooleanDomain())
+        val f6 = RandVar("F6", BooleanDomain())
+        val f7 = RandVar("F7", BooleanDomain())
+        val f56 = RandVar("F56", BooleanDomain())
+        val f8 = RandVar("F8", BooleanDomain())
+        val f9 = RandVar("F9", BooleanDomain())
+        val f10 = RandVar("F10", BooleanDomain())
+        val f55 = RandVar("F55", BooleanDomain())
+        val f52 = RandVar("F52", BooleanDomain())
+        val f11 = RandVar("F11", BooleanDomain())
+        val f12 = RandVar("F12", BooleanDomain())
+        val f13 = RandVar("F13", BooleanDomain())
+        val f14 = RandVar("F14", BooleanDomain())
+        val f15 = RandVar("F15", BooleanDomain())
+        val f16 = RandVar("F16", BooleanDomain())
+        val f17 = RandVar("F17", BooleanDomain())
+        val f18 = RandVar("F18", BooleanDomain())
+        val f19 = RandVar("F19", BooleanDomain())
+        val f41 = RandVar("F41", BooleanDomain())
+        val f44 = RandVar("F44", BooleanDomain())
+        val f20 = RandVar("F20", BooleanDomain())
+        val f90 = RandVar("F90", BooleanDomain())
+        val f21 = RandVar("F21", BooleanDomain())
+        val f22 = RandVar("F22", BooleanDomain())
+        val f23 = RandVar("F23", BooleanDomain())
+        val f24 = RandVar("F24", BooleanDomain())
+        val f25 = RandVar("F25", BooleanDomain())
+        val f26 = RandVar("F26", BooleanDomain())
+        val f27 = RandVar("F27", BooleanDomain())
+        val f28 = RandVar("F28", BooleanDomain())
+        val f92 = RandVar("F92", BooleanDomain())
+        val f29 = RandVar("F29", BooleanDomain())
+        val f98 = RandVar("F98", BooleanDomain())
+        val f30 = RandVar("F30", BooleanDomain())
+        val f31 = RandVar("F31", BooleanDomain())
+        val f32 = RandVar("F32", BooleanDomain())
+        val f33 = RandVar("F33", BooleanDomain())
+        val f34 = RandVar("F34", BooleanDomain())
+        val f35 = RandVar("F35", BooleanDomain())
+        val f36 = RandVar("F36", BooleanDomain())
+        val f37 = RandVar("F37", BooleanDomain())
+        val f84 = RandVar("F84", BooleanDomain())
+        val f96 = RandVar("F96", BooleanDomain())
+        val f38 = RandVar("F38", BooleanDomain())
+        val f39 = RandVar("F39", BooleanDomain())
+        val f40 = RandVar("F40", BooleanDomain())
+        val f42 = RandVar("F42", BooleanDomain())
+        val f43 = RandVar("F43", BooleanDomain())
+        val f45 = RandVar("F45", BooleanDomain())
+        val f46 = RandVar("F46", BooleanDomain())
+        val f47 = RandVar("F47", BooleanDomain())
+        val f85 = RandVar("F85", BooleanDomain())
+        val f48 = RandVar("F48", BooleanDomain())
+        val f49 = RandVar("F49", BooleanDomain())
+        val f50 = RandVar("F50", BooleanDomain())
+        val f51 = RandVar("F51", BooleanDomain())
+        val f83 = RandVar("F83", BooleanDomain())
+        val f54 = RandVar("F54", BooleanDomain())
+        val f57 = RandVar("F57", BooleanDomain())
+        val f58 = RandVar("F58", BooleanDomain())
+        val f59 = RandVar("F59", BooleanDomain())
+        val f60 = RandVar("F60", BooleanDomain())
+        val f61 = RandVar("F61", BooleanDomain())
+        val f62 = RandVar("F62", BooleanDomain())
+        val f63 = RandVar("F63", BooleanDomain())
+        val f64 = RandVar("F64", BooleanDomain())
+        val f65 = RandVar("F65", BooleanDomain())
+        val f66 = RandVar("F66", BooleanDomain())
+        val f67 = RandVar("F67", BooleanDomain())
+        val f68 = RandVar("F68", BooleanDomain())
+        val f69 = RandVar("F69", BooleanDomain())
+        val f72 = RandVar("F72", BooleanDomain())
+        val f86 = RandVar("F86", BooleanDomain())
+        val f70 = RandVar("F70", BooleanDomain())
+        val f71 = RandVar("F71", BooleanDomain())
+        val f73 = RandVar("F73", BooleanDomain())
+        val f74 = RandVar("F74", BooleanDomain())
+        val f75 = RandVar("F75", BooleanDomain())
+        val f76 = RandVar("F76", BooleanDomain())
+        val f77 = RandVar("F77", BooleanDomain())
+        val f79 = RandVar("F79", BooleanDomain())
+        val f80 = RandVar("F80", BooleanDomain())
+        val f81 = RandVar("F81", BooleanDomain())
+        val f82 = RandVar("F82", BooleanDomain())
+        val f87 = RandVar("F87", BooleanDomain())
+        val f88 = RandVar("F88", BooleanDomain())
+        val f89 = RandVar("F89", BooleanDomain())
+        val f91 = RandVar("F91", BooleanDomain())
+        val f93 = RandVar("F93", BooleanDomain())
+        val f94 = RandVar("F94", BooleanDomain())
+        val f95 = RandVar("F95", BooleanDomain())
+        val f99 = RandVar("F99", BooleanDomain())
+        val f100 = RandVar("F100", BooleanDomain())
+        val f105 = RandVar("F105", BooleanDomain())
+        val f101 = RandVar("F101", BooleanDomain())
+        val f102 = RandVar("F102", BooleanDomain())
+        val f103 = RandVar("F103", BooleanDomain())
+        val f104 = RandVar("F104", BooleanDomain())
+        val f106 = RandVar("F106", BooleanDomain())
+        val f107 = RandVar("F107", BooleanDomain())
+        val f108 = RandVar("F108", BooleanDomain())
 
 
         /**
@@ -1320,6 +1320,8 @@ object BayesNetsFactory{
 
         val f3_node = FullCPTNode(f3, doubleArrayOf(
                 0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
                 0.31, 0.69),
                 fault_node, f78_node
         )
@@ -1331,6 +1333,8 @@ object BayesNetsFactory{
         )
 
         val f5_node = FullCPTNode(f5, doubleArrayOf(
+                0.97, 0.03,
+                0.31, 0.69,
                 0.97, 0.03,
                 0.31, 0.69),
                 fault_node, f2_node
@@ -1344,7 +1348,9 @@ object BayesNetsFactory{
 
         val f6_node = FullCPTNode(f6, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5),
+                0.5, 0.5,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f53_node
         )
 
@@ -1361,6 +1367,12 @@ object BayesNetsFactory{
         )
 
         val f8_node = FullCPTNode(f8, doubleArrayOf(
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
                 0.97, 0.03,
                 0.31, 0.69),
                 fault_node, f53_node, f56_node
@@ -1386,13 +1398,17 @@ object BayesNetsFactory{
 
         val f52_node = FullCPTNode(f52, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5),
+                0.5, 0.5,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f55_node
         )
 
         val f11_node = FullCPTNode(f11, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5),
+                0.5, 0.5,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f52_node
         )
 
@@ -1404,7 +1420,9 @@ object BayesNetsFactory{
 
         val f13_node = FullCPTNode(f13, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5),
+                0.5, 0.5,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f8_node
         )
 
@@ -1422,7 +1440,9 @@ object BayesNetsFactory{
 
         val f16_node = FullCPTNode(f16, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5),
+                0.5, 0.5,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f15_node
         )
 
@@ -1433,6 +1453,8 @@ object BayesNetsFactory{
         )
 
         val f18_node = FullCPTNode(f18, doubleArrayOf(
+                0.97, 0.03,
+                0.31, 0.69,
                 0.97, 0.03,
                 0.31, 0.69),
                 fault_node, f17_node
@@ -1459,12 +1481,12 @@ object BayesNetsFactory{
         val f20_node = FullCPTNode(f20, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f41_node, f44_node
         )
 
@@ -1477,16 +1499,16 @@ object BayesNetsFactory{
         val f21_node = FullCPTNode(f21, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f90_node
         )
 
         val f22_node = FullCPTNode(f22, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f21_node
         )
 
@@ -1540,8 +1562,6 @@ object BayesNetsFactory{
 
         val f98_node = FullCPTNode(f98, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5,
-                0.95, 0.05,
                 0.5, 0.5),
                 fault_node
         )
@@ -1549,35 +1569,35 @@ object BayesNetsFactory{
         val f30_node = FullCPTNode(f30, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f98_node
         )
 
         val f31_node =  FullCPTNode(f31, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.39, 0.61,
-                0.55, 0.45,
-                0.17, 0.83,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.44, 0.56,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.19, 0.81
-        ), fault_node, f20_node, f41_node, f44_node)
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
+                fault_node, f20_node, f41_node, f44_node)
 
         val f32_node = FullCPTNode(f32, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f56_node
         )
 
@@ -1614,73 +1634,71 @@ object BayesNetsFactory{
         val f84_node = FullCPTNode(f84, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f20_node, f41_node
         )
 
         val f96_node = FullCPTNode(f96, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f41_node, f84_node
         )
 
         val f38_node = FullCPTNode(f38, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
                 fault_node, f41_node, f96_node
         )
 
         val f39_node =  FullCPTNode(f39, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.39, 0.61,
-                0.55, 0.45,
-                0.17, 0.83,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.44, 0.56,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.19, 0.81
-        ), fault_node, f96_node, f84_node, f41_node)
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69),
+                fault_node, f96_node, f84_node, f41_node)
 
         val f40_node = FullCPTNode(f40, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f41_node, f96_node
         )
 
         val f42_node = FullCPTNode(f42, doubleArrayOf(
-                0.95, 0.05,
-                0.5, 0.5,
                 0.95, 0.05,
                 0.5, 0.5),
                 fault_node
@@ -1707,48 +1725,48 @@ object BayesNetsFactory{
         val f47_node = FullCPTNode(f42, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f44_node
         )
 
         val f85_node = FullCPTNode(f85, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f20_node, f44_node
         )
 
         val f48_node = FullCPTNode(f48, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f44_node, f85_node
         )
 
         val f49_node = FullCPTNode(f49, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f44_node
         )
 
         val f50_node = FullCPTNode(f50, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f44_node
         )
 
@@ -1761,20 +1779,20 @@ object BayesNetsFactory{
         val f83_node = FullCPTNode(f83, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f41_node, f84_node
         )
 
         val f54_node = FullCPTNode(f54, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f83_node
         )
 
@@ -1805,16 +1823,16 @@ object BayesNetsFactory{
         val f61_node = FullCPTNode(f54, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f53_node
         )
 
         val f62_node = FullCPTNode(f62, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f61_node
         )
 
@@ -1839,8 +1857,8 @@ object BayesNetsFactory{
         val f66_node = FullCPTNode(f66, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f61_node
         )
 
@@ -1871,39 +1889,39 @@ object BayesNetsFactory{
         val f86_node =  FullCPTNode(f86, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.39, 0.61,
-                0.55, 0.45,
-                0.17, 0.83,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.44, 0.56,
-                0.25, 0.75,
-                0.98, 0.02,
-                0.19, 0.81
-        ), f20_node, f85_node, f84_node, f72_node)
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
+                f20_node, f85_node, f84_node, f72_node)
 
         val f70_node = FullCPTNode(f70, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f72_node, f86_node
         )
 
         val f71_node = FullCPTNode(f71, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f72_node
         )
 
@@ -1916,12 +1934,12 @@ object BayesNetsFactory{
         val f74_node = FullCPTNode(f74, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f30_node, f98_node
         )
 
@@ -1958,84 +1976,84 @@ object BayesNetsFactory{
         val f81_node = FullCPTNode(f74, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f72_node, f86_node
         )
 
         val f82_node = FullCPTNode(f82, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f44_node, f85_node
         )
 
         val f87_node = FullCPTNode(f87, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f31_node, f41_node
         )
 
         val f88_node = FullCPTNode(f88, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f31_node, f44_node
         )
 
         val f89_node = FullCPTNode(f89, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61,
+                0.31, 0.69,
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61,
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61,
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03,
+                0.31, 0.69,
+                0.97, 0.03),
                 fault_node, f88_node, f87_node, f31_node, f72_node
         )
 
@@ -2048,58 +2066,52 @@ object BayesNetsFactory{
         val f93_node = FullCPTNode(f93, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f83_node, f82_node
         )
 
         val f94_node = FullCPTNode(f94, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f41_node, f96_node
         )
 
         val f95_node = FullCPTNode(f95, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f72_node
         )
 
         val f99_node = FullCPTNode(f99, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f90_node
         )
 
         val f100_node = FullCPTNode(f100, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f4_node
         )
 
         val f105_node = FullCPTNode(f105, doubleArrayOf(
-                0.95, 0.05,
-                0.5, 0.5,
                 0.95, 0.05,
                 0.5, 0.5),
                 fault_node
@@ -2108,22 +2120,20 @@ object BayesNetsFactory{
         val f101_node = FullCPTNode(f101, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f105_node
         )
 
         val f102_node = FullCPTNode(f102, doubleArrayOf(
                 0.95, 0.05,
                 0.5, 0.5,
-                0.95, 0.05,
-                0.5, 0.5),
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f105_node
         )
 
         val f103_node = FullCPTNode(f103, doubleArrayOf(
-                0.95, 0.05,
-                0.5, 0.5,
                 0.95, 0.05,
                 0.5, 0.5),
                 fault_node
@@ -2131,15 +2141,11 @@ object BayesNetsFactory{
 
         val f104_node = FullCPTNode(f104, doubleArrayOf(
                 0.95, 0.05,
-                0.5, 0.5,
-                0.95, 0.05,
                 0.5, 0.5),
                 fault_node
         )
 
         val f106_node = FullCPTNode(f106, doubleArrayOf(
-                0.95, 0.05,
-                0.5, 0.5,
                 0.95, 0.05,
                 0.5, 0.5),
                 fault_node
@@ -2148,12 +2154,12 @@ object BayesNetsFactory{
         val f107_node = FullCPTNode(f107, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
-                0.02, 0.98,
-                0.98, 0.02,
-                0.3, 0.7,
-                0.55, 0.45,
-                0.98, 0.02,
-                0.39, 0.61),
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37,
+                0.75, 0.25,
+                0.63, 0.37),
                 fault_node, f41_node, f44_node
         )
 

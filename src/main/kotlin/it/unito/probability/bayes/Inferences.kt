@@ -34,8 +34,8 @@ object Inferences {
             removeIrrelevantRVs: Boolean= true)
         = object : CustomEliminationAsk(inferenceMethod) {
 
-        override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
-                MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
+        //override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
+               // MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
 
         override fun calculateVariables(
                 X: Array<RandomVariable>,
