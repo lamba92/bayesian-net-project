@@ -64,6 +64,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
         for(i in 1 until vars.size - 1){
             f = f.sumOutHelper(vars[i])
         }
+        //calcolo dimensione del fattore intermedio generato dopo la sum-out
         return f.normalize()
     }
 

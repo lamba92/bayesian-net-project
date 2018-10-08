@@ -236,10 +236,12 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
     }
 
     private fun pointwiseProduct(factors: List<CustomFactor>): CustomFactor {
+        //aggiungere qui il calcolo della dimensione del fattore intermedio
         var product = factors[0]
         for (i in 1 until factors.size) {
             product = product.pointwiseProduct(factors[i]) as CustomFactor
         }
+        println("Vars: $product.argumentVariables \t Size: ${product.argumentVariables.size}")
         return product
     }
 }
