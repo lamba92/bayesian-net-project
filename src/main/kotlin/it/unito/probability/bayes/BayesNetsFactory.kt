@@ -176,7 +176,7 @@ object BayesNetsFactory{
         return BayesNet(a_node, b_node, cIN_node)
     }
 
-    fun getFullAdderCircuitNet(): BayesianNetwork {
+   /* fun getFullAdderCircuitNet(): BayesianNetwork {
 
         // Random Variables
         val a = RandVar("A_0", BooleanDomain())
@@ -231,7 +231,7 @@ object BayesNetsFactory{
         rootList.apply { this.add(aNode); this.add(bNode);}
         }
         return BayesNet(*rootList.toTypedArray())
-    }
+    }*/
 
     fun getSachsNet(): BayesianNetwork{
         /**
@@ -242,7 +242,7 @@ object BayesNetsFactory{
         /**
          * [RandomVariable]s declaration
          */
-        val akt = RandVar("AKT", FiniteIntegerDomain())
+        val akt = RandVar("AKT", BooleanDomain())
         val erk = RandVar("ERK", BooleanDomain())
         val jnk = RandVar("JNK", BooleanDomain())
         val mek = RandVar("MEK", BooleanDomain())
@@ -293,11 +293,11 @@ object BayesNetsFactory{
                 mek_node, pKA_node
         )
 
-        val akt_node = FullCPTNode(erk, doubleArrayOf(
+        val akt_node = FullCPTNode(akt, doubleArrayOf(
                 0.85, 0.15,
                 0.39, 0.61,
                 0.05, 0.95,
-                0.0035, 0.9865),
+                0.0035, 0.9965),
                 erk_node, pKA_node
         )
 

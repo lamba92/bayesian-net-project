@@ -36,30 +36,33 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         for (rv in vars) {
             factors.add(0, makeFactor(rv, observedEvidences, bn))
         }
+
+        println(vars.toString())
         return when(inferenceMethod){
-            InferenceMethod.STANDARD -> exactInference(order(bn, hidden), factors)
-            InferenceMethod.MPE -> mpeInference(order(bn, vars), factors)
-            InferenceMethod.MAP -> mapInference(order(bn, hidden), X, factors)
+            InferenceMethod.STANDARD -> exactInference((order(bn, hidden)).apply { println(this.toString()) }.apply { println("\n") }, factors)
+            InferenceMethod.MPE -> mpeInference((order(bn, vars)).apply { println(this.toString()) }.apply { println("\n") }, factors);
+            InferenceMethod.MAP -> mapInference((order(bn, hidden)).apply { println(this.toString()) }.apply { println("\n") }, X, factors);
         }
     }
 
     private fun mapInference(hidden: ArrayList<RandomVariable>, queries: Array<RandomVariable>, factors: ArrayList<CustomFactor>): CategoricalDistribution {
-//        var newFactors = ArrayList(factors)
-//        hidden.forEach {
-//            newFactors = sumOut(it, newFactors)
-//        }
-//        queries.forEach {
-//            newFactors = maxOut(it, newFactors)
-//        }
-//        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
-        return CustomProbabilityTable(HashMap())
-    }
+        var newFactors = ArrayList(factors)
+        hidden.forEach {
+            newFactors = sumOut(it, newFactors)
+        }
+        queries.forEach {
+            var (newFactors, block) = maxOut(it, newFactors)
+        }
+        return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
+//FORSE ->        return newFactors.map.apply { println(this.toString()) } { it as CustomProbabilityTable }.multiplyAll()
+        //return CustomProbabilityTable(HashMap())
+        }
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
                                factors: ArrayList<CustomFactor>): CategoricalDistribution {
         var newFactors = ArrayList(factors)
         for(rv in orderedHiddenRVs){
-            newFactors = sumOut(rv, newFactors)
+            newFactors = sumOut(rv, newFactors).apply { println(this.toString()) }.apply { println("\n") }
         }
         return (pointwiseProduct(newFactors) as CustomProbabilityTable).normalize()
     }
@@ -71,7 +74,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         val finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
         for(rv in hiddenOrdered){
             val a = maxOut(rv, newFactors)
-            newFactors = a.first
+            newFactors = a.first.apply { println(this.toString()) }
             finalAssignments.add(a.second)
         }
 
@@ -108,6 +111,10 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
                 resultSet.addAll(it.entries)
             }
         }
+
+
+
+        resultSet.forEach { println(it) }
 
         return resultSet
     }
@@ -214,7 +221,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
      */
     open fun order(bn: BayesianNetwork,
                         vars: Collection<RandomVariable>): ArrayList<RandomVariable>{
-        println(vars.toString())
+        //println(vars.toString())
         return ArrayList(vars.reversed())
     }
 
@@ -239,7 +246,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
     }
 
     private fun pointwiseProduct(factors: List<CustomFactor>): CustomFactor {
-        //aggiungere qui il calcolo della dimensione del fattore intermedio
         var product = factors[0]
         for (i in 1 until factors.size) {
             product = product.pointwiseProduct(factors[i]) as CustomFactor

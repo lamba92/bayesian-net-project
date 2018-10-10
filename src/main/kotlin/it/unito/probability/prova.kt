@@ -20,20 +20,26 @@ import it.unito.probability.bayes.Inferences.weightedMinFillHeuristicFunction
 import it.unito.probability.bayes.getPathfinderNet
 
 fun main(args: Array<String>) {
-    var net = getAlarmNet()
+    var net = getPathfinderNet()
     val inference = getCustomEliminationAsk(
             inferenceMethod = CustomEliminationAsk.InferenceMethod.STANDARD,
-            //hMetrics = minNeighboursHeuristicFunction(),
+            hMetrics = minNeighboursHeuristicFunction(),
             removeIrrelevantRVs = false,
             showMoralGraph = false,
             delay = 1000
     )
 
-    val queryVar = net.variablesInTopologicalOrder.first()
-    val evidenceVar = net.variablesInTopologicalOrder.last()
-    //val evidenceVar = RandVar("C_OUT", BooleanDomain())
 
-    val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(evidenceVar, true)), net) as CustomFactor
+    val f16 = RandVar("F16", BooleanDomain())
+    val flt = RandVar("FAULT", BooleanDomain())
+    val queryVar = RandVar("F96", BooleanDomain())
+
+
+    //val queryVar = net.variablesInTopologicalOrder.first()
+    //val evidenceVar = net.variablesInTopologicalOrder.last()
+    //val evidenceVar = RandVar("PRESS", BooleanDomain())
+
+    val res = inference.ask(arrayOf(queryVar), arrayOf(AssignmentProposition(f16, true), AssignmentProposition(flt, false)), net) as CustomFactor
     /*val res = inference.ask(arrayOf(queryVar),
                            arrayOf(AssignmentProposition(ExampleRV.JOHN_CALLS_RV, true),
                                    AssignmentProposition(ExampleRV.MARY_CALLS_RV,true)), net) as CustomFactor*/
