@@ -20,13 +20,16 @@ import kotlin.collections.ArrayList
 class MoralGraph(
         net: BayesianNetwork,
         private val vars: Collection<RandomVariable>,
-        private val hMetric: (MoralNode, MoralGraph) -> Int
+        private val hMetric: (MoralNode, MoralGraph) -> Int,
+        private val hMetric2: (MoralNode, MoralGraph) -> Int = hMetric
     ): SingleGraph("MG", true, false) {
+
+    private var initialHCalculationDone = false
 
     private val heuristicQueue
             = PriorityQueue<MoralGraph.MoralNode>(
                 compareBy<MoralGraph.MoralNode>{
-                    it.calculateHeuristic(hMetric)
+                    it.calculateHeuristic(if(initialHCalculationDone) hMetric2 else hMetric)
                 })
 
     init{
