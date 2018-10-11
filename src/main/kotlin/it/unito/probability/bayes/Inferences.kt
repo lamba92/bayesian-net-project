@@ -35,7 +35,7 @@ object Inferences {
         = object : CustomEliminationAsk(inferenceMethod) {
 
         override fun order(bn: BayesianNetwork, vars: Collection<RandomVariable>) =
-                MoralGraph(bn, vars, hMetrics).getRandomVariables(showMoralGraph, delay)
+                MoralGraph(bn, vars, minNeighboursHeuristicFunction(), hMetrics).getRandomVariables(showMoralGraph, delay)
 
         override fun calculateVariables(
                 X: Array<RandomVariable>,

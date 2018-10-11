@@ -54,8 +54,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             var (newFactors, block) = maxOut(it, newFactors)
         }
         return newFactors.map { it as CustomProbabilityTable }.multiplyAll()
-//FORSE ->        return newFactors.map.apply { println(this.toString()) } { it as CustomProbabilityTable }.multiplyAll()
-        //return CustomProbabilityTable(HashMap())
         }
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
