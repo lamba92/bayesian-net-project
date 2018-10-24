@@ -6,13 +6,10 @@ import aima.core.probability.bayes.BayesInference
 import aima.core.probability.bayes.BayesianNetwork
 import aima.core.probability.bayes.FiniteNode
 import aima.core.probability.bayes.impl.CPT
-import aima.core.probability.domain.BooleanDomain
 import aima.core.probability.proposition.AssignmentProposition
-import aima.core.probability.util.RandVar
 import it.unito.probability.CustomFactor
 import it.unito.probability.CustomProbabilityTable
 import it.unito.probability.utils.*
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -58,6 +55,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
                                factors: ArrayList<CustomFactor>): CategoricalDistribution {
+        println("${orderedHiddenRVs.toString()}")
         var newFactors = ArrayList(factors)
         for(rv in orderedHiddenRVs){
             newFactors = sumOut(rv, newFactors).apply { println(this.toString()) }.apply { println("\n") }
@@ -87,7 +85,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
     }
 
     private fun getMpeAssignments(tables: ArrayList<ArrayList<HashMap<RandomVariable, Any>>>): HashSet<Map.Entry<RandomVariable, Any>> {
-
         do {
             val size = tables.size - 1
             for (i in 0..size) {
@@ -102,7 +99,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             }
         } while (tables.count { it.size == 1 } != tables.size)
 
-
         val resultSet =  HashSet<Map.Entry<RandomVariable, Any>>()
         tables.forEach {
             it.forEach {
@@ -110,10 +106,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             }
         }
 
-
-
         resultSet.forEach { println(it) }
-
         return resultSet
     }
 

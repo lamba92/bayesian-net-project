@@ -10,6 +10,7 @@ import it.unito.probability.bayes.BayesNetsFactory.getAlarmNet
 import it.unito.probability.bayes.BayesNetsFactory.getChildNet
 import it.unito.probability.bayes.BayesNetsFactory.getDigitalCircuitNetExample
 import it.unito.probability.bayes.BayesNetsFactory.getHailfinderNet
+import it.unito.probability.bayes.BayesNetsFactory.getPathfinderNet
 import it.unito.probability.bayes.BayesNetsFactory.getSachsNet
 import it.unito.probability.bayes.CustomEliminationAsk
 import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
@@ -17,24 +18,25 @@ import it.unito.probability.bayes.Inferences.minFillHeuristicFunction
 import it.unito.probability.bayes.Inferences.minNeighboursHeuristicFunction
 import it.unito.probability.bayes.Inferences.minWeightHeuristicFunction
 import it.unito.probability.bayes.Inferences.weightedMinFillHeuristicFunction
-import it.unito.probability.bayes.getPathfinderNet
 import it.unito.probability.utils.ask
 
 fun main(args: Array<String>) {
-    var net = getChildNet()
+
+    var net = getPathfinderNet()
+
     val inference = getCustomEliminationAsk(
-            inferenceMethod = CustomEliminationAsk.InferenceMethod.STANDARD,
+            inferenceMethod = CustomEliminationAsk.InferenceMethod.MAP,
             hMetrics = minNeighboursHeuristicFunction(),
             removeIrrelevantRVs = false,
             showMoralGraph = false,
             delay = 1000
     )
 
-    val queryVars = RandVar("BIRTH_ASPHYXIA", BooleanDomain())
-    val evidenceVar1 = RandVar("SICK", BooleanDomain())
 
-    val res = inference.ask(arrayOf(queryVars), arrayOf(
-                        AssignmentProposition(evidenceVar1, true)), net) as CustomFactor
+    val queryVars = net.variablesInTopologicalOrder.first()
+    val evidenceVar1 = net.variablesInTopologicalOrder.last()
+    val res = inference.ask(arrayOf(queryVars), arrayOf(AssignmentProposition(evidenceVar1, true)), net) as CustomFactor
+
 
     println(res.printTable())
 }

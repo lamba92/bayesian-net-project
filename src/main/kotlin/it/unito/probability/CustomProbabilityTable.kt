@@ -6,16 +6,9 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import it.unito.probability.utils.getNext
-import it.unito.probability.utils.put
-import org.apache.commons.lang3.concurrent.ConcurrentUtils.putIfAbsent
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
-//import de.vandermeer.asciitable.AsciiTable
-//import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 
 /**
  * Representation of a probability table using hash maps allowing direct access to possible assignments and their values.
@@ -149,7 +142,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
 
     private fun sumOutHelper(rv: RandomVariable): CustomProbabilityTable {
         val subSet = argumentVariables.subtract(ArrayList<RandomVariable>().apply { add(rv) })
-        //println("Size of intermediate factor ${subSet.size}")
         val resultTable = HashMap<HashMap<RandomVariable, Any>, Double>()
         table.forEach { possibleAssignment, probability ->
             val currentSubsetAssignment = HashMap<RandomVariable, Any>()
@@ -219,8 +211,6 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
     }
 
     operator fun times(op: CustomProbabilityTable): CustomProbabilityTable {
-        if(table.size != 1 && op.table.size != 1)
-            throw ArithmeticException("Factors are not scalars. Arithmetic multiplication is inconsistent")
         val newTable = HashMap<HashMap<RandomVariable, Any>, Double>()
         val key = HashMap<RandomVariable, Any>().apply {
             putAll(maxedOutAssignments)
