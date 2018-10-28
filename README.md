@@ -177,6 +177,13 @@ The exercise is divided into three steps:
 - Provide a sequence of evidences, which can be more than one for each time slice,
 - Analysis of empirical results.
 
+Both analysis have been reported in the `bayes-net-statistics.pdf` file.
+Here you can see two examples:
+<p align="center">
+    <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Statistics_1.PNG" width="45%" height="50%"/>
+    <img src="https://github.com/lamba92/bayesian-net-project/blob/master/stuff/Statistics_1.PNG" width="45%" height="50%" />
+  </p>
+
 # Project management
 
 ## Development
