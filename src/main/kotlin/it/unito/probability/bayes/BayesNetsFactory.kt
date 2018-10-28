@@ -18,7 +18,7 @@ import aima.core.probability.util.RandVar
  * Example of [DynamicBayesNet]
  */
 @Suppress("LocalVariableName")
-object BayesNetsFactory{
+object BayesNetsFactory {
 
     fun getComplexDynamicNetworkExample(): DynamicBayesNet {
         val r_0 = RandVar("R_0", BooleanDomain())
@@ -27,7 +27,7 @@ object BayesNetsFactory{
         val r_1 = RandVar("R_1", BooleanDomain())
         val s_1 = RandVar("S_1", BooleanDomain())
 
-        val e_1 = RandVar("E_1",BooleanDomain())
+        val e_1 = RandVar("E_1", BooleanDomain())
 
         val priorNetwork = BayesNet(
                 FullCPTNode(r_0, doubleArrayOf(0.5, 0.5)),
@@ -38,22 +38,22 @@ object BayesNetsFactory{
         val s_0_node = FullCPTNode(s_0, doubleArrayOf(0.5, 0.5))
 
         val r_1_node = FullCPTNode(r_1, doubleArrayOf(
-                    0.1, 0.9,
-                    0.15, 0.85,
-                    0.7, 0.3,
-                    0.8, 0.2
-            ), r_0_node, s_0_node)
+                0.1, 0.9,
+                0.15, 0.85,
+                0.7, 0.3,
+                0.8, 0.2
+        ), r_0_node, s_0_node)
         val s_1_node = FullCPTNode(s_1, doubleArrayOf(
-                    0.23, 0.77,
-                    0.4, 0.6,
-                    0.57, 0.43,
-                    0.29, 0.71
-                ), r_0_node, s_0_node)
+                0.23, 0.77,
+                0.4, 0.6,
+                0.57, 0.43,
+                0.29, 0.71
+        ), r_0_node, s_0_node)
         val e_1_node = FullCPTNode(e_1, doubleArrayOf(
-                    0.93, 0.07,
-                    0.49, 0.51,
-                    0.87, 0.13,
-                    0.01, 0.99
+                0.93, 0.07,
+                0.49, 0.51,
+                0.87, 0.13,
+                0.01, 0.99
         ), r_1_node, s_1_node)
 
         val rvMap = HashMap<RandomVariable, RandomVariable>().apply {
@@ -176,64 +176,7 @@ object BayesNetsFactory{
         return BayesNet(a_node, b_node, cIN_node)
     }
 
-   /* fun getFullAdderCircuitNet(): BayesianNetwork {
-
-        // Random Variables
-        val a = RandVar("A_0", BooleanDomain())
-        val b = RandVar ("B_0", BooleanDomain())
-        val carryIn = RandVar("CarryIn_-1", BooleanDomain())
-
-        // Roots
-        val aRootNode = FullCPTNode(a, doubleArrayOf(0.5, 0.5))
-        val bRootNode = FullCPTNode(b, doubleArrayOf(0.5, 0.5))
-        val carryInRootNode = FullCPTNode(carryIn, doubleArrayOf(0.5, 0.5))
-        val rootList = arrayListOf<Node>(aRootNode, bRootNode, carryInRootNode)
-
-        //Nodes
-        var aNode = aRootNode
-        var bNode = bRootNode
-        var carryInNode = carryInRootNode
-
-        for (i in 1..1){ //8962
-            val sumTmp = RandVar ("Sum_$i", BooleanDomain())
-            val sumNode = FullCPTNode(sumTmp, doubleArrayOf(
-                    0.99, 0.01,
-                    0.01, 0.99,
-                    0.01, 0.99,
-                    0.99, 0.01,
-                    0.01, 0.99,
-                    0.99, 0.01,
-                    0.99, 0.01,
-                    0.01, 0.99),
-                    aNode, bNode, carryInNode
-            )
-
-            val carryOutTmp = RandVar ("""CarryOut_${i - 1}""", BooleanDomain())
-            val carryOutNode = FullCPTNode(carryOutTmp, doubleArrayOf(
-                    0.99, 0.01,
-                    0.99, 0.01,
-                    0.99, 0.01,
-                    0.01, 0.99,
-                    0.99, 0.01,
-                    0.01, 0.99,
-                    0.01, 0.99,
-                    0.01, 0.99),
-                    aNode, bNode, carryInNode
-            )
-
-        val aTmp = RandVar("A_$i", BooleanDomain())
-        val bTmp = RandVar ("B_$i", BooleanDomain())
-        val carryInTmp = RandVar("CarryIn_$i", BooleanDomain())
-
-        aNode = FullCPTNode(aTmp, doubleArrayOf(0.5, 0.5))
-        bNode = FullCPTNode(bTmp, doubleArrayOf(0.5, 0.5))
-        carryInNode = FullCPTNode(carryInTmp, doubleArrayOf(0.99, 0.01, 0.01, 0.99), carryOutNode)
-        rootList.apply { this.add(aNode); this.add(bNode);}
-        }
-        return BayesNet(*rootList.toTypedArray())
-    }*/
-
-    fun getSachsNet(): BayesianNetwork{
+    fun getSachsNet(): BayesianNetwork {
         /**
          * Number of nodes: 11
          * Number of arcs: 17
@@ -274,7 +217,7 @@ object BayesNetsFactory{
                 pKA_node, pKC_node
         )
 
-        val mek_node =FullCPTNode(mek, doubleArrayOf(
+        val mek_node = FullCPTNode(mek, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.02, 0.98,
@@ -331,7 +274,8 @@ object BayesNetsFactory{
                 pIP3_node, plcg_node
         )
 
-        return BayesNet(pKC_node, plcg_node)}
+        return BayesNet(pKC_node, plcg_node)
+    }
 
     fun getChildNet(): BayesianNetwork {
         /**
@@ -498,7 +442,7 @@ object BayesNetsFactory{
         return BayesNet(birthAsphyxia_node)
     }
 
-    fun getAlarmNet(): BayesianNetwork{
+    fun getAlarmNet(): BayesianNetwork {
         /**
          * Number of nodes: 37
          * Number of arcs: 46
@@ -582,12 +526,12 @@ object BayesNetsFactory{
                 0.05, 0.95
         ), hypovolemia_node, lvfailure_node)
 
-        val cvp_node =  FullCPTNode(cvp, doubleArrayOf(
+        val cvp_node = FullCPTNode(cvp, doubleArrayOf(
                 0.85, 0.15,
                 0.29, 0.71
         ), lvedvolume_node)
 
-        val pcwp_node =  FullCPTNode(pcwp, doubleArrayOf(
+        val pcwp_node = FullCPTNode(pcwp, doubleArrayOf(
                 0.85, 0.15,
                 0.05, 0.95
         ), lvedvolume_node)
@@ -750,11 +694,11 @@ object BayesNetsFactory{
         ), co_node, tpr_node)
 
         return BayesNet(hypovolemia_node, lvfailure_node, errlowoutput_node, errcauter_node, insuffanesth_node,
-                        anaphylaxis_node, kinkedtube_node, fio2_node, pulmembolus_node, intubation_node,
-                        disconnect_node, minvolset_node)
+                anaphylaxis_node, kinkedtube_node, fio2_node, pulmembolus_node, intubation_node,
+                disconnect_node, minvolset_node)
     }
 
-    fun getHailfinderNet(): BayesianNetwork{
+    fun getHailfinderNet(): BayesianNetwork {
         /**
          * Number of nodes: 56
          * Number of arcs: 66
@@ -944,7 +888,7 @@ object BayesNetsFactory{
                 insInMt_node, wndHodograph_node
         )
 
-        val compPlFcst_node =  FullCPTNode(compPlFcst, doubleArrayOf(
+        val compPlFcst_node = FullCPTNode(compPlFcst, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.02, 0.98,
@@ -1055,7 +999,7 @@ object BayesNetsFactory{
                 scenario_node
         )
 
-        val plainsFcst_node =  FullCPTNode(plainsFcst, doubleArrayOf(
+        val plainsFcst_node = FullCPTNode(plainsFcst, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.02, 0.98,
@@ -1167,9 +1111,9 @@ object BayesNetsFactory{
                 iRCloudCover_node, aMInstabMt_node, wndHodograph_node,
                 morningBound_node, loLevMoistAd_node, date_node, morningCIN_node,
                 lIfr12ZDENSd_node, aMDewptCalPl_node, latestCIN_node, lLIW_node)
-    }}
+    }
 
-    fun getPathfinderNet(): BayesianNetwork{
+    fun getPathfinderNet(): BayesianNetwork {
         /**
          * Number of nodes: 135
          * Number of arcs: 200
@@ -1574,7 +1518,7 @@ object BayesNetsFactory{
                 fault_node, f98_node
         )
 
-        val f31_node =  FullCPTNode(f31, doubleArrayOf(
+        val f31_node = FullCPTNode(f31, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.97, 0.03,
@@ -1667,7 +1611,7 @@ object BayesNetsFactory{
                 fault_node, f41_node, f96_node
         )
 
-        val f39_node =  FullCPTNode(f39, doubleArrayOf(
+        val f39_node = FullCPTNode(f39, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.97, 0.03,
@@ -1886,7 +1830,7 @@ object BayesNetsFactory{
                 fault_node
         )
 
-        val f86_node =  FullCPTNode(f86, doubleArrayOf(
+        val f86_node = FullCPTNode(f86, doubleArrayOf(
                 0.97, 0.03,
                 0.31, 0.69,
                 0.31, 0.69,
@@ -2171,6 +2115,7 @@ object BayesNetsFactory{
 
         return BayesNet(fault_node)
     }
+}
 
 
 
