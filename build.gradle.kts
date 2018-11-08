@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 buildscript {
     var kotlinVersion: String by extra
     var dokkaVersion: String by extra
-    kotlinVersion = "1.2.71"
+    kotlinVersion = "1.3.0"
     dokkaVersion = "0.9.17"
 
     repositories {
@@ -20,7 +20,7 @@ buildscript {
 plugins {
     java
     id("maven")
-    kotlin("jvm") version "1.2.70"
+    kotlin("jvm") version "1.3.0"
     id("org.jetbrains.dokka") version "0.9.17"
 }
 
@@ -57,14 +57,7 @@ val sourcesJar by tasks.creating(Jar::class) {
     classifier = "sources"
     from(sourceSets.getAt("main").allSource)
 }
-val javaJar by tasks.creating(Jar::class) {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    description = "Assembles sources JAR"
-    classifier = "sources"
-    from(sourceSets.getAt("main").allSource)
-}
 
-artifacts.add("archives", javaJar)
 artifacts.add("archives", sourcesJar)
 artifacts.add("archives", dokkaJar)
 
