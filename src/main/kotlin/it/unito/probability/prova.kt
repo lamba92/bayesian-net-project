@@ -1,17 +1,17 @@
 package it.unito.probability
 
 import aima.core.probability.proposition.AssignmentProposition
-import it.unito.probability.bayes.BayesNetsFactory.getAlarmNet
+import it.unito.probability.bayes.BayesNetsFactory.getChildNet
 import it.unito.probability.bayes.CustomEliminationAsk
 import it.unito.probability.bayes.Inferences.getCustomEliminationAsk
 import it.unito.probability.bayes.Inferences.minNeighboursHeuristicFunction
 
 fun main(args: Array<String>) {
 
-    var net = getAlarmNet()
+    val net = getChildNet()
 
     val inference = getCustomEliminationAsk(
-            inferenceMethod = CustomEliminationAsk.InferenceMethod.MPE,
+            inferenceMethod = CustomEliminationAsk.InferenceMethod.MAP,
             hMetrics = minNeighboursHeuristicFunction(),
             removeIrrelevantRVs = false,
             showMoralGraph = false,

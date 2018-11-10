@@ -35,7 +35,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         return when(inferenceMethod){
             InferenceMethod.STANDARD -> exactInference((order(bn, hidden)), factors)
             InferenceMethod.MPE -> mpeInference((order(bn, vars)), factors)
-            InferenceMethod.MAP -> mapInference((order(bn, hidden)), X, factors)
+            InferenceMethod.MAP -> mapInference((order(bn, hidden)), X.apply { this.forEach { println(it) } }, factors)
         }
     }
 
