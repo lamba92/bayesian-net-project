@@ -9,10 +9,8 @@ import aima.core.probability.bayes.impl.CPT
 import aima.core.probability.proposition.AssignmentProposition
 import it.unito.probability.CustomFactor
 import it.unito.probability.CustomProbabilityTable
-import it.unito.probability.utils.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
+import it.unito.probability.utils.convertToCustom
+import it.unito.probability.utils.multiplyAll
 
 open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = InferenceMethod.STANDARD): BayesInference {
 
@@ -34,11 +32,10 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
             factors.add(0, makeFactor(rv, observedEvidences, bn))
         }
 
-        println(vars.toString())
         return when(inferenceMethod){
-            InferenceMethod.STANDARD -> exactInference((order(bn, hidden)).apply { println(this.toString()) }.apply { println("\n") }, factors)
-            InferenceMethod.MPE -> mpeInference((order(bn, vars)).apply { println(this.toString()) }.apply { println("\n") }, factors);
-            InferenceMethod.MAP -> mapInference((order(bn, hidden)).apply { println(this.toString()) }.apply { println("\n") }, X, factors);
+            InferenceMethod.STANDARD -> exactInference((order(bn, hidden)), factors)
+            InferenceMethod.MPE -> mpeInference((order(bn, vars)), factors)
+            InferenceMethod.MAP -> mapInference((order(bn, hidden)), X, factors)
         }
     }
 
@@ -55,10 +52,9 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
     private fun exactInference(orderedHiddenRVs: ArrayList<RandomVariable>,
                                factors: ArrayList<CustomFactor>): CategoricalDistribution {
-        println("${orderedHiddenRVs.toString()}")
         var newFactors = ArrayList(factors)
         for(rv in orderedHiddenRVs){
-            newFactors = sumOut(rv, newFactors).apply { println(this.toString()) }.apply { println("\n") }
+            newFactors = sumOut(rv, newFactors)
         }
         return (pointwiseProduct(newFactors) as CustomProbabilityTable).normalize()
     }
@@ -70,7 +66,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         val finalAssignments = ArrayList<ArrayList<ArrayList<HashMap<RandomVariable, ArrayList<HashMap<RandomVariable, Any>>>>>>()
         for(rv in hiddenOrdered){
             val a = maxOut(rv, newFactors)
-            newFactors = a.first.apply { println(this.toString()) }
+            newFactors = a.first
             finalAssignments.add(a.second)
         }
 
@@ -80,7 +76,7 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         }
 
         val mpeAssignments = getMpeAssignments(tables)
-
+        println("\n" + mpeAssignments)
         return newFactors.map { it as CustomProbabilityTable}.multiplyAll()
     }
 
@@ -105,8 +101,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
                 resultSet.addAll(it.entries)
             }
         }
-
-        resultSet.forEach { println(it) }
         return resultSet
     }
 
@@ -120,10 +114,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
 
         if (commonColumn.isNotEmpty()) {
             val deleteSet = HashSet<Map<RandomVariable, Any>>()
-            println("\n 1:$commonColumn \n 2:$diff1 \n 3:$diff2")
-
-            println("PRIMA:\n" + table1.toString())
-            println(table2.toString())
 
             val newTable2 = ArrayList<HashMap<RandomVariable, Any>>()
             table1.forEach { row -> deleteSet.add(row.minus(diff1)) }
@@ -142,9 +132,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
                     row.entries.containsAll(it.entries)
                 }
             }
-            println("DOPO:\n" + newTable1.toString())
-            println(newTable2.toString())
-            println("----------------------------------")
             return Pair(newTable1, newTable2)
         }
         return Pair(table1, table2)
@@ -212,7 +199,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
      */
     open fun order(bn: BayesianNetwork,
                         vars: Collection<RandomVariable>): ArrayList<RandomVariable>{
-        //println(vars.toString())
         return ArrayList(vars.reversed())
     }
 
@@ -241,7 +227,6 @@ open class CustomEliminationAsk(val inferenceMethod: InferenceMethod = Inference
         for (i in 1 until factors.size) {
             product = product.pointwiseProduct(factors[i]) as CustomFactor
         }
-        println("Vars: ${product.argumentVariables } Size: ${product.argumentVariables.size}")
         return product
     }
 }

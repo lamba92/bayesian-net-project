@@ -6,8 +6,6 @@ import aima.core.probability.RandomVariable
 import aima.core.probability.proposition.AssignmentProposition
 import de.vandermeer.asciitable.AsciiTable
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 /**
@@ -156,7 +154,7 @@ class CustomProbabilityTable(val table: HashMap<HashMap<RandomVariable, Any>, Do
    override fun printTable(): String {
         val asciiTable = AsciiTable()
         asciiTable.addRule()
-        asciiTable.addRow(ArrayList<String>(argumentVariables.map { it.toString() }).apply { add("Prob") }).apply { setTextAlignment(TextAlignment.CENTER) }
+        asciiTable.addRow(ArrayList<String>(argumentVariables.map { it.toString() }).apply { add("Probability") }).apply { setTextAlignment(TextAlignment.CENTER) }
         asciiTable.addRule()
         iterateOver { possibleAssignment, value ->
             asciiTable.addRow(ArrayList<String>(possibleAssignment.map { it.value.toString() }).apply { add("%.4f".format(value)) }).apply { setTextAlignment(TextAlignment.CENTER) }
